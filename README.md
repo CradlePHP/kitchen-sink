@@ -27,3 +27,15 @@ Then go `$ cd <project folder name>/public` and run the following.
 $ bower install
 $ php -S localhost:8000
 ```
+
+Open your browser to `http://localhost:8000`
+
+## Documentation
+
+ - See [https://cradlephp.github.io/](https://cradlephp.github.io/) for the official documentation.
+
+## Packages
+
+ - Also see [https://github.com/cblanquera/cradle-schema](https://github.com/cblanquera/cradle-schema) 
+ - Also see [https://github.com/cblanquera/cradle-auth](https://github.com/cblanquera/cradle-auth)
+ - Also see [https://github.com/cblanquera/cradle-file](https://github.com/cblanquera/cradle-file)
