@@ -21,7 +21,7 @@ $ vendor/bin/cradle install cblanquera/cradle-schema
 It will ask you which schema to install. type `app`.
 Repeat this step for `profile`, `auth` and `file`
 
-Then go cd ``<project folder name>/public` and run the following.
+Then go `$ cd <project folder name>/public` and run the following.
 
 ```
 $ bower install
