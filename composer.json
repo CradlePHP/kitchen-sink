@@ -1,0 +1,26 @@
+{
+    "name": "cradlephp/kitchen-sink",
+    "description": "Flow samples and testing",
+    "type": "framework",
+	"minimum-stability": "dev",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Christian Blanquera",
+            "email": "cblanquera@openovate.com"
+        }
+    ],
+    "require": {
+		"cradlephp/framework": "dev-master",
+		"cradlephp/command-line": "dev-master",
+		"cblanquera/cradle-auth": "dev-master",
+		"cblanquera/cradle-file": "dev-master",
+		"php-amqplib/php-amqplib": "^2.6"
+	},
+    "autoload": {
+        "psr-4": {
+            "Cradle\\App\\Www\\": "app/www/src",
+            "Cradle\\App\\Admin\\": "app/admin/src"
+        }
+    }
+}

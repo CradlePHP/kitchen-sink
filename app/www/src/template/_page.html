@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" class="branding ">
+    <head>
+        <meta charset="utf-8" />
+        <title>{{page.title}}</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        {{#each page.meta}}
+        <meta name="{{@key}}" content="{{this}}" />
+        {{/each}}
+
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+        <link rel="icon" type="image/png" href="/favicon.png" />
+		<link rel="icon" type="image/gif" href="/favicon.gif" />
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+        <link rel="stylesheet" type="text/css" href="/bower_components/font-awesome/css/font-awesome.min.css" />
+        <link rel="stylesheet" type="text/css" href="/bower_components/opensans-webfont-latin/css/opensans-latin.css" />
+        <link rel="stylesheet" type="text/css" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="/www/styles/custom.css" />
+
+        <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+        <script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    </head>
+
+    <body>
+    	<header>
+            {{> head}}
+        </header>
+
+        <section class="body">
+            <div class="container">
+                {{#if page.flash.message}}
+                {{#when page.flash.type '===' 'success'}}
+                <div class="alert alert-success">{{page.flash.message}}</div>
+                {{/when}}
+                {{#when page.flash.type '===' 'error'}}
+                <div class="alert alert-danger">{{page.flash.message}}</div>
+                {{/when}}
+                {{#when page.flash.type '===' 'info'}}
+                <div class="alert alert-info">{{page.flash.message}}</div>
+                {{/when}}
+                {{/if}}
+                {{{content}}}
+            </div>
+        </section>
+        <footer>
+            {{> foot}}
+        </footer>
+    </body>
+</html>
