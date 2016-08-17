@@ -15,7 +15,7 @@ information with a new sandbox database (MySQL).
 Then go cd `<project folder name>` and run the following.
 
 ```
-$ vendor/bin/cradle install cblanquera/cradle-schema
+$ vendor/bin/cradle cblanquera/cradle-schema install
 ```
 
 It will ask you which schema to install. type `app`.
@@ -36,6 +36,6 @@ Open your browser to `http://localhost:8000`
 
 ## Packages
 
- - Also see [https://github.com/cblanquera/cradle-schema](https://github.com/cblanquera/cradle-schema) 
+ - Also see [https://github.com/cblanquera/cradle-schema](https://github.com/cblanquera/cradle-schema)
  - Also see [https://github.com/cblanquera/cradle-auth](https://github.com/cblanquera/cradle-auth)
  - Also see [https://github.com/cblanquera/cradle-file](https://github.com/cblanquera/cradle-file)
