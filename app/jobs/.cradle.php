@@ -1,6 +1,6 @@
 <?php //-->
 
 $cradle
-    ->flow('Send Mail', function() {
-        
+    ->on('Send Mail', function() {
+        echo 'in';
     });

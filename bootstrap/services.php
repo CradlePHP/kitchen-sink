@@ -2,7 +2,7 @@
 return function($request, $response) {
 	//case for test injections
 	$host = $request->getServer('HTTP_HOST');
-	
+
 	$services = $this
 		->package('global')
 		->config('services');
@@ -10,7 +10,7 @@ return function($request, $response) {
 	//create a sudo method
 	$this
 		->package('global')
-		
+
 		/**
 		 * Gets a service from config
 		 *
@@ -22,10 +22,10 @@ return function($request, $response) {
 			if(!isset($services[$name])) {
 				return null;
 			}
-			
+
 			return $services[$name];
 		})
-		
+
 		/**
 		 * Particularly returns a SQL interface
 		 *
@@ -34,13 +34,13 @@ return function($request, $response) {
 		->addMethod('sql', function() use (&$services) {
 			return $services['sql-main'];
 		})
-		
+
 		/**
 		 * Particularly returns a SQL interface
 		 *
 		 * @return Cradle\Sql\SqlInterface
 		 */
-		->addMethod('queue', function() use (&$services) {
+		->addMethod('amqp', function() use (&$services) {
 			return $services['queue-main'];
 		});
 };

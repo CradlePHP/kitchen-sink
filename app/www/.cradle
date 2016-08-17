@@ -25,3 +25,5 @@ $cradle->app('/app', include(__DIR__.'/src/route/app.php'));
 $cradle->app('/auth', include(__DIR__.'/src/route/auth.php'));
 $cradle->app('/profile', include(__DIR__.'/src/route/profile.php'));
 $cradle->app('/files', include(__DIR__.'/src/route/file.php'));
+$cradle->app('/utility', include(__DIR__.'/src/route/utility.php'));
+$cradle->app('/form', include(__DIR__.'/src/route/form.php'));

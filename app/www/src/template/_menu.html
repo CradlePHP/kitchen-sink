@@ -1,31 +1,39 @@
- <h5>Auth</h5>
+<h5>Auth</h5>
 <ul>
     {{#session 'me'}}
-    <li><a href="/auth/search">Search</a></li>
-    <li><a href="/auth/update">Update</a></li>
+    <li><a href="/auth/search">Auth Search</a></li>
+    <li><a href="/auth/update">Account Update</a></li>
     <li><a href="/auth/logout">Logout</a></li>
     {{else}}
-    <li><a href="/auth/create">Create</a></li>
+    <li><a href="/auth/create">Sign up</a></li>
     <li><a href="/auth/login">Login</a></li>
     {{/session}}
 </ul>
 
-<h5>App</h5>
+<h5>Schema</h5>
 <ul>
-    <li><a href="/app/search">Search</a></li>
-    <li><a href="/app/create">Create</a></li>
-</ul>
-
-<h5>Profile</h5>
-<ul>
-    <li><a href="/profile/search">Search</a></li>
-    <li><a href="/profile/create">Create</a></li>
+    <li><a href="/app/search">App Search</a></li>
+    <li><a href="/app/create">App Create</a></li>
+    <li><a href="/profile/search">Profile Search</a></li>
+    <li><a href="/profile/create">Profile Create</a></li>
 </ul>
 
 <h5>File Handling</h5>
 <ul>
-    <li><a href="/files/search">Search</a></li>
+    <li><a href="/files/search">File Search</a></li>
     <li><a href="/files/file">Uploading via $_FILES</a></li>
     <li><a href="/files/base64">Uploading via base64</a></li>
     <li><a href="/files/link">Uploading via Links</a></li>
+</ul>
+
+<h5>Utilities</h5>
+<ul>
+    <li><a href="/utility/queue">Queue-ing</a></li>
+    <li><a href="/utility/mail">Sending Mail</a></li>
+</ul>
+
+<h5>Form Security</h5>
+<ul>
+    <li><a href="/form/csrf">CSRF</a></li>
+    <li><a href="/form/captcha">Captcha</a></li>
 </ul>

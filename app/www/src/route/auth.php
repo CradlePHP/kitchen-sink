@@ -160,11 +160,8 @@ return App::i()
             Flow::session()->success('Login Successful'),
             Flow::session()->redirectTo('/sink')
         ),
-        array(
-            Flow::auth()->login->no,
-            Flow::session()->flash(),
-            'Auth Login Page'
-        )
+        Flow::session()->flash(),
+        'Auth Login Page'
     )
 
     ->flow(
