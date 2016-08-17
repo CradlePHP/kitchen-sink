@@ -16,7 +16,10 @@
 		"cradlephp/command-line": "dev-master",
 		"cblanquera/cradle-auth": "dev-master",
 		"cblanquera/cradle-file": "dev-master",
-		"php-amqplib/php-amqplib": "^2.6"
+		"cblanquera/cradle-captcha": "dev-master",
+		"cblanquera/cradle-csrf": "dev-master",
+		"cblanquera/cradle-mail": "dev-master",
+		"cblanquera/cradle-queue": "dev-master",
 	},
     "autoload": {
         "psr-4": {
