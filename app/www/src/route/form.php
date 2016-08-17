@@ -28,10 +28,30 @@ return App::i()
 
     ->flow(
         'Captcha Form',
-        Flow::captcha()->load,
-        Flow::captcha()->render,
-        Flow::www()->template->body('form'),
-        Flow::www()->template->page
+        //check settings
+        function($request, $response) {
+            $config = $this('global')->service('captcha-main');
+            if(isset($config['token']) && $config['token'] !== '<GOOGLE CAPTCHA TOKEN>') {
+                $this->subflow('captcha-continue', $request, $response);
+                return;
+            }
+
+            $this->subflow('captcha-stop', $request, $response);
+        },
+
+        array(
+            'captcha-continue',
+            Flow::captcha()->load,
+            Flow::captcha()->render,
+            Flow::www()->template->body('form'),
+            Flow::www()->template->page
+        ),
+        array(
+            'captcha-stop',
+            Flow::session()->error('Looks like you didnt setup services.php'),
+            Flow::www()->template->body('sink'),
+            Flow::www()->template->page
+        )
     )
 
     ->flow(
