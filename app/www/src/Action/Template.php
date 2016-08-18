@@ -97,6 +97,11 @@ class Template
 
         $response->setContent($template($data));
 
+        //deal with flash messages
+        if(isset($_SESSION['flash'])) {
+            unset($_SESSION['flash']);
+        }
+
         return $this;
     }
 }

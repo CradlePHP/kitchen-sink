@@ -38,35 +38,35 @@ return App::i()
     ->flow(
         'Update Account Page',
         Flow::auth()->update->load,
-        array(
+        [
             Flow::auth()->update->found,
             Flow::auth()->update->format,
             Flow::auth()->update->render,
             Flow::www()->template->body('form'),
             Flow::www()->template->page
-        ),
-        array(
+        ],
+        [
             Flow::auth()->update->notFound,
             Flow::session()->error('Auth does not exist'),
             Flow::session()->redirectTo('/auth/search')
-        )
+        ]
     )
     ->flow(
         'Auth Update Page',
         Flow::auth()->required->check,
-        array(
+        [
             Flow::auth()->required->yes,
             Flow::auth()->update->load,
             Flow::auth()->update->format,
             Flow::auth()->update->render,
             Flow::www()->template->body('form'),
             Flow::www()->template->page
-        ),
-        array(
+        ],
+        [
             Flow::auth()->required->no,
             Flow::session()->error('Invalid Permissions'),
             Flow::session()->redirectTo('/auth/search')
-        )
+        ]
     )
     ->flow(
         'Auth Login Page' ,
@@ -87,13 +87,13 @@ return App::i()
         'Auth Create Process',
         Flow::auth()->create->prepare,
         Flow::auth()->create->valid,
-        array(
+        [
             Flow::auth()->create->yes,
             Flow::auth()->create->task,
             //now create profile
             Flow::schema('profile')->create->prepare,
             Flow::schema('profile')->create->valid,
-            array(
+            [
                 Flow::schema('profile')->create->yes,
                 Flow::schema('profile')->create->task,
                 //now bring all the results to stage
@@ -101,8 +101,8 @@ return App::i()
                 Flow::schema('auth')->link->to('profile'),
                 Flow::session()->success('Create Successful'),
                 Flow::session()->redirectTo('/sink')
-            )
-        ),
+            ]
+        ],
         Flow::session()->error('Some errors were found'),
         'Auth Create Page'
     )
@@ -110,56 +110,56 @@ return App::i()
     ->flow(
         'Auth Update Process',
         Flow::auth()->required->check,
-        array(
+        [
             Flow::auth()->required->yes,
             Flow::auth()->update->prepare,
             Flow::auth()->update->valid,
-            array(
+            [
                 Flow::auth()->update->yes,
                 Flow::auth()->update->task,
                 Flow::session()->success('Update Successful'),
                 Flow::session()->redirectTo('/sink')
-            ),
-            array(
+            ],
+            [
                 Flow::auth()->update->no,
                 Flow::session()->error('Something went wrong'),
                 'Auth Update Page'
-            )
-        ),
-        array(
+            ]
+        ],
+        [
             Flow::auth()->required->no,
             Flow::session()->error('Invalid Permissions'),
             Flow::session()->redirectTo('/auth/search')
-        )
+        ]
     )
 
     ->flow(
         'Update Account Process',
         Flow::auth()->update->prepare,
         Flow::auth()->update->valid,
-        array(
+        [
             Flow::auth()->update->yes,
             Flow::auth()->update->task,
             Flow::session()->success('Update Successful'),
             Flow::session()->redirectTo('/auth/search')
-        ),
-        array(
+        ],
+        [
             Flow::auth()->update->no,
             Flow::session()->error('Something went wrong'),
             'Auth Update Me Page'
-        )
+        ]
     )
 
     ->flow(
         'Auth Login Process',
         Flow::auth()->login->prepare,
         Flow::auth()->login->valid,
-        array(
+        [
             Flow::auth()->login->yes,
             Flow::auth()->login->task,
             Flow::session()->success('Login Successful'),
             Flow::session()->redirectTo('/sink')
-        ),
+        ],
         Flow::session()->flash(),
         'Auth Login Page'
     )
@@ -167,45 +167,45 @@ return App::i()
     ->flow(
         'Auth Remove Process',
         Flow::auth()->remove->valid,
-        array(
+        [
             Flow::auth()->remove->yes,
             Flow::auth()->remove->task,
             Flow::schema('auth')->unlinkAll->from('profile'),
             Flow::session()->success('Auth Removed'),
-        ),
-        array(
+        ],
+        [
             Flow::auth()->remove->no,
             Flow::session()->error('Invalid ID'),
-        ),
+        ],
         Flow::session()->redirectTo('/sink')
     )
 
     ->flow(
         'Auth Restore Process',
         Flow::auth()->restore->valid,
-        array(
+        [
             Flow::auth()->restore->yes,
             Flow::auth()->restore->task,
             Flow::session()->success('Auth Restored'),
-        ),
-        array(
+        ],
+        [
             Flow::auth()->restore->no,
             Flow::session()->error('Invalid ID'),
-        ),
+        ],
         Flow::session()->redirectTo('/sink')
     )
 
     ->flow(
         'Auth Refresh Process',
         Flow::auth()->refresh->valid,
-        array(
+        [
             Flow::auth()->refresh->yes,
             Flow::auth()->refresh->task,
             Flow::session()->success('Auth Refreshed'),
-        ),
-        array(
+        ],
+        [
             Flow::auth()->refresh->no,
             Flow::session()->error('Invalid ID'),
-        ),
+        ],
         Flow::session()->redirectTo('/sink')
     );

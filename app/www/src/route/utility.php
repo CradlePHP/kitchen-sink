@@ -34,26 +34,26 @@ return App::i()
 
             $this->subflow('mail-stop', $request, $response);
         },
-        array(
+        [
             'mail-continue',
             function($request, $response) {
                 $response
                     ->setResults('mail', 'subject', 'Welcome')
                     ->setResults('mail', 'body', 'text', 'Welcome to my site!')
-                    ->setResults('mail', 'to', array(
+                    ->setResults('mail', 'to', [
                         'foobar@mailinator.com',
                         'barfoo@mailinator.com',
-                    ));
+                    ]);
             },
             Flow::mail()->send,
             Flow::session()->success('Mail sent to foobar@mailinator.com'),
             Flow::www()->template->body('sink'),
             Flow::www()->template->page
-        ),
-        array(
+        ],
+        [
             'mail-stop',
             Flow::session()->error('Looks like you didnt setup services.php'),
             Flow::www()->template->body('sink'),
             Flow::www()->template->page
-        )
+        ]
     );

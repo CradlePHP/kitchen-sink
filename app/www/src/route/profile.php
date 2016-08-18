@@ -25,18 +25,18 @@ return App::i()
     //renders a detail display
     ->flow('Profile Detail Page',
         Flow::schema('profile')->detail->load,
-        array(
+        [
             Flow::schema('profile')->detail->found,
             Flow::schema('profile')->detail->format,
             Flow::schema('profile')->detail->render,
             Flow::www()->template->body('display'),
             Flow::www()->template->page
-        ),
-        array(
+        ],
+        [
             Flow::schema('profile')->detail->notFound,
             Flow::session()->error('Invalid ID'),
             Flow::session()->redirectTo('/profile/search')
-        )
+        ]
     )
 
     //renders the create form
@@ -53,18 +53,18 @@ return App::i()
     ->flow(
         'Profile Update Page',
         Flow::schema('profile')->update->load,
-        array(
+        [
             Flow::schema('profile')->update->found,
             Flow::schema('profile')->update->format,
             Flow::schema('profile')->update->render,
             Flow::www()->template->body('form'),
             Flow::www()->template->page
-        ),
-        array(
+        ],
+        [
             Flow::schema('profile')->update->notFound,
             Flow::session()->error('Invalid ID'),
             Flow::session()->redirectTo('/profile/search')
-        )
+        ]
     )
 
     //the process to insert into the DB
@@ -72,18 +72,18 @@ return App::i()
         'Profile Create Process',
         Flow::schema('profile')->create->prepare,
         Flow::schema('profile')->create->valid,
-        array(
+        [
             Flow::schema('profile')->create->yes,
             Flow::file()->fromFileInput,
             Flow::schema('profile')->create->task,
             Flow::session()->success('Profile Created'),
             Flow::session()->redirectTo('/profile/search')
-        ),
-        array(
+        ],
+        [
             Flow::schema('profile')->create->no,
             Flow::session()->error('There were some errors found'),
             'Profile Create Page'
-        )
+        ]
     )
 
     //the process to update the DB
@@ -91,33 +91,33 @@ return App::i()
         'Profile Update Process',
         Flow::schema('profile')->update->prepare,
         Flow::schema('profile')->update->valid,
-        array(
+        [
             Flow::schema('profile')->update->yes,
             Flow::file()->fromFileInput,
             Flow::schema('profile')->update->task,
             Flow::session()->success('Profile Updated'),
             Flow::session()->redirectTo('/profile/search')
-        ),
-        array(
+        ],
+        [
             Flow::schema('profile')->update->no,
             Flow::session()->error('There were some errors found'),
             'Profile Update Page'
-        )
+        ]
     )
 
     //the process to remove from the DB
     ->flow(
         'Profile Remove Process',
         Flow::schema('profile')->remove->valid,
-        array(
+        [
             Flow::schema('profile')->remove->yes,
             Flow::schema('profile')->remove->task,
             Flow::session()->success('Profile Removed'),
-        ),
-        array(
+        ],
+        [
             Flow::schema('profile')->remove->no,
             Flow::session()->error('Invalid ID'),
-        ),
+        ],
         Flow::session()->redirectTo('/profile/search')
     )
 
@@ -125,14 +125,14 @@ return App::i()
     ->flow(
         'Profile Restore Process',
         Flow::schema('profile')->restore->valid,
-        array(
+        [
             Flow::schema('profile')->restore->yes,
             Flow::schema('profile')->restore->task,
             Flow::session()->success('Profile Restored'),
-        ),
-        array(
+        ],
+        [
             Flow::schema('profile')->restore->no,
             Flow::session()->error('Invalid ID'),
-        ),
+        ],
         Flow::session()->redirectTo('/profile/search')
     );

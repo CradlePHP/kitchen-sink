@@ -25,18 +25,18 @@ return App::i()
     //renders a detail display
     ->flow('App Detail Page',
         Flow::schema('app')->detail->load,
-        array(
+        [
             Flow::schema('app')->detail->found,
             Flow::schema('app')->detail->format,
             Flow::schema('app')->detail->render,
             Flow::www()->template->body('display'),
             Flow::www()->template->page
-        ),
-        array(
+        ],
+        [
             Flow::schema('app')->detail->notFound,
             Flow::session()->error('Invalid ID'),
             Flow::session()->redirectTo('/app/search')
-        )
+        ]
     )
 
     //renders the create form
@@ -53,18 +53,18 @@ return App::i()
     ->flow(
         'App Update Page',
         Flow::schema('app')->update->load,
-        array(
+        [
             Flow::schema('app')->update->found,
             Flow::schema('app')->update->format,
             Flow::schema('app')->update->render,
             Flow::www()->template->body('form'),
             Flow::www()->template->page
-        ),
-        array(
+        ],
+        [
             Flow::schema('app')->update->notFound,
             Flow::session()->error('Invalid ID'),
             Flow::session()->redirectTo('/app/search')
-        )
+        ]
     )
 
     //the process to insert into the DB
@@ -72,17 +72,17 @@ return App::i()
         'App Create Process',
         Flow::schema('app')->create->prepare,
         Flow::schema('app')->create->valid,
-        array(
+        [
             Flow::schema('app')->create->yes,
             Flow::schema('app')->create->task,
             Flow::session()->success('App Created'),
             Flow::session()->redirectTo('/app/search')
-        ),
-        array(
+        ],
+        [
             Flow::schema('app')->create->no,
             Flow::session()->error('There were some errors found'),
             'App Create Page'
-        )
+        ]
     )
 
     //the process to update the DB
@@ -90,32 +90,32 @@ return App::i()
         'App Update Process',
         Flow::schema('app')->update->prepare,
         Flow::schema('app')->update->valid,
-        array(
+        [
             Flow::schema('app')->update->yes,
             Flow::schema('app')->update->task,
             Flow::session()->success('App Updated'),
             Flow::session()->redirectTo('/app/search')
-        ),
-        array(
+        ],
+        [
             Flow::schema('app')->update->no,
             Flow::session()->error('There were some errors found'),
             'App Update Page'
-        )
+        ]
     )
 
     //the process to remove from the DB
     ->flow(
         'App Remove Process',
         Flow::schema('app')->remove->valid,
-        array(
+        [
             Flow::schema('app')->remove->yes,
             Flow::schema('app')->remove->task,
             Flow::session()->success('App Removed'),
-        ),
-        array(
+        ],
+        [
             Flow::schema('app')->remove->no,
             Flow::session()->error('Invalid ID'),
-        ),
+        ],
         Flow::session()->redirectTo('/app/search')
     )
 
@@ -123,14 +123,14 @@ return App::i()
     ->flow(
         'App Restore Process',
         Flow::schema('app')->restore->valid,
-        array(
+        [
             Flow::schema('app')->restore->yes,
             Flow::schema('app')->restore->task,
             Flow::session()->success('App Restored'),
-        ),
-        array(
+        ],
+        [
             Flow::schema('app')->restore->no,
             Flow::session()->error('Invalid ID'),
-        ),
+        ],
         Flow::session()->redirectTo('/app/search')
     );
