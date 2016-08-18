@@ -15,7 +15,7 @@ information with a new sandbox database (MySQL).
 Then go cd `<project folder name>` and run the following.
 
 ```
-$ vendor/bin/cradle cblanquera/cradle-schema install
+$ vendor/bin/cradle package cblanquera/cradle-schema install
 ```
 
 It will ask you which schema to install. type `app`.
