@@ -39,3 +39,8 @@ Open your browser to `http://localhost:8000`
  - Also see [https://github.com/cblanquera/cradle-schema](https://github.com/cblanquera/cradle-schema)
  - Also see [https://github.com/cblanquera/cradle-auth](https://github.com/cblanquera/cradle-auth)
  - Also see [https://github.com/cblanquera/cradle-file](https://github.com/cblanquera/cradle-file)
+ - Also see [https://github.com/cblanquera/cradle-csrf](https://github.com/cblanquera/cradle-csrf)
+ - Also see [https://github.com/cblanquera/cradle-captcha](https://github.com/cblanquera/cradle-captcha)
+ - Also see [https://github.com/cblanquera/cradle-mail](https://github.com/cblanquera/cradle-mail)
+ - Also see [https://github.com/cblanquera/cradle-queue](https://github.com/cblanquera/cradle-queue)
+ - Also see [https://github.com/cblanquera/cradle-handlebars](https://github.com/cblanquera/cradle-handlebars)
