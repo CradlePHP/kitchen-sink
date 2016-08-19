@@ -42,7 +42,6 @@ return cradle()
             if(!isset($data['__TASK__'])) {
                 // once an exception is encountered, notify that task is not done
                 $this->log('Task is not done.');
-                $this->log($e->getMessage());
 
                 // set or flag that the task is not done and the worker is free
                 $message
