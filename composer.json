@@ -12,7 +12,7 @@
         }
     ],
     "require": {
-		"cradlephp/framework": "dev-master",
+		"cradlephp/packages": "dev-master",
 		"cradlephp/command-line": "dev-master",
 		"cblanquera/cradle-auth": "dev-master",
 		"cblanquera/cradle-file": "dev-master",
