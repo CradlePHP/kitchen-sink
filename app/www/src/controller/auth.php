@@ -49,9 +49,6 @@ $cradle->get('/activate/:auth_id/:hash', function($request, $response) {
     cradle()->trigger('auth-update', $request, $response);
 
     if($response->isError()) {
-echo $authId.' '.$authUpdated .' '.$hash;
-print_r($response->get('json'));
-exit;
         cradle('global')->flash('Invalid verification. Try again.', 'danger');
         return cradle('global')->redirect('/verify');
     }
