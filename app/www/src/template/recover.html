@@ -1,0 +1,63 @@
+<!-- START: Auth Recover Page -->
+<div class="auth-recover-body auth-form container">
+    <!-- START: Website Logo -->
+    <div class="form-logo">
+        <center>
+            <a href="/">
+                <img alt="Cradle PHP Logo" width="300" src="/images/logo-long.png" />
+            </a>
+        </center>
+    </div>
+    <!-- END: Website Logo -->
+    <!-- START: Auth Recover Panel -->
+    <div class="panel panel-default">
+        <!-- START: Panel Head -->
+        <div class="panel-heading">
+            <div class="panel-title">{{_ 'Recover Password'}}</div>
+        </div>
+        <!-- END: Panel Head -->
+        <!-- START: Panel Body -->
+        <div class="panel-body" >
+            <!-- START: Auth Recover Form -->
+            <form method="post">
+                <!-- START: Auth Password -->
+                <div class="form-group{{#if errors.auth_password}} has-error{{/if}}">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class = "fa fa-lock"></i></span>
+                        <input type="password" name="auth_password" placeholder ="{{_ 'Password'}}" class="form-control" value="{{item.auth_password}}" />
+                    </div>
+                    {{#if errors.auth_password}}
+                    <span class="help-text">{{errors.auth_password}}</span>
+                    {{/if}}
+                </div>
+                <!-- END: Auth Password -->
+                <!-- START: Confirm Password -->
+                <div class="form-group{{#if errors.confirm}} has-error{{/if}}">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class = "fa fa-lock"></i></span>
+                        <input type="password" name="confirm" placeholder="{{_ 'Confirm'}}" class="form-control" value="{{item.confirm}}" />
+                    </div>
+                    {{#if errors.confirm}}
+                    <span class="help-text">{{errors.confirm}}</span>
+                    {{/if}}
+                </div>
+                <!-- END: Confirm Password -->
+                <!-- START: Login -->
+                <div class="form-group pull-right">
+                    <a title="Login" href="/forgot">{{_ 'Wait, I Remember It Now.'}}</a>
+                </div>
+                <!-- END: Login -->
+                <!-- START: Form Submit -->
+                <div class="form-group">
+                    <input type="hidden" name="csrf" value="{{csrf}}" />
+                    <button type="submit" class="btn btn-info">{{_ 'Submit'}}</button>
+                </div>
+                <!-- END: Form Submit -->
+            </form>
+            <!-- END: Auth Recover Form -->
+        </div>
+        <!-- END: Panel Body -->
+    </div>
+    <!-- END: Auth Recover Panel -->
+</div>
+<!-- END: Auth Recover Page -->

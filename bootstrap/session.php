@@ -1,19 +1,67 @@
 <?php //-->
 return function($request, $response) {
-	//prevent starting session in cli mode
-	if(php_sapi_name() === 'cli') {
-		return;
-	}
+    //prevent starting session in cli mode
+    if(php_sapi_name() === 'cli') {
+        return;
+    }
 
-	//start session
-	session_start();
+    //start session
+    session_start();
 
-	//sync the session
-	$request->setSession($_SESSION);
+    //sync the session
+    $request->setSession($_SESSION);
 
-	//deal with flash messages
-	if(isset($_SESSION['flash'])) {
-		$response->setPage('flash', $_SESSION['flash']);
-		unset($_SESSION['flash']);
-	}
+    //set the language
+    if(!$request->hasSession('i18n')) {
+        $settings = $this->package('global')->config('settings');
+        $request->setSession('i18n', $settings['i18n']);
+    }
+
+    //deal with flash messages
+    if($request->hasSession('flash')) {
+        $flash = $request->getSession('flash');
+        $response->setPage('flash', $flash);
+        $request->removeSession('flash');
+    }
+
+    //create some global methods
+    $this->package('global')
+
+    /**
+     * Short Hand Redirect
+     *
+     * @param *string $path
+     */
+    ->addMethod('redirect', function($path) {
+        cradle()->getDispatcher()->redirect($path);
+    })
+
+    /**
+     * Short Hand Redirect
+     *
+     * @param *string $path
+     */
+    ->addMethod('requireLogin', function($type = null) {
+        if(!isset($_SESSION['me']['auth_id'])) {
+            $redirect = urlencode($_SERVER['REQUEST_URI']);
+            return cradle()->getDispatcher()->redirect('/login?redirect_uri=' . $redirect);
+        }
+
+        if($type && $_SESSION['me']['auth_type'] !== $type) {
+            cradle('global')->flash('Unauthorized', 'danger');
+            return cradle()->getDispatcher()->redirect('/');
+        }
+    })
+
+    /**
+     * Short Hand Redirect
+     *
+     * @param *string $path
+     */
+    ->addMethod('flash', function($message, $type = 'info') {
+        $_SESSION['flash'] = [
+            'message' => cradle()->package('global')->translate($message),
+            'type' => $type
+        ];
+    });
 };

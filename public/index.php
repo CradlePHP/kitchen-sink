@@ -2,4 +2,7 @@
 
 include(__DIR__.'/../bootstrap.php');
 
-return cradle()->register('/app/www')->render();
+return cradle()
+    ->register('/app/api')
+    ->register('/app/www')
+    ->render();

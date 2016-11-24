@@ -1,6 +1,0 @@
-<?php //-->
-
-$cradle
-    ->package('cblanquera/cradle-schema')
-    ->model('app', include(__DIR__ . '/app.php'))
-    ->model('profile', include(__DIR__ . '/profile.php'));

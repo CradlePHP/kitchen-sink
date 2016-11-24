@@ -1,0 +1,109 @@
+<!-- START: Auth Signup Page -->
+<div class="auth-signup-body auth-form container">
+    <!-- START: Website Logo -->
+    <div class="form-logo">
+        <center>
+            <a href="/">
+                <img alt="Cradle PHP Logo" width="300" src="/images/logo-long.png" />
+            </a>
+        </center>
+    </div>
+    <!-- END: Website Logo -->
+    <!-- START: Auth Signup Panel -->
+    <div class="panel panel-default" >
+        <!-- START: Panel Head -->
+        <div class="panel-heading">
+            <div class="panel-title">{{_ 'Signup'}}</div>
+        </div>
+        <!-- END: Panel Head -->
+        <!-- START: Panel Body -->
+        <div class="panel-body">
+            <div class="panel-section">
+                <!-- START: Auth Signup Form -->
+                <form method="post">
+                    <!-- START: Profile Name -->
+                    <div class="form-group{{#if errors.profile_name}} has-error{{/if}}">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class = "fa fa-user"></i></span>
+                            <input type="text" name="profile_name" placeholder="{{_ 'Name'}}" class="form-control" value="{{item.profile_name}}" />
+                        </div>
+                        {{#if errors.profile_name}}
+                        <span class="help-text">{{errors.profile_name}}</span>
+                        {{/if}}
+                    </div>
+                    <!-- END: Profile Name -->
+                    <!-- START: Profile Email -->
+                    <div class="form-group{{#if errors.profile_email}} has-error{{/if}}">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class = "fa fa-envelope"></i></span>
+                            <input type="email" name="profile_email" placeholder="{{_ 'Email'}}" class="form-control" value="{{item.profile_email}}" />
+                        </div>
+                        {{#if errors.profile_email}}
+                        <span class="help-text">{{errors.profile_email}}</span>
+                        {{/if}}
+                    </div>
+                    <!-- END: Profile Email -->
+                    <!-- START: Auth Password -->
+                    <div class="form-group{{#if errors.auth_password}} has-error{{/if}}">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class = "fa fa-lock"></i></span>
+                            <input type="password" name="auth_password" placeholder ="{{_ 'Password'}}" class="form-control" value="{{item.auth_password}}" />
+                        </div>
+                        {{#if errors.auth_password}}
+                        <span class="help-text">{{errors.auth_password}}</span>
+                        {{/if}}
+                    </div>
+                    <!-- END: Auth Password -->
+                    <!-- START: Confirm Password -->
+                    <div class="form-group{{#if errors.confirm}} has-error{{/if}}">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class = "fa fa-lock"></i></span>
+                            <input type="password" name="confirm" placeholder="{{_ 'Confirm'}}" class="form-control" value="{{item.confirm}}" />
+                        </div>
+                        {{#if errors.confirm}}
+                        <span class="help-text">{{errors.confirm}}</span>
+                        {{/if}}
+                    </div>
+                    <!-- END: Confirm Password -->
+                    {{#if captcha}}
+                        <!-- START: Captcha -->
+                        <div class="form-group{{#if errors.captcha}} has-error{{/if}}">
+                            <script src="https://www.google.com/recaptcha/api.js"></script>
+                            <div class="g-recaptcha" data-sitekey="{{captcha}}"></div>
+                            {{#if errors.captcha}}
+                            <span class="help-text">{{errors.captcha}}</span>
+                            {{/if}}
+                        </div>
+                        <!-- END: Captcha -->
+                    {{/if}}
+                    <!-- START: Form Submit -->
+                    <div class="form-group">
+                        <input type="hidden" name="csrf" value="{{csrf}}" />
+                        <button class="btn btn-info">{{_ 'Sign up'}}</button>
+                    </div>
+                    <!-- END: Form Submit -->
+                </form>
+                <!-- END: Auth Signup Form -->
+            </div>
+            <!-- START: Other Options -->
+            <div class="panel-section panel-social">
+                <!-- START: Login With Facebook Option -->
+                <div class="form-group">
+                    <p class="text-center or-text">{{_ 'or'}}</p>
+                </div>
+                <!-- END: Login With Facebook Option -->
+                <!-- START: Login Option -->
+                <div class="form-group">
+                    <p class="text-muted text-center">{{_ 'Have an existing account?'}}
+                        <a title="Sign Up" class="brand-text" href="/login?{{toquery}}">{{_ 'Login Here'}}</a>
+                    </p>
+                </div>
+                <!-- END: Login Option -->
+            </div>
+            <!-- END: Other Options -->
+        </div>
+        <!-- END: Panel Body -->
+    </div>
+    <!-- END: Auth Signup Panel -->
+</div>
+<!-- END: Auth Signup Page -->

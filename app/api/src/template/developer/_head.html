@@ -1,0 +1,44 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button
+            type="button"
+            class="navbar-toggle collapsed"
+            data-toggle="collapse"
+            data-target="#main-nav">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">
+                <img height="50" src="/images/logo-long.png" />
+            </a>
+        </div>
+
+        <div id="main-nav" class="collapse navbar-collapse{{#session 'me'}} loggedin{{/session}}">
+            {{#session 'me'}}
+            <ul class="nav navbar-nav">
+                <li><a href="/developer/app/search">My Apps</a></li>
+            </ul>
+            {{/session}}
+            <ul class="nav navbar-nav navbar-right">
+                {{#session 'me'}}
+                    <li>
+                        <a href="/account?redirect_uri={{server 'REQUEST_URI'}}" class="btn text-info">
+                            {{_ 'Account Settings'}}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/logout?redirect_uri={{server 'REQUEST_URI'}}" class="btn text-danger">
+                            {{_ 'Logout'}}
+                        </a>
+                    </li>
+                {{else}}
+                    <li><a href="/login?redirect_uri={{server 'REQUEST_URI'}}">Login</a></li>
+                    <li><a href="/signup?redirect_uri={{server 'REQUEST_URI'}}">Signup</a></li>
+                {{/session}}
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>

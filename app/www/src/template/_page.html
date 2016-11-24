@@ -1,53 +1,136 @@
 <!DOCTYPE html>
-<html lang="en" class="branding ">
+<html lang="en" class="{{page.class}}">
     <head>
         <meta charset="utf-8" />
         <title>{{page.title}}</title>
 
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <!-- MOBILE TAGS -->
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, height=device-height, width=device-width" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 
-        {{#each page.meta}}
-        <meta name="{{@key}}" content="{{this}}" />
-        {{/each}}
+        <!-- GOOGLE TAGS -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta name="robots" content="index,follow" />
+        <link rel="icon" href="{{config 'cdn'}}/favicon.ico" type="image/x-icon" />
 
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+        {{#if page.meta.description}}
+            <meta name="description" content="{{page.meta.description}}" />
+        {{/if}}
 
-        <link rel="icon" type="image/png" href="/favicon.png" />
-		<link rel="icon" type="image/gif" href="/favicon.gif" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+        {{#if page.meta.keywords}}
+            <meta name="keywords" content="{{page.meta.keywords}}" />
+        {{/if}}
 
-        <link rel="stylesheet" type="text/css" href="/bower_components/font-awesome/css/font-awesome.min.css" />
-        <link rel="stylesheet" type="text/css" href="/bower_components/opensans-webfont-latin/css/opensans-latin.css" />
-        <link rel="stylesheet" type="text/css" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" />
-        <link rel="stylesheet" type="text/css" href="/www/styles/custom.css" />
+        <!-- FACEBOOK TAGS -->
+        <meta property="fb:app_id" content="{{page.meta.fb_app_id}}" />
+        <meta property="fb:admins" content="{{page.meta.fb_admin_id}}" />
 
-        <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
-        <script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        {{#if page.meta.image}}
+            <meta property="og:image" content="{{page.meta.image}}" />
+        {{/if}}
+
+        <meta property="og:title" content="{{page.title}}" />
+
+        {{#if page.meta.description}}
+            <meta property="og:description" content="{{page.meta.description}}" />
+        {{/if}}
+
+        {{#if page.meta.type}}
+            <meta property="og:type" content="{{page.meta.type}}" />
+        {{/if}}
+
+        {{#if page.meta.url}}
+            <meta property="og:url" content="{{page.meta.url}}" />
+        {{/if}}
+
+        <!-- TWITTER TAGS -->
+        <meta name="twitter:card" content="summary" />
+
+        {{#if page.meta.image}}
+            <meta name="twitter:image" content="{{page.meta.image}}" />
+        {{/if}}
+        <meta name="twitter:title" contentques="{{page.title}}" />
+
+        {{#if page.meta.description}}
+            <meta name="twitter:description" content="{{page.meta.description}}" />
+        {{/if}}
+
+        {{#if page.meta.url}}
+            <meta name="twitter:url" content="{{page.meta.url}}" />
+        {{/if}}
+
+        <!-- SCHEMA.ORG TAGS -->
+        <meta itemprop="name" content="{{page.meta.company}}" />
+        <meta itemprop="openingHours" content="Mo,Tu,We,Th,Fr 10:00-20:00" />
+
+        <link itemprop="url" content="{{root}}" />
+        <link itemprop="logo" content="{{config 'cdn'}}/favicon.png" />
+        <link itemprop="image" content="{{config 'cdn'}}/images/logo.png" />
+
+        <link rel="shortcut icon" href="{{config 'cdn'}}/favicon.ico" type="image/x-icon">
+
+        <link rel="icon" type="image/png" href="{{config 'cdn'}}/favicon.png" />
+        <link rel="icon" type="image/gif" href="{{config 'cdn'}}/favicon.gif" />
+        <link rel="icon" type="image/x-icon" href="{{config 'cdn'}}/favicon.ico" />
+
+        <link rel="stylesheet" type="text/css" href="{{config 'cdn'}}/bower_components/font-awesome/css/font-awesome.min.css" />
+        <link rel="stylesheet" type="text/css" href="{{config 'cdn'}}/bower_components/opensans-webfont-latin/css/opensans-latin.css" />
+        <link rel="stylesheet" type="text/css" href="{{config 'cdn'}}/bower_components/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="{{config 'cdn'}}/styles/www.css" />
+
+        <script type="text/javascript" src="{{config 'cdn'}}/bower_components/jquery/dist/jquery.min.js"></script>
+        <script type="text/javascript" src="{{config 'cdn'}}/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="{{config 'cdn'}}/scripts/doon.js"></script>
+        <script type="text/javascript" src="{{config 'cdn'}}/scripts/www.js"></script>
     </head>
 
     <body>
-    	<header>
-            {{> head}}
-        </header>
+        {{#environment 'production'}}
+        <!-- FACEBOOK CONNECT -->
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=319710831501415";
+          fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+        {{/environment}}
 
-        <section class="body">
-            <div class="container">
-                {{#if page.flash.message}}
-                {{#when page.flash.type '===' 'success'}}
-                <div class="alert alert-success">{{page.flash.message}}</div>
-                {{/when}}
-                {{#when page.flash.type '===' 'error'}}
-                <div class="alert alert-danger">{{page.flash.message}}</div>
-                {{/when}}
-                {{#when page.flash.type '===' 'info'}}
-                <div class="alert alert-info">{{page.flash.message}}</div>
-                {{/when}}
-                {{/if}}
+        <header class="head">{{> head}}</header>
+        <div class="wrapper">
+            {{#if page.flash}}
+                <div data-do="notify" class="notify notify-{{page.flash.type}}">
+                    <span class="message">{{page.flash.message}}</span>
+                </div>
+            {{/if}}
+
+            <section class="body">
                 {{{content}}}
-            </div>
-        </section>
-        <footer>
-            {{> foot}}
-        </footer>
+            </section>
+        </div>
+        <footer class="foot">{{> foot}}</footer>
+
+        {{#environment 'production'}}
+        <!-- Google Analytics -->
+        <script type="text/javascript" src="//www.google-analytics.com/analytics.js"></script>
+        <script type="text/javascript">
+        (function() {
+            if(typeof ga === 'undefined') {
+                window.ga = window.ga || function(){
+                    (ga.q = ga.q||[]).push(['{{page.meta.path}}', '{{title}}']);
+                };
+            }
+            ga.l =+ new Date;
+            ga('create', '{{page.meta.ga_tracker}}', 'auto');
+            ga('set', { page: '{{page.meta.path}}', title: '{{title}}' });
+            ga('send', 'pageview');
+        })();
+        </script>
+
+        <!-- TWITTER -->
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+        {{/environment}}
     </body>
 </html>

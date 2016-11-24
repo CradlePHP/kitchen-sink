@@ -1,0 +1,50 @@
+<div class="center clear pad">
+    <center><img width="400" src="{{logo}}" /></center>
+</div>
+
+<div class="well well-lg pad-vertical">
+    <h3>Hello {{#session 'me'}}{{profile_name}}{{/session}},</h3>
+    <p>
+        {{#if app.app_website}}
+        <a href="{{app.app_website}}" target="_blank">{{app.app_name}}</a>
+        {{else}}
+        {{app.app_name}}
+        {{/if}}
+        would like permissions to access your data.
+    </p>
+    <form method="post">
+        {{#each permissions}}
+        {{#if icon}}
+        <div class="form-group">
+            <div class="media">
+                <div class="media-left pull-left">
+                    <i class="fa fa-{{icon}}"></i>
+                </div>
+                <div class="media-body">
+                    <a
+                        class="remove btn btn-danger pull-right"
+                        title="Remove Permission">
+                        <i class="fa fa-times"></i>
+                    </a>
+                    <h4 class="media-heading">{{title}}</h4>
+                    <p>{{description}}</p>
+                    <input type="hidden" name="session_permissions[]" value="{{@key}}" />
+                </div>
+            </div>
+        </div>
+        {{else}}
+        <input type="hidden" name="session_permissions[]" value="{{@key}}" />
+        {{/if}}
+        {{/each}}
+        <div class="form-group actions">
+            <input type="hidden" name="csrf" value="{{csrf}}" />
+            <button class="btn btn-default" name="action" value="deny">Deny</button>
+            <button class="btn btn-primary" name="action" value="allow">Allow</button>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+$('a.remove').click(function() {
+    $(this).parent().parent().parent().remove();
+});
+</script>

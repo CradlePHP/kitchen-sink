@@ -1,0 +1,189 @@
+<div class="panel panel-default clear" >
+    <div class="panel-heading brand">
+        <div class="panel-title">{{page.title}}</div>
+    </div>
+
+    <div class="panel-body" >
+        <form enctype="multipart/form-data" method="post">
+            <div class="form-group{{#if errors.app_name}} has-error{{/if}}">
+                <label class="control-label">Application Name</label>
+                <div>
+                    <input
+                        type="text"
+                        name="app_name"
+                        class="form-control"
+                        placeholder="Acme App"
+                        value="{{item.app_name}}" />
+
+                    {{#if errors.app_name}}
+                    <span class="help-text">{{errors.app_name}}</span>
+                    {{/if}}
+                </div>
+            </div>
+            <div class="form-group{{#if errors.app_domain}} has-error{{/if}}">
+                <label class="control-label">Accept Requests From Domain</label>
+                <div>
+                    <input
+                        type="text"
+                        name="app_domain"
+                        class="form-control"
+                        placeholder="*.acme.com"
+                        value="{{item.app_domain}}" />
+
+                    {{#if errors.app_domain}}
+                    <span class="help-text">{{errors.app_domain}}</span>
+                    {{/if}}
+                </div>
+            </div>
+            <div class="form-group{{#if errors.app_website}} has-error{{/if}}">
+                <label class="control-label">Author's Website</label>
+                <div>
+                    <input
+                        type="text"
+                        name="app_website"
+                        class="form-control"
+                        placeholder="http://acme.com/"
+                        value="{{item.app_website}}" />
+
+                    {{#if errors.app_website}}
+                    <span class="help-text">{{errors.app_website}}</span>
+                    {{/if}}
+                </div>
+            </div>
+            <div class="form-group{{#if errors.app_permissions}} has-error{{/if}}">
+                <label class="control-label">Permissions</label>
+                <div>
+                    <div>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="app_permissions[]"
+                                value="public_profile"
+                                {{#in 'public_profile' item.app_permissions}}
+                                checked
+                                {{/in}} />
+                                Access to Profile Search
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="app_permissions[]"
+                                value="public_product"
+                                {{#in 'public_product' item.app_permissions}}
+                                checked
+                                {{/in}} />
+                                Access to Product Search
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="app_permissions[]"
+                                value="personal_profile"
+                                {{#in 'personal_profile' item.app_permissions}}
+                                checked
+                                {{/in}} />
+                                Manage My Profile
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="app_permissions[]"
+                                value="personal_product"
+                                {{#in 'personal_product' item.app_permissions}}
+                                checked
+                                {{/in}} />
+                                Manage My Products
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="app_permissions[]"
+                                value="personal_comment"
+                                {{#in 'personal_comment' item.app_permissions}}
+                                checked
+                                {{/in}} />
+                                Manage My Comments
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="app_permissions[]"
+                                value="personal_review"
+                                {{#in 'personal_review' item.app_permissions}}
+                                checked
+                                {{/in}} />
+                                Manage My Reviews
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="app_permissions[]"
+                                value="user_profile"
+                                {{#in 'user_profile' item.app_permissions}}
+                                checked
+                                {{/in}} />
+                                Manage Another User's Profile
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="app_permissions[]"
+                                value="user_product"
+                                {{#in 'user_product' item.app_permissions}}
+                                checked
+                                {{/in}} />
+                                Manage Another User's Products
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="app_permissions[]"
+                                value="user_comment"
+                                {{#in 'user_comment' item.app_permissions}}
+                                checked
+                                {{/in}} />
+                                Manage Another User's Comments
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="app_permissions[]"
+                                value="user_review"
+                                {{#in 'user_review' item.app_permissions}}
+                                checked
+                                {{/in}} />
+                                Manage Another User's Reviews
+                        </label>
+                    </div>
+
+                    {{#if errors.app_permissions}}
+                    <span class="help-text">{{errors.app_permissions}}</span>
+                    {{/if}}
+                </div>
+            </div>
+
+            <div class="clear form-group">
+                <input type="hidden" name="csrf" value="{{csrf}}" />
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>

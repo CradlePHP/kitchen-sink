@@ -1,0 +1,347 @@
+body, html{
+    font-family: "Open Sans", Arial;
+    font-weight: 300;
+    height: 100%;
+}
+
+h1, h2, h3, h4, h5 {
+    border-bottom: 1px solid #EEEEEE;
+    font-weight: 300;
+    padding-bottom: 20px;
+}
+
+hr { border-color: #E7E7E7; }
+
+input, select, button, a.btn {
+    border-radius: 0 !important;
+}
+
+.clear { clear: both; }
+.pad-top { margin-top: 10px; }
+.pad-bottom { margin-top: 10px; }
+.pad-top-2 { margin-top: 20px; }
+.pad-bottom-2 { margin-top: 20px; }
+
+/* Widget - Image Field
+------------------------------*/
+.image-field { text-align: center; }
+
+/* Widget - Notify
+------------------------------*/
+.notify {
+    background-color: #232323;
+    border: 3px solid #454545;
+    border-radius: 10px;
+    bottom: 10px;
+    color: #EFEFEF;
+    height: auto !important;
+    opacity: .85;
+    padding: 20px;
+    position: fixed;
+    right: 10px;
+    text-align: center;
+    width: 300px;
+    z-index: 10000;
+}
+
+.notify-info {
+  color: #FFFFFF;
+  background-color: #5BC0DE;
+}
+
+.notify-success {
+  color: #FFFFFF;
+  background-color: #5CB85C;
+}
+
+.notify-danger {
+  color: #FFFFFF;
+  background-color: #D9534F;
+}
+
+.notify-warning {
+  color: #FFFFFF;
+  background-color: #F0AD4E;
+}
+
+.notify .message {
+    display: block;
+    margin-top: 5px;
+    padding-right: 25px;
+}
+
+.notify > a {
+    float: right;
+    font-size: 20px;
+    color: #EFEFEF;
+}
+
+@media(max-width:767px) {
+    .notify {
+        left: 10px;
+        width: auto;
+    }
+}
+
+/* Branding
+------------------------------*/
+.branding,
+.branding body { background-color: #45A9D9; }
+
+.branding a,
+.branding a:link,
+.branding a:hover,
+.branding a:active,
+.branding a:visited {
+    color: #45A9D9 !important;
+}
+
+.branding a.btn-info,
+.branding a.btn-info:link,
+.branding a.btn-info:hover,
+.branding a.btn-info:active,
+.branding a.btn-info:visited,
+
+.branding a.btn-primary,
+.branding a.btn-primary:link,
+.branding a.btn-primary:hover,
+.branding a.btn-primary:active,
+.branding a.btn-primary:visited,
+
+.branding a.btn-warning,
+.branding a.btn-warning:link,
+.branding a.btn-warning:hover,
+.branding a.btn-warning:active,
+.branding a.btn-warning:visited,
+
+.branding a.btn-danger,
+.branding a.btn-danger:link,
+.branding a.btn-danger:hover,
+.branding a.btn-danger:active,
+.branding a.btn-danger:visited {
+    color: #FFFFFF !important;
+}
+
+.branding .alert { border-radius: 0; margin-top: 20px; }
+.branding .alert .fa { font-size: 20px; }
+.branding header {
+    background-color: #FFFFFF;
+    margin-top: 20px;
+}
+
+.branding header .navbar {
+    background-color: #FFFFFF;
+    margin-bottom: 0;
+    padding: 20px 5px;
+}
+
+.branding header .navbar ul li a i {
+    font-size: 40px;
+    margin-top: -12px;
+}
+
+.branding header .navbar .navbar-brand {
+    padding: 7px 15px 13px;
+}
+
+.branding header .navbar .navbar-brand img {
+    height: 30px;
+}
+
+.branding header .navbar .navbar-toggle .icon-bar {
+    background-color: #45A9D9;
+}
+
+.branding .body {
+    background-color: #FFFFFF;
+    padding: 40px 0;
+}
+
+.branding footer {
+    color: #FFFFFF;
+    padding: 40px 0;
+}
+
+.branding footer a,
+.branding footer a:link,
+.branding footer a:hover,
+.branding footer a:active,
+.branding footer a:visited {
+    color: #FFFFFF !important;
+}
+
+.branding footer ul {
+    list-style: none;
+}
+
+.branding footer .left {
+    width: 200px;
+}
+
+.branding footer .logo {
+    background: #FFFFFF;
+    display: inline-block;
+    font-weight: 700;
+    padding: 2px;
+    margin-right: 5px;
+}
+
+.branding footer .logo img {
+    height: 60px;
+}
+
+.branding footer .title {
+    font-weight: 700;
+    line-height: 20px;
+}
+
+.branding footer .version {
+    line-height: 20px;
+}
+
+.branding footer .updated {
+    line-height: 20px;
+}
+
+.branding footer .masthead {
+    padding-top: 20px;
+}
+.branding footer .copy {
+    border-top: 1px solid #EEEEEE;
+    display: block;
+    font-size: 12px;
+    padding-top: 20px;
+    text-align: center;
+}
+
+.branding pre.code {
+    background-color: #FFFFFF;
+    border-radius: 0;
+    padding: 0 0 0 3.8em;
+}
+
+.branding pre.code code {
+    display: inline-block;
+}
+.branding .line-numbers .line-numbers-rows {
+    background-color: #f5f2f0;
+}
+
+/* Form - Auth
+------------------------------*/
+.auth-form .form-logo {
+    padding: 20px;
+    text-align: center;
+}
+
+.auth-form .form-logo img {
+    width: 145px;
+}
+
+.auth-form .panel {
+    border: 0;
+    border-radius: 0;
+    margin: auto;
+    width: 350px;
+}
+
+.auth-form .panel-heading {
+    background: none;
+    border: none;
+}
+
+.auth-form .panel-body {
+    font-size: 12px;
+}
+
+.auth-form .panel-title {
+    color: #45A9D9;
+    font-size: 18px;
+    font-weight: 100;
+}
+
+.auth-form .input-group > * {
+    border-radius: 0;
+}
+
+.auth-form .input-group-addon {
+    background: #FFFFFF;
+    color: #AAAAAA;
+    width: 39px;
+}
+
+.auth-form .input-group .form-control {
+    width: 260px;
+}
+
+.auth-form .image-field {
+    cursor: pointer;
+}
+
+.auth-form .btn {
+    display: block;
+    font-weight: 200;
+    padding: 10px 0;
+    width: 300px;
+}
+
+.auth-form .or-text {
+    position: relative;
+}
+
+.auth-form .or-text:before {
+    border-top: 1px solid #CCCCCC;
+    content: "";
+    left: 0;
+    position: absolute;
+    top: 50%;
+    width: 45%;
+}
+
+.auth-form .or-text:after {
+    border-top: 1px solid #CCCCCC;
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 45%;
+}
+
+.auth-form p {
+    line-height: 24px;
+}
+
+/* Page - Home
+------------------------------*/
+.home .splash {
+    margin-top: -40px;
+}
+
+.home h1,
+.home h2 {
+    border-bottom: 0;
+    text-align: center;
+}
+
+.branding .home h1 {
+    color: #45A9D9;
+    font-size: 80px;
+}
+
+.home pre.code {
+    margin: auto;
+    max-width: 680px;
+}
+
+.home .source {
+    margin: -30px 0 20px;
+}
+
+.home .call-to-action .btn {
+    display: block;
+    font-size: 20px;
+    font-weight: 300;
+    margin-top: 40px;
+    max-width: 680px;
+    padding: 20px;
+}

@@ -1,0 +1,81 @@
+<!-- START: Auth Login Page -->
+<div class="auth-login-body auth-form container">
+    <!-- START: Website Logo -->
+    <div class="form-logo">
+        <center>
+            <a href="/">
+                <img alt="Cradle PHP Logo" width="300" src="/images/logo-long.png" />
+            </a>
+        </center>
+    </div>
+    <!-- END: Website Logo -->
+    <!-- START: Auth Login Panel -->
+    <div class="panel panel-default" >
+        <!-- START: Panel Head -->
+        <div class="panel-heading">
+            <div class="panel-title">{{_ 'Login'}}</div>
+        </div>
+        <!-- END: Panel Head -->
+        <!-- START: Panel Body -->
+        <div class="panel-body" >
+            <div class="panel-section">
+                <!-- START: Auth Login Form -->
+                <form method="post">
+                    <!-- START: Auth Slug -->
+                    <div class="form-group{{#if errors.auth_slug}} has-error{{/if}}">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class = "fa fa-envelope"></i></span>
+                            <input type="email" name="auth_slug" placeholder="{{_ 'Email'}}" class="form-control" value="{{item.auth_slug}}" />
+                        </div>
+                        {{#if errors.auth_slug}}
+                        <span class="help-text">{{errors.auth_slug}}</span>
+                        {{/if}}
+                    </div>
+                    <!-- END: Auth Slug -->
+                    <!-- START: Auth Password -->
+                    <div class="form-group{{#if errors.auth_password}} has-error{{/if}}">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class = "fa fa-lock"></i></span>
+                            <input type="password" name="auth_password" placeholder ="{{_ 'Password'}}" class="form-control" value="{{item.auth_password}}" />
+                        </div>
+                        {{#if errors.auth_password}}
+                        <span class="help-text">{{errors.auth_password}}</span>
+                        {{/if}}
+                    </div>
+                    <!-- END: Auth Password -->
+                    <!-- START: Forgot Password -->
+                    <div class="form-group pull-right">
+                        <a title="Forgot Password" href="/forgot?{{toquery}}">{{_ 'Forgot password'}}</a>
+                    </div>
+                    <!-- END: Forgot Password -->
+                    <!-- START: Form Submit -->
+                    <div class="form-group">
+                        <input type="hidden" name="csrf" value="{{csrf}}" />
+                        <button type="submit" class="btn btn-info">{{_ 'Login'}}</button>
+                    </div>
+                    <!-- END: Form Submit -->
+                </form>
+                <!-- END: Auth Login Form -->
+            </div>
+            <!-- START: Other Options -->
+            <div class="panel-section panel-social">
+                <!-- START: Login With Facebook Option -->
+                <div class="form-group">
+                    <p class="text-center or-text">{{_ 'or'}}</p>
+                </div>
+                <!-- END: Login With Facebook Option -->
+                <!-- START: Signup Option -->
+                <div class="form-group">
+                    <p class="text-muted text-center">
+                        {{_ "Don't have an account?"}}
+                        <a title="Sign Up" class="brand-text" href="/signup?{{toquery}}">{{_ 'Sign Up Here'}}</a>
+                    </p>
+                </div>
+                <!-- END: Signup Option -->
+            </div>
+            <!-- END: Other Options -->
+        </div>
+        <!-- END: Panel Body -->
+    </div>
+</div>
+<!-- END: Auth Login Page -->

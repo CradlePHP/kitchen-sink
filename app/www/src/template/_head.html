@@ -8,15 +8,49 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/"><img alt="Cradle PHP" src="/www/images/logo-long.png" /></a>
+            <a class="navbar-brand" href="/"><img alt="Cradle PHP" src="/images/logo-long.png" /></a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="header">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="/">Home</a></li>
-                <li><a href="/sink">Sink</a></li>
-                <li><a href="https://github.com/CradlePHP/Cradle"><i class="fa fa-github"></i></a></li>
+                <li class="dropdown">
+                    <a
+                        title="Choose Your Language"
+                        href="javascript:void(0)"
+                        class="dropdown-toggle"
+                        data-toggle="dropdown"
+                        role="button"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                            {{i18n}} <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a title="Chinese" href="/can_CN{{page.meta.path}}">Catonese</a></li>
+                        <li><a title="English" href="/en_US{{page.meta.path}}">English</a></li>
+                        <li><a title="French" href="/fr_FR{{page.meta.path}}">French</a></li>
+                        <li><a title="Chinese" href="/cmn_CN{{page.meta.path}}">Mandarin</a></li>
+                        <li><a title="Spanish" href="/es_ES{{page.meta.path}}">Spanish</a></li>
+                        <li><a title="Filipino" href="/tl_PH{{page.meta.path}}">Tagalog</a></li>
+                        <li><a title="Thai" href="/th_TH{{page.meta.path}}">Thai</a></li>
+                        <li><a title="Filipino" href="/ceb_PH{{page.meta.path}}">Visaya</a></li>
+                    </ul>
+                </li>
+                {{#session 'me'}}
+                    <li>
+                        <a href="/account?redirect_uri={{../page.meta.path}}" class="btn text-info">
+                            {{_ 'Account Settings'}}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/logout?redirect_uri={{../page.meta.path}}" class="btn text-danger">
+                            {{_ 'Logout'}}
+                        </a>
+                    </li>
+                {{else}}
+                    <li><a href="/login?redirect_uri={{page.meta.path}}">{{_ 'Login'}}</a></li>
+                    <li><a href="/signup?redirect_uri={{page.meta.path}}">{{_ 'Signup'}}</a></li>
+                {{/session}}
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->

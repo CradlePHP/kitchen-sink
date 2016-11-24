@@ -1,0 +1,18 @@
+<div class="center clear pad">
+    <center><img width="400" src="{{logo}}" /></center>
+</div>
+
+<div class="panel panel-default clear" >
+    <div class="panel-heading brand">
+        <div class="panel-title">Invalid Request</div>
+    </div>
+
+    <div class="panel-body" >
+        The application interacting with us has sent us an invalid request.
+        Please notify the application of this error.
+        {{#if message}}
+        <br /><br />
+        {{message}}
+        {{/if}}
+    </div>
+</div>

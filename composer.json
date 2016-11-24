@@ -2,7 +2,7 @@
     "name": "cradlephp/kitchen-sink",
     "description": "Flow samples and testing",
     "type": "framework",
-	"minimum-stability": "dev",
+    "minimum-stability": "dev",
     "license": "MIT",
     "homepage": "https://cradlephp.github.io/",
     "authors": [
@@ -12,19 +12,19 @@
         }
     ],
     "require": {
-		"cradlephp/packages": "dev-master",
-		"cradlephp/command-line": "dev-master",
-		"cblanquera/cradle-auth": "dev-master",
-		"cblanquera/cradle-file": "dev-master",
-		"cblanquera/cradle-captcha": "dev-master",
-		"cblanquera/cradle-csrf": "dev-master",
-		"cblanquera/cradle-mail": "dev-master",
-		"cblanquera/cradle-queue": "dev-master"
-	},
+        "cradlephp/packages": "dev-master",
+        "cradlephp/command-line": "dev-master",
+        "cblanquera/cradle-captcha": "dev-master",
+        "cblanquera/cradle-csrf": "dev-master",
+        "cblanquera/cradle-handlebars": "dev-master",
+        "cblanquera/cradle-queue": "dev-master",
+        "elasticsearch/elasticsearch": "2.2.2",
+        "aws/aws-sdk-php": "3.19.30",
+        "swiftmailer/swiftmailer": "5.4.3"
+    },
     "autoload": {
         "psr-4": {
-            "Cradle\\App\\Www\\": "app/www/src",
-            "Cradle\\App\\Admin\\": "app/admin/src"
+            "Cradle\\App\\Core\\": "app/core/src"
         }
     }
 }

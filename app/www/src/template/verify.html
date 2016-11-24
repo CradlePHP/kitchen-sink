@@ -1,0 +1,48 @@
+<!-- START: Auth Verify Page -->
+<div class="auth-verify-body auth-form container">
+    <!-- START: Website Logo -->
+    <div class="form-logo">
+        <center>
+            <a href="/">
+                <img alt="Cradle PHP Logo" width="300" src="/images/logo-long.png" />
+            </a>
+        </center>
+    </div>
+    <!-- END: Website Logo -->
+    <!-- START: Auth Verify Panel -->
+    <div class="panel panel-default">
+        <!-- START: Panel Head -->
+        <div class="panel-heading">
+            <div class="panel-title">{{_ 'Verify Account'}} </div>
+        </div>
+        <!-- END: Panel Head -->
+        <!-- START: Panel Body -->
+        <div class="panel-body">
+            <p>{{_ "We'll email you with a link to activate your account. Please enter the e-mail address used to register with this site and we'll contact you shortly."}}</p>
+            <!-- START: Auth Verify Form -->
+            <form method="post">
+                <!-- START: Auth Slug -->
+                <div class="form-group{{#if errors.auth_slug}} has-error{{/if}}">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class = "fa fa-envelope"></i></span>
+                        <input type="email" name="auth_slug" placeholder="{{_ 'Email'}}" class="form-control" value="{{item.auth_slug}}" />
+                    </div>
+                    {{#if errors.auth_slug}}
+                    <span class="help-text">{{errors.auth_slug}}</span>
+                    {{/if}}
+                </div>
+                <!-- END: Auth Slug -->
+                <!-- START: Form Submit -->
+                <div class="form-group">
+                    <input type="hidden" name="csrf" value="{{csrf}}" />
+                    <button type="submit" class="btn btn-info">{{_ 'Submit'}}</button>
+                </div>
+                <!-- END: Form Submit -->
+            </form>
+            <!-- END: Auth Verify Form -->
+        </div>
+        <!-- END: Panel Body -->
+    </div>
+    <!-- END: Auth Verify Panel -->
+</div>
+<!-- END: Auth Verify Page -->

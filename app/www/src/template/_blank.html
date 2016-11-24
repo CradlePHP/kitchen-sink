@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" class="{{page.class}}">
+    <head>
+        <meta charset="utf-8" />
+        <title>{{page.title}}</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        {{#each page.meta}}
+        <meta name="{{@key}}" content="{{this}}" />
+        {{/each}}
+
+        <link rel="shortcut icon" href="{{config 'cdn'}}/favicon.ico" type="image/x-icon">
+
+        <link rel="icon" type="image/png" href="{{config 'cdn'}}/favicon.png" />
+		<link rel="icon" type="image/gif" href="{{config 'cdn'}}/favicon.gif" />
+        <link rel="icon" type="image/x-icon" href="{{config 'cdn'}}/favicon.ico" />
+
+        <link rel="stylesheet" type="text/css" href="{{config 'cdn'}}/bower_components/font-awesome/css/font-awesome.min.css" />
+        <link rel="stylesheet" type="text/css" href="{{config 'cdn'}}/bower_components/opensans-webfont-latin/css/opensans-latin.css" />
+        <link rel="stylesheet" type="text/css" href="{{config 'cdn'}}/bower_components/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="/styles/www.css" />
+
+        <script type="text/javascript" src="{{config 'cdn'}}/bower_components/jquery/dist/jquery.min.js"></script>
+        <script type="text/javascript" src="{{config 'cdn'}}/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="{{config 'cdn'}}/scripts/doon.js"></script>
+        <script type="text/javascript" src="{{config 'cdn'}}/scripts/www.js"></script>
+    </head>
+
+    <body>
+        <div class="container pad-vertical">
+            {{#if page.flash}}
+                <div data-do="notify" class="notify notify-{{page.flash.type}}">
+                    <span class="message">{{page.flash.message}}</span>
+                </div>
+            {{/if}}
+            {{{content}}}
+        </div>
+    </body>
+</html>

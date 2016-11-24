@@ -1,0 +1,85 @@
+<h3>Apps</h3>
+
+<div class="clearfix">
+    <!-- START: SEARCH FORM -->
+    <form class="pull-right search form-inline" method="get">
+        <div class="form-group">
+            <input name="q" placeholder="Search Apps" type="text"
+            value="{{q}}" class="form-control" />
+        </div>
+        <button class="btn"><i class="fa fa-search"></i></button>
+    </form>
+    <!-- END: SEARCH FORM -->
+
+    <span>
+        <a class="btn btn-success" href="{{root}}/developer/app/create">
+            <i class="fa fa-plus"></i>
+            Create New App
+        </a>
+    </span>
+</div>
+
+<!-- START: BULK FORM -->
+<form method="post" class="form-inline bulk-form pad-vertical">
+    <div class="panel panel-default clear">
+        <div class="panel-body" >
+            {{#if rows}}
+            <!-- START: POST TABLE -->
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Website</th>
+                        <th>Token</th>
+                        <th>Secret</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each rows}}
+                    <tr data-id="{{app_id}}">
+                        <td>
+                            {{#when app_active '==' 1}}
+                            <a title="Edit" href="{{root}}/developer/app/update/{{app_id}}">
+                            <i class="fa fa-edit"></i></a>
+                            &nbsp;
+                            <a title="OAUTH Test"
+                            href="{{root}}/dialog/request?client_id={{app_token}}&redirect_uri=/developer/app/search"
+                            class="text-info refresh"><i class="fa fa-lock"></i></a>
+                            &nbsp;
+                            <a title="Refresh" href="{{root}}/developer/app/refresh/{{app_id}}?csrf={{../csrf}}"
+                            class="text-warning refresh"><i class="fa fa-retweet"></i></a>
+                            &nbsp;
+                            <a title="Remove" href="{{root}}/developer/app/remove/{{app_id}}?csrf={{../csrf}}"
+                            class="text-danger remove"><i class="fa fa-times"></i></a>
+                            {{/when}}
+                            {{#when app_active '==' 0}}
+                            <a title="Restore" href="{{root}}/developer/app/restore/{{app_id}}?csrf={{../csrf}}" class="text-success restore">
+                            <i class="fa fa-external-link"></i></a>
+                            {{/when}}
+                        </td>
+                        <td>{{app_id}}</td>
+                        <td>{{app_name}}</td>
+                        <td>{{app_website}}</td>
+                        <td>{{app_token}}</td>
+                        <td>{{app_secret}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+            <!-- END: POST TABLE -->
+            {{else}}
+            <!-- START: NO RESULTS -->
+            <div class="well no-results">No Apps Found</div>
+            <!-- END: NO RESULTS -->
+            {{/if}}
+        </div>
+    </div>
+
+    <ul class="pagination">
+        {{#pagination total range}}
+        <li{{#if active}} class="active"{{/if}}><a href="?{{href}}">{{page}}</a></li>
+        {{/pagination}}
+    </ul>
+</form>
