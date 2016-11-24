@@ -42,31 +42,22 @@ $cradle->on('auth-create', function ($request, $response) {
     //deactive account
     $data['auth_active'] = 0;
 
-    //if there is an image
-    if($request->hasStage('profile_image')) {
-        //upload files
-        //try cdn if enabled
-        $this->trigger('profile-image-base64-cdn', $request, $response);
-        //try being old school
-        $this->trigger('profile-image-base64-upload', $request, $response);
-
-        $data['profile_image'] = $request->getStage('profile_image');
-    }
-
     //save item to database
-    $data = $authModel->databaseCreate($data);
-    $results = $profileModel->databaseCreate($data);
+    $results = $authModel->databaseCreate($data);
+
+    //also create profile
+    $this->trigger('profile-create', $request, $response);
+
+    $results = array_merge($results, $response->getResults());
 
     //link item to profile
     $authModel->linkProfile($results['auth_id'], $results['profile_id']);
 
     //index item
     $authModel->indexCreate($results['auth_id']);
-    $profileModel->indexCreate($results['profile_id']);
 
     //invalidate cache
     $authModel->cacheRemoveSearch();
-    $profileModel->cacheRemoveSearch();
 
     //set response format
     $response->setError(false)->setResults($results);
@@ -502,7 +493,11 @@ $cradle->on('auth-update', function ($request, $response) {
 
     //validate
     $errors = $authModel->getUpdateErrors($data);
-    $errors = $profileModel->getUpdateErrors($data, $errors);
+
+    //check for profile errors if profile is being updated
+    if(isset($data['profile_id'])) {
+        $errors = $profileModel->getUpdateErrors($data, $errors);
+    }
 
     //if there are errors
     if (!empty($errors)) {
@@ -516,36 +511,24 @@ $cradle->on('auth-update', function ($request, $response) {
         $data['auth_password'] = md5($data['auth_password']);
     }
 
-    //if there is an image
-    if($request->hasStage('profile_image')) {
-        //upload files
-
-        //try cdn if enabled
-        $this->trigger('profile-image-base64-cdn', $request, $response);
-        //try being old school
-        $this->trigger('profile-image-base64-upload', $request, $response);
-
-        $data['profile_image'] = $request->getStage('profile_image');
-
-
-    }
-
     //save item to database
-    $data = $authModel->databaseUpdate($data);
-    $results = $profileModel->databaseUpdate($data);
+    $results = $authModel->databaseUpdate($data);
 
     //index item
     $authModel->indexUpdate($response->getResults('auth_id'));
-    $profileModel->indexUpdate($response->getResults('profile_id'));
 
     //invalidate cache
     $authModel->cacheRemoveDetail($response->getResults('auth_id'));
     $authModel->cacheRemoveDetail($response->getResults('auth_slug'));
     $authModel->cacheRemoveSearch();
 
-    $profileModel->cacheRemoveDetail($response->getResults('profile_id'));
-    $profileModel->cacheRemoveDetail($response->getResuts('profile_slug'));
-    $profileModel->cacheRemoveSearch();
+    //if profile id
+    if(isset($data['profile_id'])) {
+        //also update profile
+        $this->trigger('profile-update', $request, $response);
+    }
+
+    $results = array_merge($results, $response->getResults());
 
     //return response format
     $response->setError(false)->setResults($results);
