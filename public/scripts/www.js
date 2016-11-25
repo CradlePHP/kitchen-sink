@@ -5,6 +5,39 @@ jQuery(function($) {
     (function() {
         /**
          * Image Field
+         * HTML config for single images
+         * data-do="image-field"
+         * data-name="profile_image"
+         * data-width="200"
+         * data-height="200"
+         * data-alt="Change this Photo"
+         *
+         * HTML config for multiple images
+         * data-do="image-field"
+         * data-name="profile_image"
+         * data-width="200"
+         * data-height="200"
+         * data-multiple="1"
+         * data-alt="Change this Photo"
+         *
+         * HTML config for single images / multiple sizes
+         * data-do="image-field"
+         * data-name="profile_image"
+         * data-width="0|200|100"
+         * data-height="0|200|100"
+         * data-label="original|small|large"
+         * data-display="large|small"
+         * data-alt="Change this Photo"
+         *
+         * HTML config for multiple images / multiple sizes
+         * data-do="image-field"
+         * data-name="profile_image"
+         * data-width="0|200|100"
+         * data-height="0|200|100"
+         * data-label="original|small|large"
+         * data-display="large"
+         * data-multiple="1"
+         * data-alt="Change this Photo"
          */
         $(window).on('image-field-init', function(e, target) {
             //current
@@ -20,9 +53,53 @@ jQuery(function($) {
 
             //for image fields
             var alt = container.attr('data-alt');
-            var width = parseInt(container.attr('data-width') || 200);
-            var height = parseInt(container.attr('data-height') || 200);
             var classes = container.attr('data-class');
+
+            var width = parseInt(container.attr('data-width') || 0);
+            var height = parseInt(container.attr('data-height') || 0);
+
+            var widths = container.attr('data-width') || '0';
+            var heights = container.attr('data-height') || '0';
+            var labels = container.attr('data-label') || '';
+            var displays = container.attr('data-display') || '';
+
+            widths = widths.split('|');
+            heights = heights.split('|');
+            labels = labels.split('|');
+            displays = displays.split('|');
+
+            if(!displays[0].length) {
+                displays = false;
+            }
+
+            if(widths.length !== heights.length) {
+                throw 'Invalid Attributes. Width and Height counts are not the same.';
+            }
+
+            //make an image config
+            var config = [];
+            widths.forEach(function(width, i) {
+                var label = labels[i] || '' + i;
+
+                if(widths.length === 1
+                    && (
+                        typeof labels[i] === 'undefined'
+                        || !labels[i].length
+                    )
+                )
+                {
+                    label = false;
+                }
+
+                config.push({
+                    label: label,
+                    display: !displays || displays.indexOf(label) !== -1,
+                    width: parseInt(widths[i]),
+                    height: parseInt(heights[i])
+                });
+            });
+
+            console.log(config);
 
             //make a file
             var file = $('<input type="file" />')
@@ -41,6 +118,36 @@ jQuery(function($) {
                 }
             });
 
+            var generate = function(file, name, width, height, display) {
+                var image = new Image();
+
+                //listen for when the src is set
+                image.onload = function() {
+                    //if no dimensions, get the natural dimensions
+                    width = width || this.width;
+                    height = height || this.height;
+
+                    //so we can crop
+                    $.cropper(file, width, height, function(data) {
+                        //create img and input tags
+                        $('<input type="hidden" />')
+                            .attr('name', name)
+                            .val(data)
+                            .appendTo(target);
+
+                        if(display) {
+                            $('<img />')
+                                .addClass(classes)
+                                .attr('alt', alt)
+                                .attr('src', data)
+                                .appendTo(target);
+                        }
+                    });
+                };
+
+                image.src = URL.createObjectURL(file);
+            };
+
             file.change(function() {
                 if(!this.files || !this.files[0]) {
                     return;
@@ -49,29 +156,35 @@ jQuery(function($) {
                 //remove all
                 $('input[type="hidden"], img', target).remove();
 
-                for(var image, input, i = 0; i < this.files.length; i++) {
-                    //create more img and input tags
-                    input = $('<input type="hidden" />')
-                        .attr('name', name)
-                        .appendTo(target);
+                for(var i = 0; i < this.files.length; i++) {
+                    config.forEach(function(file, meta) {
+                        //expecting
+                        //  meta[label]
+                        //  meta[display]
+                        //  meta[width]
+                        //  meta[height]
 
-                    image = $('<img />')
-                        .attr('width', width)
-                        .attr('height', height)
-                        .appendTo(target);
+                        //make a path
+                        var path = '';
 
-                    if(classes) {
-                        image.addClass(classes);
-                    }
+                        if(meta.label !== false) {
+                            path = '[' + meta.label + ']';
+                        }
 
-                    if(alt) {
-                        image.attr('alt', alt);
-                    }
+                        if(multiple) {
+                            path = '[' + i + ']' + path;
+                        }
 
-                    $.cropper(this.files[i], width, height, function(input, image, data) {
-                        image.attr('src', data);
-                        input.val(data);
-                    }.bind(null, input, image));
+                        path = name + path;
+
+                        generate(
+                            file,
+                            path,
+                            meta.width,
+                            meta.height,
+                            meta.display
+                        );
+                    }.bind(null, this.files[i]));
                 }
             });
         });
