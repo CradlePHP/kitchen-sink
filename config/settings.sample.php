@@ -1,4 +1,5 @@
 <?php //-->
+
 return array(
     'enviroment' => 'dev',
     'debug_mode' => E_ALL,

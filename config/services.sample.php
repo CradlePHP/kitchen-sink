@@ -4,13 +4,13 @@ return array (
     'sql-main' => new PDO('mysql:host=127.0.0.1;dbname=cradle_sink', 'root', ''),
 
     /* Optional Services
+    'index-main' => Elasticsearch\ClientBuilder::create()->build(),
     'queue-main' => new PhpAmqpLib\Connection\AMQPLazyConnection(
         '127.0.0.1',
         5672,
         'guest',
         'guest'
     ),
-    'index-main' => Elasticsearch\ClientBuilder::create()->build(),
     'cache-main' => new Predis\Client([
         "scheme" => "tcp",
         "host" => "127.0.0.1",
