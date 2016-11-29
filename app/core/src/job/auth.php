@@ -206,6 +206,12 @@ $cradle->on('auth-forgot', function ($request, $response) {
  * @param Response $response
  */
 $cradle->on('auth-forgot-mail', function ($request, $response) {
+    $config = $this->package('global')->service('mail-main');
+
+    if(!$config) {
+        return;
+    }
+
     //form hash
     $authId = $request->getStage('auth_id');
     $authUpdated = $request->getStage('auth_updated');
@@ -216,8 +222,6 @@ $cradle->on('auth-forgot-mail', function ($request, $response) {
     $link = $host . '/recover/' . $authId . '/' . $hash;
 
     //prepare data
-    $config = $this->package('global')->service('mail-main');
-
     $from = [];
     $from[$config['user']] = $config['name'];
 
@@ -597,6 +601,12 @@ $cradle->on('auth-verify', function ($request, $response) {
  * @param Response $response
  */
 $cradle->on('auth-verify-mail', function ($request, $response) {
+    $config = $this->package('global')->service('mail-main');
+
+    if(!$config) {
+        return;
+    }
+
     //form hash
     $authId = $request->getStage('auth_id');
     $authUpdated = $request->getStage('auth_updated');
