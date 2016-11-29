@@ -1,10 +1,21 @@
 <?php //-->
 
-use PhpAmqpLib\Connection\AMQPLazyConnection;
-
 return array (
     'sql-main' => new PDO('mysql:host=127.0.0.1;dbname=cradle_sink', 'root', ''),
-    'queue-main' => new AMQPLazyConnection('127.0.0.1', 5672, 'guest', 'guest'),
+
+    /* Optional Services
+    'queue-main' => new PhpAmqpLib\Connection\AMQPLazyConnection(
+        '127.0.0.1',
+        5672,
+        'guest',
+        'guest'
+    ),
+    'index-main' => Elasticsearch\ClientBuilder::create()->build(),
+    'cache-main' => new Predis\Client([
+        "scheme" => "tcp",
+        "host" => "127.0.0.1",
+        "port" => 6379
+    ]),
     'cdn-main' => array(
         'region' => 'ap-southeast-1',
         'token' => '<AWS TOKEN>',
@@ -24,4 +35,5 @@ return array (
         'token' => '<GOOGLE CAPTCHA TOKEN>',
         'secret' => '<GOOGLE CAPTCHA SECRET>'
     )
+    */
 );

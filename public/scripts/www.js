@@ -99,8 +99,6 @@ jQuery(function($) {
                 });
             });
 
-            console.log(config);
-
             //make a file
             var file = $('<input type="file" />')
                 .attr('accept', 'image/png,image/jpg,image/jpeg,image/gif')
@@ -306,6 +304,10 @@ jQuery(function($) {
                     processData: false,
                     // on error
                     error: function(xhr, status, message) {
+                        notifier.fadeOut('fast', function() {
+                            notifier.remove();
+                        });
+
                         $.notify(message, 'danger');
                     },
                     // on success
