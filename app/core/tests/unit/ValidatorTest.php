@@ -9,7 +9,7 @@
 
 use Cradle\App\Core\Validator;
 
-class Cradle_App_Core_Validator_Test extends PHPUnit_Framework_TestCase
+class Cradle_App_Core_Validator_Test extends \Codeception\Test\Unit
 {
     /**
      * Sets up the fixture, for example, opens a network connection.

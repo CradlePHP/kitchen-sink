@@ -7,7 +7,7 @@
  * distributed with this package.
  */
 
-class Cradle_App_Core_Service_Test extends PHPUnit_Framework_TestCase
+class Cradle_App_Core_Service_Test extends \Codeception\Test\Unit
 {
     protected $object;
 
@@ -34,7 +34,13 @@ class Cradle_App_Core_Service_Test extends PHPUnit_Framework_TestCase
     public function testCache()
     {
         $actual = $this->object->cache();
-        $this->assertNull($actual);
+
+        //if it's false, it's not enabled
+        if($actual === null) {
+            return;
+        }
+
+        $this->assertInstanceOf('Predis\Client', $actual);
     }
 
     /**
@@ -52,6 +58,12 @@ class Cradle_App_Core_Service_Test extends PHPUnit_Framework_TestCase
     public function testIndex()
     {
         $actual = $this->object->index();
+
+        //if it's false, it's not enabled
+        if($actual === null) {
+            return;
+        }
+
         $this->assertInstanceOf('Elasticsearch\Client', $actual);
     }
 

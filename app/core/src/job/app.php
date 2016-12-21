@@ -190,7 +190,7 @@ $cradle->on('app-remove', function ($request, $response) {
     $appModel->cacheRemoveSearch();
 
     //set response format
-    $response->setError(false)->setResults($data);
+    $response->setError(false)->setResults($results);
 });
 
 /**
@@ -227,7 +227,7 @@ $cradle->on('app-restore', function ($request, $response) {
     $appModel->cacheRemoveSearch();
 
     //set response format
-    $response->setError(false)->setResults($data);
+    $response->setError(false)->setResults($results);
 });
 
 /**
@@ -261,11 +261,11 @@ $cradle->on('app-search', function ($request, $response) {
         }
 
         //cache it from database or index
-        $appModel->cacheCreateSearch($results);
+        $appModel->cacheCreateSearch($data, $results);
     }
 
     //set response format
-    $response->setError(false)->setResults($data, $results);
+    $response->setError(false)->setResults($results);
 });
 
 /**

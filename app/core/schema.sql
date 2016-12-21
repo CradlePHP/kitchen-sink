@@ -3,15 +3,15 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Oct 27, 2016 at 02:52 PM
--- Server version: 5.7.14
+-- Generation Time: Dec 21, 2016 at 07:35 AM
+-- Server version: 5.7.16
 -- PHP Version: 7.0.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 --
--- Database: `cradle_sink`
+-- Database: `testing_db`
 --
 
 -- --------------------------------------------------------
@@ -20,14 +20,12 @@ SET time_zone = "+00:00";
 -- Table structure for table `app`
 --
 
-DROP TABLE IF EXISTS `app`;
-
 CREATE TABLE `app` (
   `app_id` int(10) UNSIGNED NOT NULL COMMENT 'Database Generated',
   `app_name` varchar(255) NOT NULL,
   `app_domain` varchar(255) DEFAULT NULL,
   `app_website` varchar(255) DEFAULT NULL,
-  `app_permissions` varchar(255) NOT NULL,
+  `app_permissions` json NOT NULL,
   `app_token` varchar(255) DEFAULT NULL,
   `app_secret` varchar(255) DEFAULT NULL,
   `app_active` int(1) UNSIGNED NOT NULL DEFAULT '1',
@@ -43,8 +41,6 @@ CREATE TABLE `app` (
 -- Table structure for table `app_profile`
 --
 
-DROP TABLE IF EXISTS `app_profile`;
-
 CREATE TABLE `app_profile` (
   `app_id` int(10) UNSIGNED NOT NULL,
   `profile_id` int(10) UNSIGNED NOT NULL
@@ -56,15 +52,13 @@ CREATE TABLE `app_profile` (
 -- Table structure for table `auth`
 --
 
-DROP TABLE IF EXISTS `auth`;
-
 CREATE TABLE `auth` (
   `auth_id` int(10) UNSIGNED NOT NULL COMMENT 'Database Generated',
   `auth_slug` varchar(255) NOT NULL COMMENT 'can be an email or slug',
   `auth_password` varchar(255) NOT NULL COMMENT 'md5 hash',
   `auth_token` varchar(255) NOT NULL COMMENT 'System Generated',
   `auth_secret` varchar(255) NOT NULL COMMENT 'System Generated',
-  `auth_permissions` text NOT NULL COMMENT 'See permissions.json for options',
+  `auth_permissions` json NOT NULL COMMENT 'See permissions.json for options',
   `auth_facebook_token` varchar(255) DEFAULT NULL COMMENT 'Facebook access token',
   `auth_facebook_secret` varchar(255) DEFAULT NULL COMMENT 'Facebook access secret',
   `auth_linkedin_token` varchar(255) DEFAULT NULL COMMENT 'LinkedIn access token',
@@ -86,8 +80,6 @@ CREATE TABLE `auth` (
 -- Table structure for table `auth_profile`
 --
 
-DROP TABLE IF EXISTS `auth_profile`;
-
 CREATE TABLE `auth_profile` (
   `auth_id` int(10) UNSIGNED NOT NULL,
   `profile_id` int(10) UNSIGNED NOT NULL
@@ -98,8 +90,6 @@ CREATE TABLE `auth_profile` (
 --
 -- Table structure for table `profile`
 --
-
-DROP TABLE IF EXISTS `profile`;
 
 CREATE TABLE `profile` (
   `profile_id` int(10) UNSIGNED NOT NULL COMMENT 'Database Generated',
@@ -113,20 +103,14 @@ CREATE TABLE `profile` (
   `profile_job` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `profile_gender` varchar(255) DEFAULT NULL,
   `profile_birth` datetime DEFAULT NULL,
-  `profile_achievements` varchar(255) DEFAULT NULL,
   `profile_website` varchar(255) DEFAULT NULL,
   `profile_facebook` varchar(255) DEFAULT NULL,
   `profile_linkedin` varchar(255) DEFAULT NULL,
   `profile_twitter` varchar(255) DEFAULT NULL,
   `profile_google` varchar(255) DEFAULT NULL,
-  `profile_reference` varchar(255) DEFAULT NULL,
-  `profile_cover` varchar(255) DEFAULT NULL,
-  `profile_rating` int(1) UNSIGNED DEFAULT '0',
-  `profile_experience` int(10) DEFAULT '1',
-  `profile_location` varchar(255) DEFAULT NULL,
   `profile_active` int(1) UNSIGNED NOT NULL DEFAULT '1',
   `profile_rank` varchar(255) DEFAULT NULL,
-  `profile_type` varchar(255) DEFAULT 'buyer',
+  `profile_type` varchar(255) DEFAULT NULL,
   `profile_flag` int(1) UNSIGNED NOT NULL DEFAULT '0',
   `profile_created` datetime NOT NULL,
   `profile_updated` datetime NOT NULL
@@ -138,13 +122,11 @@ CREATE TABLE `profile` (
 -- Table structure for table `session`
 --
 
-DROP TABLE IF EXISTS `session`;
-
 CREATE TABLE `session` (
   `session_id` int(10) UNSIGNED NOT NULL COMMENT 'Database Generated',
   `session_token` varchar(255) NOT NULL COMMENT 'System Generated',
   `session_secret` varchar(255) NOT NULL COMMENT 'System Generated',
-  `session_permissions` text NOT NULL COMMENT 'See permissions.json for options',
+  `session_permissions` json NOT NULL COMMENT 'See permissions.json for options',
   `session_status` varchar(255) NOT NULL DEFAULT 'PENDING' COMMENT 'eg. PENDING, ACCESS etc.',
   `session_active` int(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT 'Do not delete rows',
   `session_type` varchar(255) DEFAULT NULL COMMENT 'General usage type',
@@ -159,8 +141,6 @@ CREATE TABLE `session` (
 -- Table structure for table `session_app`
 --
 
-DROP TABLE IF EXISTS `session_app`;
-
 CREATE TABLE `session_app` (
   `session_id` int(10) UNSIGNED NOT NULL,
   `app_id` int(10) UNSIGNED NOT NULL
@@ -171,8 +151,6 @@ CREATE TABLE `session_app` (
 --
 -- Table structure for table `session_auth`
 --
-
-DROP TABLE IF EXISTS `session_auth`;
 
 CREATE TABLE `session_auth` (
   `session_id` int(10) UNSIGNED NOT NULL,

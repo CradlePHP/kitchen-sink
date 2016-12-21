@@ -65,12 +65,12 @@ $cradle->get('/developer/app/create', function($request, $response) {
 
     //Render body
     $class = 'page-developer-app-create branding';
-    $title = cradle('global')->translate('Create an App');
+    $data['title'] = cradle('global')->translate('Create an App');
     $body = cradle('/app/api')->template('developer/app/form', $data);
 
     //Set Content
     $response
-        ->setPage('title', $title)
+        ->setPage('title', $data['title'])
         ->setPage('class', $class)
         ->setContent($body);
 
@@ -118,12 +118,12 @@ $cradle->get('/developer/app/update/:app_id', function($request, $response) {
 
     //Render body
     $class = 'page-developer-app-update branding';
-    $title = cradle('global')->translate('Updating App');
+    $data['title'] = cradle('global')->translate('Updating App');
     $body = cradle('/app/api')->template('developer/app/form', $data);
 
     //Set Content
     $response
-        ->setPage('title', $title)
+        ->setPage('title', $data['title'])
         ->setPage('class', $class)
         ->setContent($body);
 

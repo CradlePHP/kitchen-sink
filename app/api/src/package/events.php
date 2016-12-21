@@ -40,7 +40,10 @@ $cradle->on('rest-permitted', function($request, $response) {
             ->innerJoinUsing('profile', 'profile_id')
             ->filterBySessionToken($token)
             ->filterBySessionStatus('ACCESS')
-            ->addFilter('session_permissions LIKE %s', '%' . $role . '%');
+            ->addFilter(
+                "JSON_SEARCH(session_permissions, 'one', %s) IS NOT NULL",
+                $role
+            );
 
         if ($secret) {
             $search->filterBySessionSecret($secret);
@@ -70,7 +73,10 @@ $cradle->on('rest-permitted', function($request, $response) {
         ->innerJoinUsing('app_profile', 'app_id')
         ->innerJoinUsing('profile', 'profile_id')
         ->filterByAppToken($token)
-        ->addFilter('app_permissions LIKE %s', '%' . $role . '%');
+        ->addFilter(
+            "JSON_SEARCH(app_permissions, 'one', %s) IS NOT NULL",
+            $role
+        );
 
     if ($secret) {
         $search->filterByAppSecret($secret);

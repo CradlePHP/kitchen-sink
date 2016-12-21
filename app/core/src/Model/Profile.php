@@ -85,50 +85,7 @@ class Profile extends AbstractModel
             $search->filterByProfileId($id);
         }
 
-        $results = $search->getRow();
-
-        if(!$results) {
-            return $results;
-        }
-
-        //comments
-        $results['comment'] = $service
-            ->search('comment')
-            ->setColumns(
-                'comment.*',
-                'profile.*',
-                'profile_comment.profile_id AS about_id'
-            )
-            ->innerJoinUsing('profile_comment', 'comment_id')
-            ->innerJoinUsing('comment_profile', 'comment_id')
-            ->innerJoinOn(
-                'profile',
-                'comment_profile.profile_id = profile.profile_id'
-            )
-            ->addFilter(
-                'profile_comment.profile_id = %s',
-                $results['profile_id']
-            )
-            ->filterByCommentActive(1)
-            ->filterByProfileActive(1)
-            ->getRows();
-
-        //achievements
-        if($results['profile_achievements']) {
-            $results['profile_achievements'] = json_decode($results['profile_achievements'], true);
-        }  else {
-            $results['profile_achievements'] = [];
-        }
-
-        //product count
-        $results['product'] = $service
-            ->search('product')
-            ->innerJoinUsing('product_profile', 'product_id')
-            ->filterByProductActive(1)
-            ->filterByProfileId($results['profile_id'])
-            ->getTotal();
-
-        return $results;
+        return $search->getRow();
     }
 
     /**
@@ -413,11 +370,6 @@ class Profile extends AbstractModel
             $errors['profile_name'] = 'Cannot be empty';
         }
 
-        // profile_locale - required
-        if (!isset($data['profile_locale']) || empty($data['profile_locale'])) {
-            $errors['profile_locale'] = 'Cannot be empty';
-        }
-
         //also add optional errors
         return self::getOptionalErrors($data, $errors);
     }
@@ -440,11 +392,6 @@ class Profile extends AbstractModel
         //profile_name        Required
         if (isset($data['profile_name']) && empty($data['profile_name'])) {
             $errors['profile_name'] = 'Cannot be empty, if set';
-        }
-
-        //profile_locale        Required
-        if (isset($data['profile_locale']) && empty($data['profile_locale'])) {
-            $errors['profile_locale'] = 'Cannot be empty, if set';
         }
 
         //also add optional errors
@@ -492,16 +439,6 @@ class Profile extends AbstractModel
             $errors['profile_google'] = 'Should be a valid URL';
         }
 
-        // profile_rating - small
-        if (isset($data['profile_rating']) && !Validator::isSmall($data['profile_rating'])) {
-            $errors['profile_rating'] = 'Should be between 0 and 9';
-        }
-
-        // profile_experience - int
-        if (isset($data['profile_experience']) && !Validator::isInt($data['profile_experience'])) {
-            $errors['profile_experience'] = 'Must be a valid integrer';
-        }
-
         if (isset($data['profile_email']) && !Validator::isEmail($data['profile_email'])) {
             $errors['profile_email'] = 'Must be a valid e-mail address';
         //mailinator
@@ -520,56 +457,5 @@ class Profile extends AbstractModel
         }
 
         return $errors;
-    }
-
-    /**
-     * Link to comment
-     *
-     * @param *int $profileId
-     * @param *int $commentId
-     */
-    public function linkComment($profileId, $commentId)
-    {
-        $service = $this->service->database();
-
-        if(!$service) {
-            return false;
-        }
-
-        return $service
-            ->model()
-            ->setProfileId($profileId)
-            ->setCommentId($commentId)
-            ->insert('profile_comment');
-    }
-
-    /**
-     * Unlinks all comment
-     *
-     * @param *int $productId
-     */
-    public function unlinkAllComment()
-    {
-    }
-
-    /**
-     * Unlinks comment
-     *
-     * @param *int $profileId
-     * @param *int $commentId
-     */
-    public function unlinkComment($profileId, $commentId)
-    {
-        $service = $this->service->database();
-
-        if(!$service) {
-            return false;
-        }
-
-        return $service
-            ->model()
-            ->setProfileId($profileId)
-            ->setCommentId($commentId)
-            ->remove('profile_comment');
     }
 }

@@ -75,14 +75,6 @@ input, select, button, a.btn {
 .branding,
 .branding body { background-color: #45A9D9; }
 
-.branding a,
-.branding a:link,
-.branding a:hover,
-.branding a:active,
-.branding a:visited {
-    color: #45A9D9 !important;
-}
-
 .branding a.btn-info,
 .branding a.btn-info:link,
 .branding a.btn-info:hover,

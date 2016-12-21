@@ -118,13 +118,6 @@ class Session extends AbstractModel
             $results['app_permissions'] = [];
         }
 
-        //achievements
-        if($results['profile_achievements']) {
-            $results['profile_achievements'] = json_decode($results['profile_achievements'], true);
-        }  else {
-            $results['profile_achievements'] = [];
-        }
-
         return $results;
     }
 
@@ -245,13 +238,6 @@ class Session extends AbstractModel
                 $rows[$i]['app_permissions'] = json_decode($row['app_permissions'], true);
             }  else {
                 $rows[$i]['app_permissions'] = [];
-            }
-
-            //achievements
-            if($row['profile_achievements']) {
-                $rows[$i]['profile_achievements'] = json_decode($row['profile_achievements'], true);
-            }  else {
-                $rows[$i]['profile_achievements'] = [];
             }
         }
 

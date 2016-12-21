@@ -395,7 +395,7 @@ $cradle->on('auth-remove', function ($request, $response) {
     $authModel->cacheRemoveSearch();
 
     //set response format
-    $response->setError(false)->setResults($data);
+    $response->setError(false)->setResults($results);
 });
 
 /**
@@ -432,7 +432,7 @@ $cradle->on('auth-restore', function ($request, $response) {
     $authModel->cacheRemoveSearch();
 
     //set response format
-    $response->setError(false)->setResults($data);
+    $response->setError(false)->setResults($results);
 });
 
 /**
@@ -538,9 +538,8 @@ $cradle->on('auth-update', function ($request, $response) {
     if(isset($data['profile_id'])) {
         //also update profile
         $this->trigger('profile-update', $request, $response);
+        $results = array_merge($results, $response->getResults());
     }
-
-    $results = array_merge($results, $response->getResults());
 
     //return response format
     $response->setError(false)->setResults($results);

@@ -26,16 +26,7 @@ $cradle->on('profile-create', function ($request, $response) {
     }
 
     if (!isset($data['profile_image'])) {
-        //generate image
-        $protocol = 'http';
-        if ($request->getServer('SERVER_PORT') === 443) {
-            $protocol = 'https';
-        }
-
-        $host = $protocol . '://' . $request->getServer('HTTP_HOST');
-
-        $data['profile_image'] = $host . '/images/avatar/avatar-'
-            . ((floor(rand() * 1000) % 11) + 1) . '.png';
+        $data['profile_image'] = '/images/default-avatar.png';
     }
 
     //this/these will be used a lot

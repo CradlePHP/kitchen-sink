@@ -117,13 +117,6 @@ class Auth extends AbstractModel
             $results['auth_permissions'] = [];
         }
 
-        //achievements
-        if($results['profile_achievements']) {
-            $results['profile_achievements'] = json_decode($results['profile_achievements'], true);
-        }  else {
-            $results['profile_achievements'] = [];
-        }
-
         return $results;
     }
 

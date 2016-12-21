@@ -338,7 +338,7 @@ $cradle->on('session-update', function ($request, $response) {
     }
 
     //save app to database
-    $results = $sessionModel->databaseUpdate($data['app_id']);
+    $results = $sessionModel->databaseUpdate($data);
 
     //index
     $sessionModel->indexUpdate($response->getResults('session_id'));
