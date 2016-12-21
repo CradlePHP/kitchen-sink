@@ -5,6 +5,16 @@ public/bower_components
 config/services.php
 config/settings.php
 config/test.php
+config/deploy.php
+app/api/tests/_output/*
+app/api/tests/_data/*
+app/api/tests/_envs/*
+app/core/tests/_output/*
+app/core/tests/_data/*
+app/core/tests/_envs/*
+app/www/tests/_output/*
+app/www/tests/_data/*
+app/www/tests/_envs/*
 
 # Commit your application's lock file http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file
 # You may choose to ignore a library lock file http://getcomposer.org/doc/02-libraries.md#lock-file

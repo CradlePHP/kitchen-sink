@@ -39,6 +39,9 @@ $cradle->on('auth-create', function ($request, $response) {
     //salt on password
     $data['auth_password'] = md5($data['auth_password']);
 
+    //deflate permissions
+    $data['auth_permissions'] = json_encode($data['auth_permissions']);
+
     //deactive account
     $data['auth_active'] = 0;
 
@@ -463,7 +466,7 @@ $cradle->on('auth-search', function ($request, $response) {
         }
 
         //cache it from database or index
-        $authModel->cacheCreateSearch($results);
+        $authModel->cacheCreateSearch($data, $results);
     }
 
     //set response format
@@ -513,6 +516,11 @@ $cradle->on('auth-update', function ($request, $response) {
     if(isset($data['auth_password'])) {
         //salt on password
         $data['auth_password'] = md5($data['auth_password']);
+    }
+
+    //deflate permissions
+    if(isset($data['auth_permissions'])) {
+        $data['auth_permissions'] = json_encode($data['app_permissions']);
     }
 
     //save item to database

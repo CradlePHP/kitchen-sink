@@ -10,8 +10,9 @@
 namespace Cradle\App\Core\Model;
 
 use Cradle\App\Core\AbstractModel;
-use Cradle\App\Core\Service;
 use Cradle\App\Core\Validator;
+
+use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 
 /**
  * Profile Model
@@ -34,9 +35,9 @@ class Profile extends AbstractModel
     const CACHE_DETAIL = 'core-profile-detail';
 
     /**
-     * @const INDEX_TYPE Index type name aka collection name
+     * @const INDEX_NAME Index name
      */
-    const INDEX_TYPE = 'profile';
+    const INDEX_NAME = 'profile';
 
     /**
      * Create in database
@@ -84,7 +85,50 @@ class Profile extends AbstractModel
             $search->filterByProfileId($id);
         }
 
-        return $search->getRow();
+        $results = $search->getRow();
+
+        if(!$results) {
+            return $results;
+        }
+
+        //comments
+        $results['comment'] = $service
+            ->search('comment')
+            ->setColumns(
+                'comment.*',
+                'profile.*',
+                'profile_comment.profile_id AS about_id'
+            )
+            ->innerJoinUsing('profile_comment', 'comment_id')
+            ->innerJoinUsing('comment_profile', 'comment_id')
+            ->innerJoinOn(
+                'profile',
+                'comment_profile.profile_id = profile.profile_id'
+            )
+            ->addFilter(
+                'profile_comment.profile_id = %s',
+                $results['profile_id']
+            )
+            ->filterByCommentActive(1)
+            ->filterByProfileActive(1)
+            ->getRows();
+
+        //achievements
+        if($results['profile_achievements']) {
+            $results['profile_achievements'] = json_decode($results['profile_achievements'], true);
+        }  else {
+            $results['profile_achievements'] = [];
+        }
+
+        //product count
+        $results['product'] = $service
+            ->search('product')
+            ->innerJoinUsing('product_profile', 'product_id')
+            ->filterByProductActive(1)
+            ->filterByProfileId($results['profile_id'])
+            ->getTotal();
+
+        return $results;
     }
 
     /**
@@ -271,16 +315,15 @@ class Profile extends AbstractModel
         }
 
         //set the defaults
-        $keyword = null;
-        $filters = [];
+        $filter = [];
         $range = 50;
         $start = 0;
-        $order = [];
+        $order = ['profile_id' => 'asc'];
         $count = 0;
 
         //merge passed data with default data
         if (isset($data['filter']) && is_array($data['filter'])) {
-            $filters = $data['filter'];
+            $filter = $data['filter'];
         }
 
         if (isset($data['range']) && is_numeric($data['range'])) {
@@ -298,16 +341,30 @@ class Profile extends AbstractModel
         //prepare the search object
         $search = [];
 
-        if (isset($data['filter']) && is_array($data['filter'])) {
-            $search['query']['bool']['must'][]['match'] = $data['filter'];
+        //keyword search
+        if (isset($data['q'])) {
+            if(!is_array($data['q'])) {
+                $data['q'] = [$data['q']];
+            }
+
+            foreach($data['q'] as $keyword) {
+                $search['query']['bool']['filter'][]['query_string'] = [
+                    'query' => $keyword . '*',
+                    'fields' => ['profile_name', 'profile_email', 'profile_locale'],
+                    'default_operator' => 'AND'
+                ];
+            }
         }
 
-        if (isset($data['keyword']) && !empty($data['keyword'])) {
-            $search['query']['query_string'] = [
-                'query' => $data['keyword'],
-                'fields' => ['profile_name'],
-                'default_operator' => 'OR'
-            ];
+        //generic full match filters
+
+        //profile_active
+        if (!isset($filter['profile_active'])) {
+            $filter['profile_active'] = 1;
+        }
+
+        foreach($filter as $key => $value) {
+            $search['query']['bool']['filter'][]['term'][$key] = $value;
         }
 
         //add sorting
@@ -315,13 +372,17 @@ class Profile extends AbstractModel
             $search['sort'] = [$sort => $direction];
         }
 
-        $results = $service->search([
-            'index' => 'main',
-            'type' => static::INDEX_TYPE,
-            'body' => $search,
-            'size' => $range,
-            'from' => $start
-        ]);
+        try {
+            $results = $service->search([
+                'index' => static::INDEX_NAME,
+                'type' => static::INDEX_TYPE,
+                'body' => $search,
+                'size' => $range,
+                'from' => $start
+            ]);
+        } catch(NoNodesAvailableException $e) {
+            return false;
+        }
 
         // fix it
         $rows = array();
@@ -352,9 +413,9 @@ class Profile extends AbstractModel
             $errors['profile_name'] = 'Cannot be empty';
         }
 
-        // profile_location - required
-        if (!isset($data['profile_location']) || empty($data['profile_location'])) {
-            $errors['profile_location'] = 'Cannot be empty';
+        // profile_locale - required
+        if (!isset($data['profile_locale']) || empty($data['profile_locale'])) {
+            $errors['profile_locale'] = 'Cannot be empty';
         }
 
         //also add optional errors
@@ -381,9 +442,9 @@ class Profile extends AbstractModel
             $errors['profile_name'] = 'Cannot be empty, if set';
         }
 
-        //profile_location        Required
-        if (isset($data['profile_location']) && empty($data['profile_location'])) {
-            $errors['profile_location'] = 'Cannot be empty, if set';
+        //profile_locale        Required
+        if (isset($data['profile_locale']) && empty($data['profile_locale'])) {
+            $errors['profile_locale'] = 'Cannot be empty, if set';
         }
 
         //also add optional errors

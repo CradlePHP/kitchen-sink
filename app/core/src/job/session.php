@@ -94,6 +94,9 @@ $cradle->on('session-create', function ($request, $response) {
             ->set('json', 'validation', $errors);
     }
 
+    //deflate permissions
+    $data['session_permissions'] = json_encode($data['session_permissions']);
+
     //save to database
     $results = $sessionModel->databaseCreate($data);
 
@@ -288,7 +291,7 @@ $cradle->on('session-search', function ($request, $response) {
         }
 
         //cache it from database or index
-        $sessionModel->cacheCreateSearch($results);
+        $sessionModel->cacheCreateSearch($data, $results);
     }
 
     //set response format
@@ -327,6 +330,11 @@ $cradle->on('session-update', function ($request, $response) {
         return $response
             ->setError(true, 'Invalid Parameters')
             ->set('json', 'validation', $errors);
+    }
+
+    //deflate permissions
+    if(isset($data['session_permissions'])) {
+        $data['session_permissions'] = json_encode($data['session_permissions']);
     }
 
     //save app to database

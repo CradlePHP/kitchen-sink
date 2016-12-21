@@ -66,7 +66,7 @@ $cradle->get('/dialog/request', function($request, $response) {
     cradle()->trigger('app-detail', $request, $response);
 
     $app = $response->getResults();
-    $permitted = explode(',', $app['app_permissions']);
+    $permitted = $app['app_permissions'];
 
     $requested = [];
     if($request->hasStage('scope')) {
@@ -195,8 +195,8 @@ $cradle->post('/dialog/request', function($request, $response) {
     //flatten permissions
     $permissions = $request->getStage('session_permissions');
 
-    if($permissions) {
-        $request->setStage('session_permissions', implode(',', $permissions));
+    if(!$permissions) {
+        $request->setStage('session_permissions', []);
     }
 
     //now call the job
@@ -224,7 +224,7 @@ $cradle->get('/dialog/logout', function($request, $response) {
      //redirect
      //TODO: Find better way
      $query = http_build_query($request->get('get'));
-     cradle()->getDispatcher()->redirect('/logout?'.$query);
+     cradle('global')->redirect('/logout?'.$query);
 });
 
 /**

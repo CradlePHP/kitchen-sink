@@ -10,8 +10,9 @@
 namespace Cradle\App\Core\Model;
 
 use Cradle\App\Core\AbstractModel;
-use Cradle\App\Core\Service;
 use Cradle\App\Core\Validator;
+
+use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 
 /**
  * App Model
@@ -34,9 +35,9 @@ class App extends AbstractModel
     const CACHE_DETAIL = 'core-app-detail';
 
     /**
-     * @const INDEX_TYPE Index type name aka collection name
+     * @const INDEX_NAME Index name
      */
-    const INDEX_TYPE = 'app';
+    const INDEX_NAME = 'app';
 
     /**
      * Create in database
@@ -89,7 +90,27 @@ class App extends AbstractModel
             $search->filterByAppToken($id);
         }
 
-        return $search->getRow();
+        $results = $search->getRow();
+
+        if(!$results) {
+            return $results;
+        }
+
+        //app_permissions
+        if($results['app_permissions']) {
+            $results['app_permissions'] = json_decode($results['app_permissions'], true);
+        } else {
+            $results['app_permissions'] = [];
+        }
+
+        //achievements
+        if($results['profile_achievements']) {
+            $results['profile_achievements'] = json_decode($results['profile_achievements'], true);
+        }  else {
+            $results['profile_achievements'] = [];
+        }
+
+        return $results;
     }
 
     /**
@@ -203,9 +224,19 @@ class App extends AbstractModel
             $search->addSort($sort, $direction);
         }
 
+        $rows = $search->getRows();
+        foreach($rows as $i => $row) {
+            //app_permissions
+            if($row['app_permissions']) {
+                $rows[$i]['app_permissions'] = json_decode($row['app_permissions'], true);
+            }  else {
+                $rows[$i]['app_permissions'] = [];
+            }
+        }
+
         //return response format
         return [
-            'rows' => $search->getRows(),
+            'rows' => $rows,
             'total' => $search->getTotal()
         ];
     }
@@ -248,16 +279,15 @@ class App extends AbstractModel
         }
 
         //set the defaults
-        $keyword = null;
-        $filters = [];
+        $filter = [];
         $range = 50;
         $start = 0;
-        $order = [];
+        $order = ['app_id' => 'asc'];
         $count = 0;
 
         //merge passed data with default data
         if (isset($data['filter']) && is_array($data['filter'])) {
-            $filters = $data['filter'];
+            $filter = $data['filter'];
         }
 
         if (isset($data['range']) && is_numeric($data['range'])) {
@@ -275,16 +305,30 @@ class App extends AbstractModel
         //prepare the search object
         $search = [];
 
-        if (isset($data['filter']) && is_array($data['filter'])) {
-            $search['query']['bool']['must'][]['match'] = $data['filter'];
+        //keyword search
+        if (isset($data['q'])) {
+            if(!is_array($data['q'])) {
+                $data['q'] = [$data['q']];
+            }
+
+            foreach($data['q'] as $keyword) {
+                $search['query']['bool']['filter'][]['query_string'] = [
+                    'query' => $keyword . '*',
+                    'fields' => ['app_name', 'app_domain', 'app_website'],
+                    'default_operator' => 'AND'
+                ];
+            }
         }
 
-        if (isset($data['keyword']) && !empty($data['keyword'])) {
-            $search['query']['query_string'] = [
-                'query' => $data['keyword'],
-                'fields' => ['app_name', 'app_domain', 'app_website'],
-                'default_operator' => 'OR'
-            ];
+        //generic full match filters
+
+        //app_active
+        if (!isset($filter['app_active'])) {
+            $filter['app_active'] = 1;
+        }
+
+        foreach($filter as $key => $value) {
+            $search['query']['bool']['filter'][]['term'][$key] = $value;
         }
 
         //add sorting
@@ -292,13 +336,17 @@ class App extends AbstractModel
             $search['sort'] = [$sort => $direction];
         }
 
-        $results = $service->search([
-            'index' => 'main',
-            'type' => static::INDEX_TYPE,
-            'body' => $search,
-            'size' => $range,
-            'from' => $start
-        ]);
+        try {
+            $results = $service->search([
+                'index' => static::INDEX_NAME,
+                'type' => static::INDEX_TYPE,
+                'body' => $search,
+                'size' => $range,
+                'from' => $start
+            ]);
+        } catch(NoNodesAvailableException $e) {
+            return false;
+        }
 
         // fix it
         $rows = [];
@@ -340,7 +388,7 @@ class App extends AbstractModel
         }
 
         // profile_id - required
-        if (!isset($data['profile_id'])) {
+        if (!isset($data['profile_id']) || !is_numeric($data['profile_id'])) {
             $errors['profile_id'] = 'Invalid ID';
         }
 
@@ -359,7 +407,7 @@ class App extends AbstractModel
     public function getUpdateErrors(array $data, array $errors = [])
     {
         // app_id - required
-        if (!isset($data['app_id']) || empty($data['app_id'])) {
+        if (!isset($data['app_id']) || !is_numeric($data['app_id'])) {
             $errors['app_id'] = 'Invalid ID';
         }
 

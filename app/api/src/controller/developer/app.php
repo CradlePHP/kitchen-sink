@@ -154,8 +154,8 @@ $cradle->post('/developer/app/create', function($request, $response) {
     //flatten permissions
     $permissions = $request->getStage('app_permissions');
 
-    if($permissions) {
-        $request->setStage('app_permissions', implode(',', $permissions));
+    if(!$permissions) {
+        $request->setStage('app_permissions', []);
     }
 
     cradle()->trigger('app-create', $request, $response);
@@ -197,8 +197,8 @@ $cradle->post('/developer/app/update/:app_id', function($request, $response) {
     //flatten permissions
     $permissions = $request->getStage('app_permissions');
 
-    if($permissions) {
-        $request->setStage('app_permissions', implode(',', $permissions));
+    if(!$permissions) {
+        $request->setStage('app_permissions', []);
     }
 
     cradle()->trigger('app-update', $request, $response);

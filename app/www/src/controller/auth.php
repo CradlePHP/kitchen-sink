@@ -561,17 +561,14 @@ $cradle->post('/signup', function($request, $response) {
 
     //set defaults
     if(!$request->hasStage('auth_permissions')) {
-        $request->setStage('auth_permissions', implode(
-            ',',
-            [
-                'public_product',
-                'public_profile',
-                'personal_profile',
-                'personal_product',
-                'personal_comment',
-                'personal_review'
-            ]
-        ));
+        $request->setStage('auth_permissions', [
+            'public_product',
+            'public_profile',
+            'personal_profile',
+            'personal_product',
+            'personal_comment',
+            'personal_review'
+        ]);
     }
 
     if(!$request->hasStage('profile_location')) {

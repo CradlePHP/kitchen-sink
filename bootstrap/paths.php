@@ -46,23 +46,29 @@ return function($request, $response) {
      *
      * @return mixed
      */
-    ->addMethod('config', function($key) use (&$cache) {
+    ->addMethod('config', function($path, $key = null) use (&$cache) {
         //is it already in memory?
-        if(isset($cache[$key])) {
-            return $cache[$key];
+        if(!isset($cache[$path])) {
+            $config = $this->path('config');
+            $file = $config.'/' . $path . '.php';
+
+            if(!file_exists($file)) {
+                $cache[$path] = [];
+            } else {
+                //get the data and cache
+                $cache[$path] = include($file);
+            }
         }
 
-        $path = $this->path('config');
-        $file = $path.'/'.$key.'.php';
-
-        if(!file_exists($file)) {
-            return [];
+        if(is_null($key)) {
+            //return the data
+            return $cache[$path];
         }
 
-        //get the data and cache
-        $cache[$key] = include($file);
+        if(!isset($cache[$path][$key])) {
+            return null;
+        }
 
-        //return the data
-        return $cache[$key];
+        return $cache[$path][$key];
     });
 };

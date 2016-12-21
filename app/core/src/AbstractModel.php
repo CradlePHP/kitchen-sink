@@ -9,6 +9,10 @@
 
 namespace Cradle\App\Core;
 
+use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
+use Predis\Connection\ConnectionException;
+
 /**
  * Adds common methods to models
  *
@@ -19,6 +23,11 @@ namespace Cradle\App\Core;
  */
 abstract class AbstractModel
 {
+    /**
+     * @const INDEX_TYPE Index type
+     */
+    const INDEX_TYPE = 'main';
+
     /**
      * @var Service $service
      */
@@ -52,17 +61,24 @@ abstract class AbstractModel
 
         //if an id was passed
         if(is_numeric($data)) {
+            //save id
+            $key = $data;
+
             //get it from index
-            $data = $this->indexDetail($data);
+            $data = $this->indexDetail($key);
 
             //if no index
             if(!$data) {
                 //get it from database
-                $data = $this->databaseDetail($data);
+                $data = $this->databaseDetail($key);
             }
         }
 
-        return $service->hSet(static::CACHE_DETAIL, $id, $data);
+        try {
+            return $service->hSet(static::CACHE_DETAIL, $id, json_encode($data));
+        } catch(ConnectionException $e) {
+            return false;
+        }
     }
 
     /**
@@ -95,7 +111,11 @@ abstract class AbstractModel
             }
         }
 
-        return $service->hSet(static::CACHE_SEARCH, $id, $data);
+        try {
+            return $service->hSet(static::CACHE_SEARCH, $id, json_encode($data));
+        } catch(ConnectionException $e) {
+            return false;
+        }
     }
 
     /**
@@ -117,7 +137,11 @@ abstract class AbstractModel
             return false;
         }
 
-        return $service->hGet(static::CACHE_DETAIL, $id);
+        try {
+            return json_decode($service->hGet(static::CACHE_DETAIL, $id), true);
+        } catch(ConnectionException $e) {
+            return false;
+        }
     }
 
 
@@ -136,7 +160,11 @@ abstract class AbstractModel
             return false;
         }
 
-        return $service->hExists(static::CACHE_DETAIL, $id);
+        try {
+            return !!$service->hExists(static::CACHE_DETAIL, $id);
+        } catch(ConnectionException $e) {
+            return false;
+        }
     }
 
     /**
@@ -155,14 +183,22 @@ abstract class AbstractModel
         }
 
         if(is_null($id)) {
-            return $service->del(static::CACHE_DETAIL);
+            try {
+                return $service->del(static::CACHE_DETAIL);
+            } catch(ConnectionException $e) {
+                return false;
+            }
         }
 
         if(!$id) {
             return false;
         }
 
-        return $service->hDel(static::CACHE_DETAIL, $id);
+        try {
+            return $service->hDel(static::CACHE_DETAIL, $id);
+        } catch(ConnectionException $e) {
+            return false;
+        }
     }
 
     /**
@@ -181,11 +217,20 @@ abstract class AbstractModel
         }
 
         if(is_null($parameters)) {
-            return $service->del(static::CACHE_SEARCH);
+            try {
+                return $service->del(static::CACHE_SEARCH);
+            } catch(ConnectionException $e) {
+                return false;
+            }
         }
 
         $id = md5(json_encode($parameters));
-        return $service->hDel(static::CACHE_SEARCH, $id);
+
+        try {
+            return $service->hDel(static::CACHE_SEARCH, $id);
+        } catch(ConnectionException $e) {
+            return false;
+        }
     }
 
     /**
@@ -208,7 +253,12 @@ abstract class AbstractModel
         }
 
         $id = md5(json_encode($parameters));
-        return $service->hGet(static::CACHE_SEARCH, $id);
+
+        try {
+            return json_decode($service->hGet(static::CACHE_SEARCH, $id), true);
+        } catch(ConnectionException $e) {
+            return false;
+        }
     }
 
     /**
@@ -227,7 +277,12 @@ abstract class AbstractModel
         }
 
         $id = md5(json_encode($parameters));
-        return $service->hExists(static::CACHE_SEARCH, $id);
+
+        try {
+            return !!$service->hExists(static::CACHE_SEARCH, $id);
+        } catch(ConnectionException $e) {
+            return false;
+        }
     }
 
     /**
@@ -290,12 +345,16 @@ abstract class AbstractModel
             return false;
         }
 
-        return $service->index([
-            'index' => 'main',
-            'type' => static::INDEX_TYPE,
-            'id' => $id,
-            'body' => $this->databaseDetail($id)
-        ]);
+        try {
+            return $service->index([
+                'index' => static::INDEX_NAME,
+                'type' => static::INDEX_TYPE,
+                'id' => $id,
+                'body' => $this->databaseDetail($id)
+            ]);
+        } catch(NoNodesAvailableException $e) {
+            return false;
+        }
     }
 
     /**
@@ -313,11 +372,17 @@ abstract class AbstractModel
             return false;
         }
 
-        $results = $service->get([
-            'index' => 'main',
-            'type' => static::INDEX_TYPE,
-            'id' => $id
-        ]);
+        try {
+            $results = $service->get([
+                'index' => static::INDEX_NAME,
+                'type' => static::INDEX_TYPE,
+                'id' => $id
+            ]);
+        } catch(Missing404Exception $e) {
+            return null;
+        } catch(NoNodesAvailableException $e) {
+            return false;
+        }
 
         return $results['_source'];
     }
@@ -335,11 +400,15 @@ abstract class AbstractModel
             return false;
         }
 
-        return $service->delete([
-            'index' => 'main',
-            'type' => static::INDEX_TYPE,
-            'id' => $id
-        ]);
+        try {
+            return $service->delete([
+                'index' => static::INDEX_NAME,
+                'type' => static::INDEX_TYPE,
+                'id' => $id
+            ]);
+        } catch(NoNodesAvailableException $e) {
+            return false;
+        }
     }
 
     /**
@@ -366,15 +435,21 @@ abstract class AbstractModel
             return false;
         }
 
-        return $service->update(
-            [
-                'index' => 'main',
-                'type' => static::INDEX_TYPE,
-                'id' => $id,
-                'body' => [
-                    'doc' => $this->databaseDetail($id)
+        try {
+            return $service->update(
+                [
+                    'index' => static::INDEX_NAME,
+                    'type' => static::INDEX_TYPE,
+                    'id' => $id,
+                    'body' => [
+                        'doc' => $this->databaseDetail($id)
+                    ]
                 ]
-            ]
-        );
+            );
+        } catch(Missing404Exception $e) {
+            return false;
+        } catch(NoNodesAvailableException $e) {
+            return false;
+        }
     }
 }

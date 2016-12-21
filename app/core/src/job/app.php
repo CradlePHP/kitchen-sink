@@ -33,6 +33,9 @@ $cradle->on('app-create', function ($request, $response) {
             ->set('json', 'validation', $errors);
     }
 
+    //deflate permissions
+    $data['app_permissions'] = json_encode($data['app_permissions']);
+
     //save item to database
     $results = $appModel->databaseCreate($data);
 
@@ -262,7 +265,7 @@ $cradle->on('app-search', function ($request, $response) {
     }
 
     //set response format
-    $response->setError(false)->setResults($results);
+    $response->setError(false)->setResults($data, $results);
 });
 
 /**
@@ -297,6 +300,11 @@ $cradle->on('app-update', function ($request, $response) {
         return $response
             ->setError(true, 'Invalid Parameters')
             ->set('json', 'validation', $errors);
+    }
+
+    //deflate permissions
+    if(isset($data['app_permissions'])) {
+        $data['app_permissions'] = json_encode($data['app_permissions']);
     }
 
     //save to database

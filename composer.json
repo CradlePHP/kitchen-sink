@@ -11,6 +11,9 @@
             "email": "cblanquera@openovate.com"
         }
     ],
+    "require-dev": {
+        "codeception/codeception": "^2.2"
+    },
     "require": {
         "cradlephp/packages": "dev-master",
         "cradlephp/command-line": "dev-master",
@@ -21,11 +24,23 @@
         "elasticsearch/elasticsearch": "2.2.2",
         "predis/predis": "1.1.1",
         "aws/aws-sdk-php": "3.19.30",
-        "swiftmailer/swiftmailer": "5.4.3"
+        "swiftmailer/swiftmailer": "5.4.3",
+        "jakoch/phantomjs-installer": "2.1.1-p07"
     },
     "autoload": {
         "psr-4": {
             "Cradle\\App\\Core\\": "app/core/src"
         }
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "PhantomInstaller\\Installer::installPhantomJS"
+        ],
+        "post-update-cmd": [
+            "PhantomInstaller\\Installer::installPhantomJS"
+        ]
     }
 }

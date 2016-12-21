@@ -10,7 +10,8 @@
 namespace Cradle\App\Core\Model;
 
 use Cradle\App\Core\AbstractModel;
-use Cradle\App\Core\Service;
+
+use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 
 /**
  * Session Model
@@ -33,9 +34,9 @@ class Session extends AbstractModel
     const CACHE_DETAIL = 'core-session-detail';
 
     /**
-     * @const INDEX_TYPE Index type name aka collection name
+     * @const INDEX_NAME Index name
      */
-    const INDEX_TYPE = 'session';
+    const INDEX_NAME = 'session';
 
     /**
      * Create in database
@@ -82,7 +83,8 @@ class Session extends AbstractModel
             ->setColumns(
                 'session.*',
                 'app.*',
-                'profile.*'
+                'profile.*',
+                'auth_id'
             )
             ->innerJoinUsing('session_auth', 'session_id')
             ->innerJoinUsing('session_app', 'session_id')
@@ -96,7 +98,34 @@ class Session extends AbstractModel
             $search->filterBySessionToken($id);
         }
 
-        return $search->getRow();
+        $results = $search->getRow();
+
+        if(!$results) {
+            return $results;
+        }
+
+        //session_permissions
+        if($results['session_permissions']) {
+            $results['session_permissions'] = json_decode($results['session_permissions'], true);
+        } else {
+            $results['session_permissions'] = [];
+        }
+
+        //app_permissions
+        if($results['app_permissions']) {
+            $results['app_permissions'] = json_decode($results['app_permissions'], true);
+        } else {
+            $results['app_permissions'] = [];
+        }
+
+        //achievements
+        if($results['profile_achievements']) {
+            $results['profile_achievements'] = json_decode($results['profile_achievements'], true);
+        }  else {
+            $results['profile_achievements'] = [];
+        }
+
+        return $results;
     }
 
     /**
@@ -202,9 +231,33 @@ class Session extends AbstractModel
             $search->addSort($sort, $direction);
         }
 
+        $rows = $search->getRows();
+        foreach($rows as $i => $row) {
+            //session_permissions
+            if($row['session_permissions']) {
+                $rows[$i]['session_permissions'] = json_decode($row['session_permissions'], true);
+            }  else {
+                $rows[$i]['session_permissions'] = [];
+            }
+
+            //app_permissions
+            if($row['app_permissions']) {
+                $rows[$i]['app_permissions'] = json_decode($row['app_permissions'], true);
+            }  else {
+                $rows[$i]['app_permissions'] = [];
+            }
+
+            //achievements
+            if($row['profile_achievements']) {
+                $rows[$i]['profile_achievements'] = json_decode($row['profile_achievements'], true);
+            }  else {
+                $rows[$i]['profile_achievements'] = [];
+            }
+        }
+
         //return response format
         return [
-            'rows' => $search->getRows(),
+            'rows' => $rows,
             'total' => $search->getTotal()
         ];
     }
@@ -240,23 +293,22 @@ class Session extends AbstractModel
      */
     public function indexSearch(array $data = [])
     {
-        $service = $this->service->database();
+        $service = $this->service->index();
 
         if(!$service) {
             return false;
         }
 
         //set the defaults
-        $keyword = null;
-        $filters = [];
+        $filter = [];
         $range = 50;
         $start = 0;
-        $order = [];
+        $order = ['session_id' => 'asc'];
         $count = 0;
 
         //merge passed data with default data
         if (isset($data['filter']) && is_array($data['filter'])) {
-            $filters = $data['filter'];
+            $filter = $data['filter'];
         }
 
         if (isset($data['range']) && is_numeric($data['range'])) {
@@ -274,16 +326,30 @@ class Session extends AbstractModel
         //prepare the search object
         $search = [];
 
-        if (isset($data['filter']) && is_array($data['filter'])) {
-            $search['query']['bool']['must'][]['match'] = $data['filter'];
+        //keyword search
+        if (isset($data['q'])) {
+            if(!is_array($data['q'])) {
+                $data['q'] = [$data['q']];
+            }
+
+            foreach($data['q'] as $keyword) {
+                $search['query']['bool']['filter'][]['query_string'] = [
+                    'query' => $keyword . '*',
+                    'fields' => ['profile_name', 'profile_email', 'app_name'],
+                    'default_operator' => 'AND'
+                ];
+            }
         }
 
-        if (isset($data['keyword']) && !empty($data['keyword'])) {
-            $search['query']['query_string'] = [
-                'query' => $data['keyword'],
-                'fields' => ['profile_name', 'app_name'],
-                'default_operator' => 'OR'
-            ];
+        //generic full match filters
+
+        //session_active
+        if (!isset($filter['session_active'])) {
+            $filter['session_active'] = 1;
+        }
+
+        foreach($filter as $key => $value) {
+            $search['query']['bool']['filter'][]['term'][$key] = $value;
         }
 
         //add sorting
@@ -291,13 +357,17 @@ class Session extends AbstractModel
             $search['sort'] = [$sort => $direction];
         }
 
-        $results = $service->search([
-            'index' => 'main',
-            'type' => static::INDEX_TYPE,
-            'body' => $search,
-            'size' => $range,
-            'from' => $start
-        ]);
+        try {
+            $results = $service->search([
+                'index' => static::INDEX_NAME,
+                'type' => static::INDEX_TYPE,
+                'body' => $search,
+                'size' => $range,
+                'from' => $start
+            ]);
+        } catch(NoNodesAvailableException $e) {
+            return false;
+        }
 
         // fix it
         $rows = array();
@@ -485,7 +555,7 @@ class Session extends AbstractModel
             return false;
         }
 
-        return $services
+        return $service
             ->model()
             ->setSessionId($sessionId)
             ->setAuthId($authId)

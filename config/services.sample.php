@@ -2,20 +2,19 @@
 
 return array (
     'sql-main' => new PDO('mysql:host=127.0.0.1;dbname=cradle_sink', 'root', ''),
-
-    /* Optional Services
     'index-main' => Elasticsearch\ClientBuilder::create()->build(),
+    'cache-main' => new Predis\Client([
+        "scheme" => "tcp",
+        "host" => "127.0.0.1",
+        "port" => 6379
+    ]),
+    /* Optional Services
     'queue-main' => new PhpAmqpLib\Connection\AMQPLazyConnection(
         '127.0.0.1',
         5672,
         'guest',
         'guest'
     ),
-    'cache-main' => new Predis\Client([
-        "scheme" => "tcp",
-        "host" => "127.0.0.1",
-        "port" => 6379
-    ]),
     'cdn-main' => array(
         'region' => 'ap-southeast-1',
         'token' => '<AWS TOKEN>',

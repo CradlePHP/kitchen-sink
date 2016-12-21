@@ -241,7 +241,7 @@ $cradle->on('profile-search', function ($request, $response) {
         }
 
         //cache it from database or index
-        $profileModel->cacheCreateSearch($results);
+        $profileModel->cacheCreateSearch($data, $results);
     }
 
     //set response format
