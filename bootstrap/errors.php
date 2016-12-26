@@ -15,6 +15,12 @@ return function($request, $response) {
             return;
         }
 
+        //prevent nice errors in cli mode
+        if(php_sapi_name() === 'cli') {
+            throw $error;
+            return false;
+        }
+
         $detail = !!$mode;
         $type = $response->getHeaders('Content-Type');
 

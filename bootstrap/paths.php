@@ -6,6 +6,8 @@ return function($request, $response) {
         'root' => $root,
         'boostrap' => $root . '/bootstrap',
         'config' => $root . '/config',
+        'module' => $root . '/module',
+        'compiled' => $root . '/compiled',
         'public' => $root . '/public',
         'upload' => $root . '/public/upload',
         'template' => $root . '/template',

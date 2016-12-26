@@ -3,8 +3,6 @@
 use Cradle\I18n\Language;
 
 return function($request, $response) {
-    //Multi Domain Logic
-
     //get the settings
     $settings = $this->package('global')->config('settings');
 
@@ -74,7 +72,7 @@ return function($request, $response) {
      *
      * @return string
      */
-    ->addMethod('translate', function($string, $args = array()) use ($language) {
+    ->addMethod('translate', function($string, $args = []) use ($language) {
         //fix the arguments
         if(!is_array($args)) {
             $args = func_get_args();

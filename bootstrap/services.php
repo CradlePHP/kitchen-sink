@@ -3,8 +3,6 @@ return function($request, $response) {
     //case for test injections
     $host = $request->getServer('HTTP_HOST');
 
-    $services = $this->package('global')->config('services');
-
     //create some global methods
     $this->package('global')
 
@@ -15,29 +13,17 @@ return function($request, $response) {
      *
      * @return mixed
      */
-    ->addMethod('service', function($name) use (&$services) {
+    ->addMethod('service', function($name) {
+        static $services = null;
+
+        if(is_null($services)) {
+            $services = cradle()->package('global')->config('services');
+        }
+
         if(!isset($services[$name])) {
             return null;
         }
 
         return $services[$name];
-    })
-
-    /**
-     * Particularly returns a SQL interface
-     *
-     * @return Cradle\Sql\SqlInterface
-     */
-    ->addMethod('sql', function() use (&$services) {
-        return $services['sql-main'];
-    })
-
-    /**
-     * Particularly returns a SQL interface
-     *
-     * @return Cradle\Sql\SqlInterface
-     */
-    ->addMethod('amqp', function() use (&$services) {
-        return $services['queue-main'];
     });
 };
