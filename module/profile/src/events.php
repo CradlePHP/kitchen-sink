@@ -7,8 +7,6 @@
  * distributed with this package.
  */
 
-use Cradle\Module\Review\Service as ReviewService;
-
 use Cradle\Module\Profile\Service as ProfileService;
 use Cradle\Module\Profile\Validator as ProfileValidator;
 
@@ -19,95 +17,6 @@ use Cradle\Http\Request;
 use Cradle\Http\Response;
 
 use Cradle\Module\Utility\File;
-
-/**
- * Profile Add Experience (supporting job)
- *
- * @param Request $request
- * @param Response $response
- */
-$cradle->on('profile-add-achievement', function ($request, $response) {
-    //get data
-    $data = $request->getStage();
-
-    //this is what we need
-    if (!isset(
-        $data['profile_id'],
-        $data['profile_achievements']['title'],
-        $data['profile_achievements']['image']
-    )
-    ) {
-        return;
-    }
-
-    //this/these will be used a lot
-    $profileSql = ProfileService::get('sql');
-    $profileRedis = ProfileService::get('redis');
-    $profileElastic = ProfileService::get('elastic');
-
-    $profile = $profileSql->get($data['profile_id']);
-
-    $title = $data['profile_achievements']['title'];
-    $image = $data['profile_achievements']['image'];
-
-    //if it's already there
-    if (isset($profile['profile_achievements'][$title])) {
-        //no need to update
-        return;
-    }
-
-    $profile['profile_achievements'][$title] = $image;
-
-    $profileSql->update([
-        'profile_id' => $profile['profile_id'],
-        'profile_achievements' => json_encode($profile['profile_achievements'])
-    ]);
-
-    //update index
-    $profileElastic->update($profile['profile_id']);
-
-    //So this job is called in a good number of jobs some that caches data,
-    //but if this job invalidates that same cache which de-purposes that logic.
-    //So what we should do is build the again cache here
-
-    $profileRedis->createDetail($profile['profile_id'], $profile);
-    $profileRedis->createDetail($profile['profile_slug'], $profile);
-});
-
-/**
- * Profile Add Experience (supporting job)
- *
- * @param Request $request
- * @param Response $response
- */
-$cradle->on('profile-add-experience', function ($request, $response) {
-    //get data
-    $data = $request->getStage();
-
-    //this is what we need
-    if (!isset($data['profile_id'], $data['profile_experience'])) {
-        return;
-    }
-
-    //this/these will be used a lot
-    $profileSql = ProfileService::get('sql');
-    $profileRedis = ProfileService::get('redis');
-    $profileElastic = ProfileService::get('elastic');
-
-    //add view
-    $profileSql->addExperience($data['profile_id'], $data['profile_experience']);
-
-    //update index
-    $profileElastic->update($data['profile_id']);
-
-    //So this job is called in a good number of jobs some that caches data,
-    //but if this job invalidates that same cache which de-purposes that logic.
-    //So what we should do is build the again cache here
-
-    $data = $profileSql->get($data['profile_id']);
-    $profileRedis->createDetail($data['profile_id'], $data);
-    $profileRedis->createDetail($data['profile_slug'], $data);
-});
 
 /**
  * Profile Create Job
@@ -600,62 +509,4 @@ $cradle->on('profile-update', function ($request, $response) {
 
     //return response format
     $response->setError(false)->setResults($results);
-});
-
-/**
- * Profile update rating (supporting job)
- *
- * @param Request $request
- * @param Response $response
- */
-$cradle->on('profile-update-rating', function ($request, $response) {
-    //this/these will be used a lot
-    $reviewSql = ReviewService::get('sql');
-
-    $commentId = $response->getResults('comment_id');
-    $profile = $reviewSql->getProfile($commentId);
-
-    $reviewRequest = new Request();
-    $reviewRequest->load();
-    $reviewResponse = new Response();
-    $reviewResponse->load();
-
-    $reviewRequest->setStage([
-        'filter' => [
-            'about.profile_id' => $profile['profile_id']
-        ]
-    ]);
-
-    //we are doing it this way to take advantage of index and cache
-    $this->trigger('review-search', $reviewRequest, $reviewResponse);
-
-    $rows = $reviewResponse->getResults('rows');
-    $total = 0;
-    $count = 0;
-
-    foreach ($rows as $row) {
-        if (!$row['comment_rating']) {
-            continue;
-        }
-
-        $total += $row['comment_rating'];
-        $count++;
-    }
-
-    if (!$count) {
-        return;
-    }
-
-    $profileRequest = new Request();
-    $profileRequest->load();
-    $profileResponse = new Response();
-    $profileResponse->load();
-
-    $profileRequest->setStage([
-        'profile_id' => $profile['profile_id'],
-        'profile_rating' => $total / $count
-    ]);
-
-    //we are doing it this way to take advantage of index and cache
-    $this->trigger('profile-update', $profileRequest, $profileResponse);
 });
