@@ -1,7 +1,7 @@
 <?php //-->
 /**
- * This file is part of the Salaaap Project.
- * (c) 2016-2018 Openovate Labs
+ * This file is part of a Custom Project.
+ * (c) 2017-2019 Acme Inc.
  *
  * Copyright and license information can be found at LICENSE.txt
  * distributed with this package.
@@ -32,7 +32,7 @@ use Cradle\Module\Oauth\Auth\Service;
  * - auth_created         datetime generated
  * - auth_updated         datetime generated
  *
- * @vendor   Salaaap
+ * @vendor   Acme
  * @package  OAuth
  * @author   Christian Blanquera <cblanquera@openovate.com>
  */
