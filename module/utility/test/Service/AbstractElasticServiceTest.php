@@ -21,7 +21,7 @@ use Cradle\Module\Utility\Service\AbstractElasticService;
  *
  * @vendor   Acme
  * @package  Utility
- * @author   Christian Blanquera <cblanquera@openovate.com>
+ * @author   John Doe <john@acme.com>
  */
 class Cradle_Module_Utility_Service_AbstractElasticServiceTest extends PHPUnit_Framework_TestCase
 {

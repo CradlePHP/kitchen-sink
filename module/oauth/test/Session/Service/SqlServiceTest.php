@@ -29,7 +29,7 @@ use Cradle\Module\Oauth\Session\Service;
  *
  * @vendor   Acme
  * @package  OAuth
- * @author   Christian Blanquera <cblanquera@openovate.com>
+ * @author   John Doe <john@acme.com>
  */
 class Cradle_Module_Oauth_Session_Service_SqlServiceTest extends PHPUnit_Framework_TestCase
 {

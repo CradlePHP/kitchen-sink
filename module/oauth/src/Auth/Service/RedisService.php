@@ -21,7 +21,7 @@ use Cradle\Module\Utility\Service\AbstractRedisService;
  *
  * @vendor   Acme
  * @package  Auth
- * @author   Christian Blanquera <cblanquera@openovate.com>
+ * @author   John Doe <john@acme.com>
  * @standard PSR-2
  */
 class RedisService extends AbstractRedisService implements RedisServiceInterface

@@ -12,7 +12,7 @@
  *
  * @vendor   Acme
  * @package  Utility
- * @author   Christian Blanquera <cblanquera@openovate.com>
+ * @author   John Doe <john@acme.com>
  */
 class Cradle_Module_Utility_EventsTest extends PHPUnit_Framework_TestCase
 {

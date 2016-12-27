@@ -31,7 +31,7 @@ use Cradle\Http\Response;
  *
  * @vendor   Acme
  * @package  OAuth
- * @author   Christian Blanquera <cblanquera@openovate.com>
+ * @author   John Doe <john@acme.com>
  */
 class Cradle_Module_Oauth_App_EventsTest extends PHPUnit_Framework_TestCase
 {

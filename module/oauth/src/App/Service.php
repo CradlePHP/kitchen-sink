@@ -21,7 +21,7 @@ use Cradle\Module\Utility\ServiceInterface;
  *
  * @vendor   Acme
  * @package  App
- * @author   Christian Blanquera <cblanquera@openovate.com>
+ * @author   John Doe <john@acme.com>
  * @standard PSR-2
  */
 class Service implements ServiceInterface

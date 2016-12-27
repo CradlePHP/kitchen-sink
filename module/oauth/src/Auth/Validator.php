@@ -17,7 +17,7 @@ use Cradle\Module\Utility\Validator as UtilityValidator;
  *
  * @vendor   Acme
  * @package  Auth
- * @author   Christian Blanquera <cblanquera@openovate.com>
+ * @author   John Doe <john@acme.com>
  * @standard PSR-2
  */
 class Validator

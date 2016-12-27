@@ -14,7 +14,7 @@ namespace Cradle\Module\Utility\Service;
  *
  * @vendor   Acme
  * @package  Utility
- * @author   Christian Blanquera <cblanquera@openovate.com>
+ * @author   John Doe <john@acme.com>
  * @standard PSR-2
  */
 interface ElasticServiceInterface

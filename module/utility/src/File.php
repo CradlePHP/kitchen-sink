@@ -14,7 +14,7 @@ namespace Cradle\Module\Utility;
  *
  * @vendor   Cradle
  * @package  Framework
- * @author   Christian Blanquera <cblanquera@openovate.com>
+ * @author   John Doe <john@acme.com>
  * @standard PSR-2
  */
 class File

@@ -14,7 +14,7 @@ use Cradle\Module\Profile\Validator;
  *
  * @vendor   Acme
  * @package  Profile
- * @author   Christian Blanquera <cblanquera@openovate.com>
+ * @author   John Doe <john@acme.com>
  */
 class Cradle_Module_Profile_ValidatorTest extends PHPUnit_Framework_TestCase
 {

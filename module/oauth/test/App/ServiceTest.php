@@ -18,7 +18,7 @@ use Cradle\Module\Oauth\App\Service\ElasticService;
  *
  * @vendor   Acme
  * @package  OAuth
- * @author   Christian Blanquera <cblanquera@openovate.com>
+ * @author   John Doe <john@acme.com>
  */
 class Cradle_Module_Oauth_App_ServiceTest extends PHPUnit_Framework_TestCase
 {

@@ -17,7 +17,7 @@ use Predis\Client as Resource;
  *
  * @vendor   Acme
  * @package  Utility
- * @author   Christian Blanquera <cblanquera@openovate.com>
+ * @author   John Doe <john@acme.com>
  */
 class Cradle_Module_Utility_Service_AbstractRedisServiceTest extends PHPUnit_Framework_TestCase
 {
