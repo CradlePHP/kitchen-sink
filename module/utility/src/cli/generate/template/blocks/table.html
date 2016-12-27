@@ -1,0 +1,50 @@
+\{\{#if rows\}\}
+                <div class="table-overflow">
+                    <!-- START: TABLE -->
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>{{_ 'Actions'}}</th>
+                                {{~#each property}}{{#if label.column}}
+                                <th>{{label.column}}</th>
+                                {{~/if}}{{/each}}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            \{\{#each rows\}\}
+                            <tr data-id="\{\{ {{primary}}\}\}">
+                                <td>
+                                    {{~#if active}}
+                                    \{\{#when {{active}} '==' 1\}\}
+                                    <a title="Edit" href="{{path.update}}/\{\{ {{primary}}\}\}">
+                                    <i class="fa fa-edit"></i></a>
+                                    &nbsp;
+                                    <a title="Remove" href="{{path.remove}}/\{\{ {{primary}}\}\}"
+                                    class="text-danger remove"><i class="fa fa-times"></i></a>
+                                    \{\{/when\}\}
+                                    \{\{#when {{active}} '==' 0\}\}
+                                    <a title="Restore" href="{{path.restore}}/\{\{ {{primary}}\}\}" class="text-success restore">
+                                    <i class="fa fa-external-link"></i></a>
+                                    \{\{/when\}\}
+                                    {{~else~}}
+                                    <a title="Edit" href="{{path.update}}/\{\{ {{primary}}\}\}">
+                                    <i class="fa fa-edit"></i></a>
+                                    &nbsp;
+                                    <a title="Remove" href="{{path.remove}}/\{\{ {{primary}}\}\}"
+                                    class="text-danger remove"><i class="fa fa-times"></i></a>
+                                    {{~/if}}
+                                </td>
+                                {{~#each property}}{{#if label.column}}
+                                <td>{{> format_template}}</td>
+                                {{~/if}}{{/each}}
+                            </tr>
+                            \{\{/each\}\}
+                        </tbody>
+                    </table>
+                    <!-- END: TABLE -->
+                </div>
+            \{\{else\}\}
+                <!-- START: NO RESULTS -->
+                <div class="well no-results">{{_ 'No Results Found'}}</div>
+                <!-- END: NO RESULTS -->
+            \{\{/if\}\}

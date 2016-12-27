@@ -1,0 +1,35 @@
+<h3>{{capital name}} List</h3>
+
+<div class="clearfix">
+    <!-- START: SEARCH FORM -->
+    <form class="pull-right search form-inline" method="get">
+        <div class="form-group">
+            <input name="q" placeholder="Search" type="text"
+            value="\{\{q\}\}" class="form-control" />
+        </div>
+        <button class="btn"><i class="fa fa-search"></i></button>
+    </form>
+    <!-- END: SEARCH FORM -->
+
+    <span>
+        <a class="btn btn-success" href="{{path.create}}">
+            <i class="fa fa-plus"></i>
+            Create New {{capital name}}
+        </a>
+    </span>
+</div>
+
+<!-- START: BULK FORM -->
+<form method="post" class="form-inline bulk-form pad-vertical">
+    <div class="panel panel-default clear">
+        <div class="panel-body" >
+            {{> block_table}}
+        </div>
+    </div>
+
+    <ul class="pagination">
+        \{\{#pagination total range\}\}
+        <li\{\{#if active\}\} class="active"\{\{/if\}\}><a href="?\{\{href\}\}">\{\{page\}\}</a></li>
+        \{\{/pagination\}\}
+    </ul>
+</form>

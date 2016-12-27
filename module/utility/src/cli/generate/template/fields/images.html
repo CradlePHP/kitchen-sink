@@ -1,0 +1,27 @@
+<div
+                        data-do="image-field"
+                        data-name="{NAME}"
+                        data-width="0|0|200"
+                        data-height="0|0|200"
+                        data-label="original|large|small"
+                        data-display="small"
+                        data-multiple="1"
+                        data-alt="Change this Photo"
+                        class="image-field multiple center pad form-control">
+                        {{#if item.{NAME}.length}}
+                            {{#each item.{NAME}}}
+                                <input type="hidden" name="{NAME}[{{@index}}][original]" value="{{original}}" />
+                                {{#if large}}
+                                    <input type="hidden" name="{NAME}[{{@index}}][large]" value="{{large}}" />
+                                {{/if}}
+                                {{#if small}}
+                                    <input type="hidden" name="{NAME}[{{@index}}][small]" value="{{small}}" />
+                                    <img alt="Change this Photo" width="200" height="200" src="{{small}}" />
+                                {{else}}
+                                    <img alt="Change this Photo" width="200" height="200" src="{{original}}" />
+                                {{/if}}
+                            {{/each}}
+                        {{else}}
+                            <img alt="Upload a Photo" width="200" class="placeholder" height="200" src="{{config 'cdn'}}/images/icon/icon-add-image.png" />
+                        {{/if}}
+                    </div>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit
+    backupGlobals="false"
+    backupStaticAttributes="false"
+    colors="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    processIsolation="false"
+    stopOnFailure="false"
+    syntaxCheck="false"
+    bootstrap="phpunit.php"
+>
+    <testsuites>
+        <testsuite name="Utility Test Suite">
+            <file>module/utility/test/FileTest.php</file>
+            <file>module/utility/test/ValidatorTest.php</file>
+            <file>module/utility/test/ServiceFactoryTest.php</file>
+            <file>module/utility/test/SeoTest.php</file>
+            <file>module/utility/test/InstallerTest.php</file>
+            <file>module/utility/test/Service/AbstractElasticServiceTest.php</file>
+            <file>module/utility/test/Service/AbstractRedisServiceTest.php</file>
+            <file>module/utility/test/Service/NoopServiceTest.php</file>
+        </testsuite>
+        <testsuite name="Profile Test Suite">
+            <file>module/profile/test/ValidatorTest.php</file>
+            <file>module/profile/test/ServiceTest.php</file>
+            <file>module/profile/test/Service/SqlServiceTest.php</file>
+            <file>module/profile/test/Service/ElasticServiceTest.php</file>
+            <file>module/profile/test/Service/RedisServiceTest.php</file>
+            <file>module/profile/test/EventTest.php</file>
+        </testsuite>
+        <testsuite name="OAuth Test Suite">
+            <file>module/oauth/test/App/ValidatorTest.php</file>
+            <file>module/oauth/test/App/ServiceTest.php</file>
+            <file>module/oauth/test/App/Service/SqlServiceTest.php</file>
+            <file>module/oauth/test/App/Service/ElasticServiceTest.php</file>
+            <file>module/oauth/test/App/Service/RedisServiceTest.php</file>
+            <file>module/oauth/test/App/EventTest.php</file>
+            <file>module/oauth/test/Auth/ValidatorTest.php</file>
+            <file>module/oauth/test/Auth/ServiceTest.php</file>
+            <file>module/oauth/test/Auth/Service/SqlServiceTest.php</file>
+            <file>module/oauth/test/Auth/Service/ElasticServiceTest.php</file>
+            <file>module/oauth/test/Auth/Service/RedisServiceTest.php</file>
+            <file>module/oauth/test/Auth/EventTest.php</file>
+            <file>module/oauth/test/Session/ValidatorTest.php</file>
+            <file>module/oauth/test/Session/ServiceTest.php</file>
+            <file>module/oauth/test/Session/Service/SqlServiceTest.php</file>
+            <file>module/oauth/test/Session/Service/ElasticServiceTest.php</file>
+            <file>module/oauth/test/Session/Service/RedisServiceTest.php</file>
+            <file>module/oauth/test/Session/EventTest.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>

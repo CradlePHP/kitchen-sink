@@ -29,7 +29,10 @@
     },
     "autoload": {
         "psr-4": {
-            "Cradle\\App\\Core\\": "app/core/src"
+            "Cradle\\Module\\Comment\\": "module/comment/src/",
+            "Cradle\\Module\\Oauth\\": "module/oauth/src/",
+            "Cradle\\Module\\Profile\\": "module/profile/src/",
+            "Cradle\\Module\\Utility\\": "module/utility/src/"
         }
     },
     "config": {

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<ruleset name="PHP_CodeSniffer">
+    <description>The coding standard for PHP_CodeSniffer itself.</description>
+
+    <file>module/comment/src</file>
+    <file>module/crawler/src</file>
+    <file>module/market/src</file>
+    <file>module/oauth/src</file>
+    <file>module/profile/src</file>
+    <file>module/utility/src</file>
+
+    <file>app/admin/src</file>
+    <file>app/api/src</file>
+    <file>app/crawler/src</file>
+    <file>app/sitemap/src</file>
+    <file>app/www/src</file>
+
+    <arg name="report" value="full"/>
+    <arg value="np"/>
+
+    <rule ref="PSR2"/>
+</ruleset>

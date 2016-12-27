@@ -1,0 +1,37 @@
+    {{~#when this '===' 'now'}}
+        $results['{{../name}}'] = date('Y-m-d H:i:s');
+    {{~/when}}{{#when this '===' 'date'}}
+        $results['{{../name}}'] = date('Y-m-d', strtotime($results['{{../name}}']));
+    {{~/when}}{{#when this '===' 'time'}}
+        $results['{{../name}}'] = date('H:i:s', strtotime($results['{{../name}}']));
+    {{~/when}}{{#when this '===' 'datetime'}}
+        $results['{{../name}}'] = date('Y-m-d H:i:s', strtotime($results['{{../name}}']));
+    {{~/when}}{{#when this '===' 'shortdate'}}
+        $results['{{../name}}'] = date('M d', strtotime($results['{{../name}}']));
+    {{~/when}}{{#when this '===' 'shorttime'}}
+        $results['{{../name}}'] = date('M d', strtotime($results['{{../name}}']));
+    {{~/when}}{{#when this '===' 'nicedate'}}
+        $results['{{../name}}'] = date('F d, Y', strtotime($results['{{../name}}']));
+    {{~/when}}{{#when this '===' 'nicetime'}}
+        $results['{{../name}}'] = date('G:i A', strtotime($results['{{../name}}']));
+    {{~/when}}{{#when this '===' 'json_encode'}}
+        $results['{{../name}}'] = json_encode($results['{{../name}}']);
+    {{~/when}}{{#when this '===' 'json_encode_pretty'}}
+        $results['{{../name}}'] = json_encode($results['{{../name}}'], JSON_PRETTYPRINT);
+    {{~/when}}{{#when this '===' 'json_decode'}}
+        $results['{{../name}}'] = json_decode($results['{{../name}}'], true);
+    {{~/when}}{{#when this '===' 'bool'}}
+        if($results['{{../name}}']) {
+            $results['{{../name}}'] = 'Yes';
+        } else {
+            $results['{{../name}}'] = 'No';
+        }
+    {{~/when}}{{#when this '===' 'price'}}
+        $results['{{../name}}'] = number_format($results['{{../name}}'], 2);
+    {{~/when}}{{#when this '===' 'integer'}}
+        $results['{{../name}}'] = number_format($results['{{../name}}']);
+    {{~/when}}{{#when this '===' 'image'}}
+        $results['{{../name}}'] = '<img src="$results['{{../name}}']" />';
+    {{~/when}}{{#when this '===' 'url'}}
+        $results['{{../name}}'] = '<a href="$results['{{../name}}']">$results['{{../name}}']</a>';
+    {{~/when~}}

@@ -21,5 +21,6 @@ return cradle()
     ->register('cblanquera/cradle-csrf')
     ->register('cblanquera/cradle-captcha')
 
-    ->register('/app/core')
-    ->register('/app/crawler');
+    ->register('/module/oauth')
+    ->register('/module/profile')
+    ->register('/module/utility');

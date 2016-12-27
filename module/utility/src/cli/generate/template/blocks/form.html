@@ -1,0 +1,35 @@
+            {{#each property}}{{#if field.type}}
+            <div class="form-group\{\{#if errors.{{name}}\}\} has-error\{\{/if\}\}">
+                <label class="control-label">{{label.form}}</label>
+                <div>
+                    {{#if field.input~}}
+                        {{{field.input}}}
+                    {{~else~}}
+                        {{~#when field.type '==' 'checkbox'}}
+                            {{> field_checkbox field name=name}}
+                        {{~else~}}
+                            {{~#when field.type '==' 'images'}}
+                                {{> field_images field name=name}}
+                            {{~else~}}
+                                {{~#when field.type '==' 'radio'}}
+                                    {{> field_radio field name=name}}
+                                {{~else~}}
+                                    {{~#when field.type '==' 'tags'}}
+                                        {{> field_tags field name=name}}
+                                    {{~else~}}
+                                        {{~#when field.type '==' 'textarea'~}}
+                                            {{> field_textarea field name=name}}
+                                        {{~else~}}
+                                            {{> field_text field name=name}}
+                                        {{/when~}}
+                                    {{/when~}}
+                                {{/when~}}
+                            {{/when~}}
+                        {{/when~}}
+                    {{~/if}}
+                    \{\{#if errors.{{name}}\}\}
+                    <span class="help-text">\{\{errors.{{name}}\}\}</span>
+                    \{\{/if\}\}
+                </div>
+            </div>
+            {{/if}}{{/each}}

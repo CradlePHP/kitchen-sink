@@ -1,0 +1,12 @@
+<div data-do="tag-field" class="tag-field">
+                        {{#each item.product_tags}}
+                            <div class="tag">
+                                <input type="text" class="tag-input text-field" name="{NAME}[]" placeholder="{{_ 'Add Tag'}}" value="{{this}}" />
+                                <a class="remove" href="javascript:void(0)"><i class="fa fa-times"></i></a>
+                            </div>
+                        {{/each}}
+                    </div>
+
+                    <div class="input-suggestion hide">
+                        <ul class="suggestion-list"></ul>
+                    </div>
