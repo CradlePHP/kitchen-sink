@@ -48,9 +48,6 @@ $handlebarsBuilder = function() {
             return $options['inverse']();
         });
 
-        $file = file_get_contents(__DIR__ . '/../template/blocks/form.html');
-        $handlebars->registerPartial('block_form', $file);
-
         $file = file_get_contents(__DIR__ . '/../template/blocks/table.html');
         $handlebars->registerPartial('block_table', $file);
 
@@ -59,6 +56,12 @@ $handlebarsBuilder = function() {
 
         $file = file_get_contents(__DIR__ . '/../template/fields/images.html');
         $handlebars->registerPartial('field_images', $file);
+
+        $file = file_get_contents(__DIR__ . '/../template/fields/image.html');
+        $handlebars->registerPartial('field_image', $file);
+
+        $file = file_get_contents(__DIR__ . '/../template/fields/file.html');
+        $handlebars->registerPartial('field_file', $file);
 
         $file = file_get_contents(__DIR__ . '/../template/fields/radio.html');
         $handlebars->registerPartial('field_radio', $file);
@@ -83,9 +86,6 @@ $handlebarsBuilder = function() {
 
         $file = file_get_contents(__DIR__ . '/../template/formats/template.html');
         $handlebars->registerPartial('format_template', $file);
-
-        $file = file_get_contents(__DIR__ . '/../template/validations.html');
-        $handlebars->registerPartial('validations', $file);
     }
 
     return $handlebars;

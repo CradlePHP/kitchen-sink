@@ -1,15 +1,13 @@
-{{#if options}}
-{{#each options}}
-<label>
-    <input
-        type="radio"
-        name="{{../name}}[]"
-        value="\{\{value\}\}"
-        \{\{#in value ../item.{{../name}}\}\}checked\{\{/in\}\} />
-    <span>{{label}}</span>
-</label>
-{{/each}}
-{{else}}
-<input type="hidden" name="{{name}}" value="0" />
-<input type="radio" name="{{name}}" value="1"\{\{#if item.{{name}}\}\} checked\{\{/if\}\} />
-{{/if}}
+{{#if options}}{{#each options}}
+                    <label>
+                        <input
+                            type="radio"
+                            name="{{../name}}[]"
+                            value="\{\{value\}\}"
+                            \{\{#in value ../item.{{../name}}\}\}checked\{\{/in\}\} />
+                        <span>{{label}}</span>
+                    </label>
+{{/each}}{{else}}
+                    <input type="hidden" name="{{name}}" value="0" />
+                    <input type="radio" name="{{name}}" value="1"\{\{#if item.{{name}}\}\} checked\{\{/if\}\} />
+{{~/if}}

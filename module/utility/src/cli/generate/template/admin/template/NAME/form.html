@@ -1,0 +1,60 @@
+<div class="panel panel-default clear" >
+    <div class="panel-heading brand">
+        <div class="panel-title">{{capital singular}}</div>
+    </div>
+
+    <div class="panel-body" >
+        <form enctype="multipart/form-data" method="post">
+            {{#each fields}}{{#if field}}
+            <div class="form-group\{\{#if errors.{{@key}}\}\} has-error\{\{/if\}\}">
+                <label class="control-label">{{label}}</label>
+                <div>
+                    {{#noop~}}
+                    {{~#when field.0 '==' 'checkbox'}}
+                        {{> field_checkbox field name=name options=options}}
+                    {{~/when}}
+                    {{~#when field.0 '==' 'file'}}
+                        {{> field_file field name=name}}
+                    {{~/when}}
+                    {{~#when field.0 '==' 'images'}}
+                        {{> field_images field name=name}}
+                    {{~/when}}
+                    {{~#when field.0 '==' 'image'}}
+                        {{> field_image field name=name}}
+                    {{~/when}}
+                    {{~#when field.0 '==' 'radio'}}
+                        {{> field_radio field name=name options=options}}
+                    {{~/when}}
+                    {{~#when field.0 '==' 'tags'}}
+                        {{> field_tags field name=name}}
+                    {{~/when}}
+                    {{~#when field.0 '==' 'textarea'~}}
+                        {{> field_textarea field name=name}}
+                    {{~/when}}
+                    {{~#when field.0 '==' 'color'~}}
+                        {{> field_text field type="color" name=name}}
+                    {{~/when}}
+                    {{~#when field.0 '==' 'date'~}}
+                        {{> field_text field type="date" name=name}}
+                    {{~/when}}
+                    {{~#when field.0 '==' 'range'~}}
+                        {{> field_text field type="range" name=name}}
+                    {{~/when}}
+                    {{~#when field.0 '==' 'number'~}}
+                        {{> field_text field type="number" name=name}}
+                    {{~/when}}
+                    {{~#when field.0 '==' 'text'~}}
+                        {{> field_text field type="text" name=name}}
+                    {{~/when}}
+                    {{~/noop}}
+
+                    \{\{#if errors.{{@key}}\}\}
+                    <span class="help-text">\{\{errors.{{@key}}\}\}</span>
+                    \{\{/if\}\}
+                </div>
+            </div>
+            {{/if}}{{/each}}
+        </form>
+    </div>
+</div>
+<script type="text/javascript" src="/scripts/cropper.js"></script>

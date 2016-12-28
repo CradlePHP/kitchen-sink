@@ -166,12 +166,20 @@ $cradle->on('project-generate-app', include __DIR__ . '/cli/generate/app.php');
 $cradle->on('project-generate-module', include __DIR__ . '/cli/generate/module.php');
 
 /**
- * CLI view generate
+ * CLI admin generate
  *
  * @param Request $request
  * @param Response $response
  */
-$cradle->on('project-generate-view', include __DIR__ . '/cli/generate/view.php');
+$cradle->on('project-generate-admin', include __DIR__ . '/cli/generate/admin.php');
+
+/**
+ * CLI REST generate
+ *
+ * @param Request $request
+ * @param Response $response
+ */
+$cradle->on('project-generate-rest', include __DIR__ . '/cli/generate/rest.php');
 
 /**
  * CLI SQL generate

@@ -18,7 +18,7 @@ use Cradle\Module\{{capital name}}\Service\ElasticService;
  *
  * @vendor   Acme
  * @package  {{capital name}}
- * @author   Christian Blanquera <cblanquera@openovate.com>
+ * @author   John Doe <john@acme.com>
  */
 class Cradle_Module_{{capital name}}_ServiceTest extends PHPUnit_Framework_TestCase
 {

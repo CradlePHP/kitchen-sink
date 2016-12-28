@@ -13,7 +13,7 @@
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('{{path.search}}', function($request, $response) {
+$cradle->get('{{routes.admin.search}}', function($request, $response) {
     //for logged in
     cradle('global')->requireLogin('admin');
 
@@ -23,8 +23,8 @@ $cradle->get('{{path.search}}', function($request, $response) {
 
     //Render body
     $class = 'page-admin-{{name}}-search page-admin';
-    $title = cradle('global')->translate('{{capital name}} Search');
-    $body = cradle('/app/admin')->template('{{name}}/search', $data);
+    $title = cradle('global')->translate('{{capital plural}}');
+    $body = cradle('/app/{{app}}')->template('{{name}}/search', $data);
 
     //Set Content
     $response
@@ -33,7 +33,7 @@ $cradle->get('{{path.search}}', function($request, $response) {
         ->setContent($body);
 
     //Render page
-}, 'render-admin-page');
+}, 'render-{{app}}-page');
 
 /**
  * Render the {{capital name}} Create Page
@@ -41,7 +41,7 @@ $cradle->get('{{path.search}}', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('{{path.create}}', function($request, $response) {
+$cradle->get('{{routes.admin.create}}', function($request, $response) {
     //for logged in
     cradle('global')->requireLogin('admin');
 
@@ -55,8 +55,8 @@ $cradle->get('{{path.create}}', function($request, $response) {
 
     //Render body
     $class = 'page-developer-{{name}}-create page-admin';
-    $title = cradle('global')->translate('Create {{capital name}}');
-    $body = cradle('/{{name}}/api')->template('{{name}}/form', $data);
+    $title = cradle('global')->translate('Create {{capital singular}}');
+    $body = cradle('/app/{{app}}')->template('{{name}}/form', $data);
 
     //Set Content
     $response
@@ -65,7 +65,7 @@ $cradle->get('{{path.create}}', function($request, $response) {
         ->setContent($body);
 
     //Render page
-}, 'render-admin-page');
+}, 'render-{{app}}-page');
 
 /**
  * Render the {{capital name}} Update Page
@@ -73,7 +73,7 @@ $cradle->get('{{path.create}}', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('{{path.update}}/:{{primary}}', function($request, $response) {
+$cradle->get('{{routes.admin.update}}', function($request, $response) {
     //for logged in
     cradle('global')->requireLogin('admin');
 
@@ -101,8 +101,8 @@ $cradle->get('{{path.update}}/:{{primary}}', function($request, $response) {
 
     //Render body
     $class = 'page-developer-{{name}}-update page-admin';
-    $title = cradle('global')->translate('Updating {{capital name}}');
-    $body = cradle('/{{name}}/api')->template('{{name}}/form', $data);
+    $title = cradle('global')->translate('Updating {{capital singular}}');
+    $body = cradle('/app/{{app}}')->template('{{name}}/form', $data);
 
     //Set Content
     $response
@@ -111,7 +111,7 @@ $cradle->get('{{path.update}}/:{{primary}}', function($request, $response) {
         ->setContent($body);
 
     //Render page
-}, 'render-admin-page');
+}, 'render-{{app}}-page');
 
 /**
  * Process the {{capital name}} Create Page
@@ -119,22 +119,22 @@ $cradle->get('{{path.update}}/:{{primary}}', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->post('{{path.create}}', function($request, $response) {
+$cradle->post('{{routes.admin.create}}', function($request, $response) {
     //for logged in
     cradle('global')->requireLogin('admin');
 
     cradle()->trigger('{{name}}-create', $request, $response);
 
     if($response->isError()) {
-        return cradle()->triggerRoute('get', '{{create}}', $request, $response);
+        return cradle()->triggerRoute('get', '{{routes.admin.create}}', $request, $response);
     }
 
     //it was good
     //add a flash
-    cradle('global')->flash('{{capital name}} was Created', 'success');
+    cradle('global')->flash('{{capital singular}} was Created', 'success');
 
     //redirect
-    cradle('global')->redirect('{{path.search}}');
+    cradle('global')->redirect('{{routes.admin.search}}');
 });
 
 /**
@@ -143,23 +143,23 @@ $cradle->post('{{path.create}}', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->post('{{path.update}}/:{{primary}}', function($request, $response) {
+$cradle->post('{{routes.admin.update}}', function($request, $response) {
     //for logged in
     cradle('global')->requireLogin('admin');
 
     cradle()->trigger('{{name}}-update', $request, $response);
 
     if($response->isError()) {
-        $route = '{{update}}/' . $request->getStage('{{name}}_id');
+        $route = '{{routes.admin.update}}/' . $request->getStage('{{primary}}');
         return cradle()->triggerRoute('get', $route, $request, $response);
     }
 
     //it was good
     //add a flash
-    cradle('global')->flash('{{capital name}} was Updated', 'success');
+    cradle('global')->flash('{{capital singular}} was Updated', 'success');
 
     //redirect
-    cradle('global')->redirect('{{path.search}}');
+    cradle('global')->redirect('{{routes.admin.search}}');
 });
 
 /**
@@ -168,7 +168,7 @@ $cradle->post('{{path.update}}/:{{primary}}', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('{{path.remove}}/:{{primary}}', function($request, $response) {
+$cradle->get('{{routes.admin.remove}}', function($request, $response) {
     //for logged in
     cradle('global')->requireLogin('admin');
 
@@ -180,11 +180,11 @@ $cradle->get('{{path.remove}}/:{{primary}}', function($request, $response) {
         cradle('global')->flash($response->getMessage(), 'danger');
     } else {
         //add a flash
-        $message = cradle('global')->translate('{{capital name}} was Removed');
+        $message = cradle('global')->translate('{{capital singular}} was Removed');
         cradle('global')->flash($message, 'success');
     }
 
-    cradle('global')->redirect('{{path.search}}');
+    cradle('global')->redirect('{{routes.admin.search}}');
 });
 {{#if active}}
 /**
@@ -193,7 +193,7 @@ $cradle->get('{{path.remove}}/:{{primary}}', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('{{path.restore}}/:{{primary}}', function($request, $response) {
+$cradle->get('{{routes.admin.restore}}', function($request, $response) {
     //for logged in
     cradle('global')->requireLogin('admin');
 
@@ -205,10 +205,10 @@ $cradle->get('{{path.restore}}/:{{primary}}', function($request, $response) {
         cradle('global')->flash($response->getMessage(), 'danger');
     } else {
         //add a flash
-        $message = cradle('global')->translate('{{capital name}} was Restored');
+        $message = cradle('global')->translate('{{capital singular}} was Restored');
         cradle('global')->flash($message, 'success');
     }
 
-    cradle('global')->redirect('{{path.search}}');
+    cradle('global')->redirect('{{routes.admin.search}}');
 });
 {{/if}}

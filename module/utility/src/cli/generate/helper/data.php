@@ -15,18 +15,25 @@ $dataBuilder = function() use ($schemas, $schema, $schemaRoot, $schemaName, $app
         }
     }
 
+    $normalizeField = include __DIR__ . '/field.php';
+
     foreach($data['fields'] as $name => $field) {
-        if(isset($field['unique']) && $field['unique']) {
+        $field = $normalizeField($field);
+
+        if($field['unique']) {
             $data['unique'][] = $name;
         }
 
-        if(isset($field['searchable']) && $field['searchable']) {
+        if($field['searchable']) {
             $data['searchable'][] = $name;
         }
 
-        if(isset($field['sortable']) && $field['sortable']) {
+        if($field['sortable']) {
             $data['sortable'][] = $name;
         }
+
+        $field['name'] = $name;
+        $data['fields'][$name] = $field;
     }
 
     foreach($schemas as $metaSchema) {
@@ -52,62 +59,6 @@ $dataBuilder = function() use ($schemas, $schema, $schemaRoot, $schemaName, $app
                 $data['json'][] = $name;
             }
         }
-    }
-
-
-    if(isset($data['events']) && is_array($data['events'])) {
-        $data['validator'] = [];
-        $data['service'] = [];
-        foreach($data['events'] as $name => $instructions) {
-            $data['events'][$name] = [
-                'instructions' => $instructions,
-                'service' => [
-                    'sql' => [],
-                    'elastic' => [],
-                    'redis' => [],
-                ]
-            ];
-
-            foreach($instructions as $instruction) {
-                if($instruction[0] === 'validate') {
-                    $data['validator'][] = $instruction[2];
-                    continue;
-                }
-
-                if($instruction[0] === 'sql') {
-                    $data['events'][$name]['service']['sql'] = $instruction[2];
-                    $data['service'][] = $instruction[2];
-                    continue;
-                }
-
-                if($instruction[0] === 'elastic') {
-                    $data['events'][$name]['service']['elastic'] = $instruction[2];
-                    $data['service'][] = $instruction[2];
-                    continue;
-                }
-
-                if($instruction[0] === 'redis') {
-                    $data['events'][$name]['service']['redis'] = $instruction[2];
-                    $data['service'][] = $instruction[2];
-                    continue;
-                }
-
-                if($instruction[0] === 'get-detail' || $instruction[0] === 'get-search') {
-                    $data['events'][$name]['service']['sql'] = $data['name'];
-                    $data['events'][$name]['service']['elastic'] = $data['name'];
-                    $data['events'][$name]['service']['redis'] = $data['name'];
-                    $data['service'][] = $data['name'];
-                    continue;
-                }
-            }
-
-            $data['events'][$name]['service']['sql'] = array_unique($data['events'][$name]['service']['sql']);
-            $data['events'][$name]['service']['elastic'] = array_unique($data['events'][$name]['service']['elastic']);
-            $data['events'][$name]['service']['redis'] = array_unique($data['events'][$name]['service']['redis']);
-        }
-
-        $data['validator'] = array_unique($data['validator']);
-        $data['service'] = array_unique($data['service']);
     }
 
     return $data;

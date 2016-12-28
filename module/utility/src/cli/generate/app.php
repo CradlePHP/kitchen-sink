@@ -36,7 +36,7 @@ return function($request, $response) {
     $handlebars = include __DIR__ . '/helper/handlebars.php';
 
     //get all the files
-    $sourceRoot = realpath(__DIR__ . '/../template/app');
+    $sourceRoot = realpath(__DIR__ . '/template/app');
     $paths = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($sourceRoot));
     foreach ($paths as $source) {
         //is it a folder ?
@@ -46,7 +46,7 @@ return function($request, $response) {
 
         //it's a file, determine the destination
         // if /template/module/src/events.php, then /path/to/file
-        $destination = $destinationRoot . substr($path->getPathname(), strlen($sourceRoot));
+        $destination = $app . substr($source->getPathname(), strlen($sourceRoot));
 
         //does it not exist?
         if(!is_dir(dirname($destination))) {
@@ -66,7 +66,7 @@ return function($request, $response) {
 
         CommandLine::info('Making ' . $destination);
 
-        $contents = file_get_contents($path->getPathname());
+        $contents = file_get_contents($source->getPathname());
         $template = $handlebars->compile($contents);
 
         $contents = $template(['app' => $appName]);

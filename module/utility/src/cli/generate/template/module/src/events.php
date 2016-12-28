@@ -1,47 +1,38 @@
 <?php //-->
 /**
- * This file is part of a Custom Project
- * (c) 2017-2019 Acme Inc
+ * This file is part of a Custom Project.
+ * (c) 2017-2019 Acme Inc.
  *
  * Copyright and license information can be found at LICENSE.txt
  * distributed with this package.
  */
 
-{{#if service}}
-{{~#each service}}
-use Cradle\Module\{{camel this 1}}\Service as {{camel this 1}}Service;
-{{/each~}}
-{{/if}}
-
-{{#if validator}}
-{{~#each validator}}
-use Cradle\Module\{{camel this 1}}\Validator as {{camel this 1}}Validator;
-{{/each~}}
-{{/if}}
+use Cradle\Module\{{camel name 1}}\Service as {{camel name 1}}Service;
+use Cradle\Module\{{camel name 1}}\Validator as {{camel name 1}}Validator;
 
 use Cradle\Http\Request;
 use Cradle\Http\Response;
 
-{{#if events}}
-{{#each events}}
 /**
- * {{../name}} {{@key}}
+ * {{camel name 1}} Create Job
  *
  * @param Request $request
  * @param Response $response
  */
-$cradle->on('{{../name}}-{{@key}}', function ($request, $response) {
+$cradle->on('{{name}}-create', function ($request, $response) {
     //get data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
     }
 
-    {{#each instructions}}
-        {{#when this.0 '===' 'validate'}}
+    //this/these will be used a lot
+    ${{name}}Sql = {{camel name 1}}Service::get('sql');
+    ${{name}}Redis = {{camel name 1}}Service::get('redis');
+    ${{name}}Elastic = {{camel name 1}}Service::get('elastic');
 
     //validate
-    $errors = {{camel this.2 1}}Validator::get{{capital this.1}}Errors($data);
+    $errors = {{camel name 1}}Validator::getCreateErrors($data);
 
     //if there are errors
     if (!empty($errors)) {
@@ -50,177 +41,87 @@ $cradle->on('{{../name}}-{{@key}}', function ($request, $response) {
             ->set('json', 'validation', $errors);
     }
 
-        {{/when}}
-    {{/each}}
+    //prepare data
+    {{~#each fields}}
+        {{~#when type '===' 'json'}}
 
-    // this/these will be used alot
-    {{#each service.sql}}
-    ${{this}}Sql = {{camel this 1}}Service::get('sql');
-    {{/each}}
-
-    {{#each service.elastic}}
-    ${{this}}Elastic = {{camel this 1}}Service::get('elastic');
-    {{/each}}
-
-    {{#each service.redis}}
-    ${{this}}Redis = {{camel this 1}}Service::get('redis');
-    {{/each}}
-
-    {{#each instructions}}
-        {{#when this.0 '===' 'sql'}}
-            {{#when this.1 '===' 'create'}}
-    //create sql
-    $results = ${{this.2}}Sql->create($data);
-            {{/when}}
-
-            {{#when this.1 '===' 'get'}}
-    //get sql
-    $results = ${{this.2}}Sql->get($data['{{../../primary}}']);
-            {{/when}}
-
-            {{#when this.1 '===' 'remove'}}
-                {{#if ../../active}}
-    //update sql
-    $results = ${{this.2}}Sql->update([
-        '{{../../primary}}' => $data['{{../../primary}}'],
-        'profile_active' => 0
-    ]);
-                {{else}}
-    //remove sql
-    $results = ${{this.2}}Sql->remove($data['{{../../primary}}']);
-                {{/if}}
-            {{/when}}
-
-            {{#when this.1 '===' 'restore'}}
-                {{#if ../../active}}
-    //update sql
-    $results = ${{this.2}}Sql->update([
-        '{{../../primary}}' => $data['{{../../primary}}'],
-        'profile_active' => 1
-    ]);
-                {{/if}}
-            {{/when}}
-
-            {{#when this.1 '===' 'search'}}
-    //search sql
-    $results = ${{this.2}}Sql->search($data);
-            {{/when}}
-
-            {{#when this.1 '===' 'update'}}
-    //update sql
-    $results = ${{this.2}}Sql->update($data);
-            {{/when}}
-
-            {{#when this.1 '===' 'link'}}
-    if(isset($data['{{this.3}}'])) {
-        //link item to {{this.2}}
-        ${{../../name}}Sql->link{{camel this.2 1}}($results['{{../../primary}}'], $data['{{this.3}}']);
+    if($data['{{@key}}']) {
+        $data['{{@key}}'] = json_encode($data['{{@key}}']);
     }
-            {{/when}}
+        {{~/when}}
 
-            {{#when this.1 '===' 'unlink'}}
-    if(isset($data['{{this.3}}'])) {
-        //unlink item from {{this.2}}
-        ${{../../name}}Sql->unlink{{camel this.2 1}}($results['{{../../primary}}'], $data['{{this.3}}']);
+        {{~#when type '===' 'date'}}
+
+        if($data['{{@key}}']) {
+            $data['{{@key}}'] = date('Y-m-d', strtotime($data['{{@key}}']));
+        }
+        {{~/when}}
+
+        {{~#when type '===' 'time'}}
+    if($data['{{@key}}']) {
+        $data['{{@key}}'] = date('H:i:s', strtotime($data['{{@key}}']));
     }
-            {{/when}}
+        {{~/when}}
 
-            {{#when this.1 '===' 'linkAll'}}
-    //unlink item from {{this.2}}
-    ${{../../name}}Sql->linkAll{{camel this.2 1}}($results['{{../../primary}}']);
-            {{/when}}
+        {{~#when type '===' 'datetime'}}
 
-            {{#when this.1 '===' 'unlinkAll'}}
-    //unlink all items from {{this.2}}
-    ${{../../name}}Sql->unlinkAll{{camel this.2 1}}($results['{{../../primary}}']);
-            {{/when}}
-        {{/when}}
+    if($data['{{@key}}']) {
+        $data['{{@key}}'] = date('Y-m-d H:i:s', strtotime($data['{{@key}}']));
+    }
+        {{~/when}}
+    {{~/each}}
 
-        {{#when this.0 '===' 'elastic'}}
-            {{#when this.1 '===' 'create'}}
-    //create elastic
-    $results = ${{this.2}}Elastic->create($data['{{../../primary}}']);
-            {{/when}}
+    //save {{name}} to database
+    $results = ${{name}}Sql->create($data);
 
-            {{#when this.1 '===' 'get'}}
-    //get elastic
-    $results = ${{this.2}}Elastic->get($data['{{../../primary}}']);
-            {{/when}}
+    //index {{name}}
+    ${{name}}Elastic->create($results['{{primary}}']);
 
-            {{#when this.1 '===' 'remove'}}
-    //remove elastic
-    $results = ${{this.2}}Elastic->remove($data['{{../../primary}}']);
-            {{/when}}
+    //invalidate cache
+    ${{name}}Redis->removeSearch();
 
-            {{#when this.1 '===' 'search'}}
-    //search elastic
-    $results = ${{this.2}}Sql->search($data);
-            {{/when}}
+    //return response format
+    $response->setError(false)->setResults($results);
+});
 
-            {{#when this.1 '===' 'update'}}
-    //update elastic
-    $results = ${{this.2}}Sql->update($data['{{../../primary}}']);
-            {{/when}}
-        {{/when}}
-
-        {{#when this.0 '===' 'redis'}}
-            {{#when this.1 '===' 'createDetail'}}
-    //create detail in redis
-    ${{this.2}}Redis->createDetail($results['{{this.3}}'], $results);
-            {{/when}}
-
-            {{#when this.1 '===' 'createSearch'}}
-    //create search in redis
-    ${{this.2}}Redis->createSearch($data, $results);
-            {{/when}}
-
-            {{#when this.1 '===' 'getDetail'}}
-    //get detail from redis
-    $results = ${{this.2}}Redis->getDetail($data['{{this.3}}']);
-            {{/when}}
-
-            {{#when this.1 '===' 'getSearch'}}
-    //get search from redis
-    $results = ${{this.2}}Redis->getSearch($data);
-            {{/when}}
-
-            {{#when this.1 '===' 'removeDetail'}}
-    //remove detail from redis
-    ${{this.2}}Redis->removeDetail($data['{{this.3}}']);
-            {{/when}}
-
-            {{#when this.1 '===' 'removeSearch'}}
-    //remove search from redis
-    ${{this.2}}Redis->removeSearch($data);
-            {{/when}}
-        {{/when}}
-
-        {{#when this.0 '===' 'get-detail'}}
+/**
+* {{camel name 1}} Detail Job
+*
+* @param Request $request
+* @param Response $response
+*/
+$cradle->on('{{name}}-detail', function ($request, $response) {
+    //get data
+    $data = [];
+    if ($request->hasStage()) {
+        $data = $request->getStage();
+    }
 
     $id = null;
-    {{#if ../../unique~}}
-    if (isset($data['{{../../primary}}'])) {
-        $id = $data['{{../../primary}}'];
-    } else if (isset($data['{{../../unique}}'])) {
-        $id = $data['{{../../unique}}'];
+    if (isset($data['{{primary}}'])) {
+        $id = $data['{{primary}}'];
+    {{#if unique.length}}{{#each unique~}}
+    } else if (isset($data['{{this}}']) && $data['{{this}}']) {
+        $id = $data['{{this}}'];
+    {{/each}}{{/if~}}
     }
-    {{~else~}}
-    if (isset($data['{{../../primary}}'])) {
-        $id = $data['{{../../primary}}'];
-    }
-    {{~/if}}
 
     //we need an id
     if (!$id) {
         return $response->setError(true, 'Invalid ID');
     }
 
+    //this/these will be used a lot
+    ${{name}}Sql = {{camel name 1}}Service::get('sql');
+    ${{name}}Redis = {{camel name 1}}Service::get('redis');
+    ${{name}}Elastic = {{camel name 1}}Service::get('elastic');
+
     $results = null;
 
     //if no flag
     if (!$request->hasGet('nocache')) {
         //get it from cache
-        $results = ${{../../name}}Redis->getDetail($id);
+        $results = ${{name}}Redis->getDetail($id);
     }
 
     //if no results
@@ -228,18 +129,18 @@ $cradle->on('{{../name}}-{{@key}}', function ($request, $response) {
         //if no flag
         if (!$request->hasGet('noindex')) {
             //get it from index
-            $results = ${{../../name}}Elastic->get($id);
+            $results = ${{name}}Elastic->get($id);
         }
 
         //if no results
         if (!$results) {
             //get it from database
-            $results = ${{../../name}}Sql->get($id);
+            $results = ${{name}}Sql->get($id);
         }
 
         if ($results) {
             //cache it from database or index
-            ${{../../name}}Redis->createDetail($id, $results);
+            ${{name}}Redis->createDetail($id, $results);
         }
     }
 
@@ -247,16 +148,128 @@ $cradle->on('{{../name}}-{{@key}}', function ($request, $response) {
         return $response->setError(true, 'Not Found');
     }
 
-        {{/when}}
+    //if permission is provided
+    $permission = $request->getStage('permission');
+    if ($permission && $results['{{primary}}'] != $permission) {
+        return $response->setError(true, 'Invalid Permissions');
+    }
 
-        {{#when this.0 '===' 'get-search'}}
+    $response->setError(false)->setResults($results);
+});
+
+/**
+* {{camel name 1}} Remove Job
+*
+* @param Request $request
+* @param Response $response
+*/
+$cradle->on('{{name}}-remove', function ($request, $response) {
+    //get the {{name}} detail
+    $this->trigger('{{name}}-detail', $request, $response);
+
+    //if there's an error
+    if ($response->isError()) {
+        return;
+    }
+
+    //get data
+    $data = $response->getResults();
+
+    //this/these will be used a lot
+    ${{name}}Sql = {{camel name 1}}Service::get('sql');
+    ${{name}}Redis = {{camel name 1}}Service::get('redis');
+    ${{name}}Elastic = {{camel name 1}}Service::get('elastic');
+
+    {{~#if active}}
+    //save to database
+    $results = ${{name}}Sql->update([
+        '{{primary}}' => $data['{{primary}}'],
+        '{{active}}' => 0
+    ]);
+    {{~else}}
+    //remove from database
+    $results = ${{name}}Sql->remove($data['{{primary}}']);
+    {{~/if}}
+
+    //remove from index
+    ${{name}}Elastic->remove($id);
+
+    //invalidate cache
+    ${{name}}Redis->removeDetail($data['{{primary}}']);
+    {{#if unique.length}}{{#each unique~}}
+    ${{name}}Redis->removeDetail($data['{{this}}']);
+    {{/each}}{{/if~}}
+
+    ${{name}}Redis->removeSearch();
+
+    $response->setError(false)->setResults($results);
+});
+
+{{~#if active}}
+
+/**
+* {{camel name 1}} Restore Job
+*
+* @param Request $request
+* @param Response $response
+*/
+$cradle->on('{{name}}-restore', function ($request, $response) {
+    //get the {{name}} detail
+    $this->trigger('{{name}}-detail', $request, $response);
+
+    //if there's an error
+    if ($response->isError()) {
+        return;
+    }
+
+    //get data
+    $data = $response->getResults();
+
+    //this/these will be used a lot
+    ${{name}}Sql = {{camel name 1}}Service::get('sql');
+    ${{name}}Redis = {{camel name 1}}Service::get('redis');
+    ${{name}}Elastic = {{camel name 1}}Service::get('elastic');
+
+    //save to database
+    $results = ${{name}}Sql->update([
+        '{{primary}}' => $data['{{primary}}'],
+        '{{name}}_active' => 1
+    ]);
+
+    //create index
+    ${{name}}Elastic->create($id);
+
+    //invalidate cache
+    ${{name}}Redis->removeSearch();
+
+    $response->setError(false)->setResults($id);
+});
+{{~/if}}
+
+/**
+* {{camel name 1}} Search Job
+*
+* @param Request $request
+* @param Response $response
+*/
+$cradle->on('{{name}}-search', function ($request, $response) {
+    //get data
+    $data = [];
+    if ($request->hasStage()) {
+        $data = $request->getStage();
+    }
+
+    //this/these will be used a lot
+    ${{name}}Sql = {{camel name 1}}Service::get('sql');
+    ${{name}}Redis = {{camel name 1}}Service::get('redis');
+    ${{name}}Elastic = {{camel name 1}}Service::get('elastic');
 
     $results = false;
 
     //if no flag
     if (!$request->hasGet('nocache')) {
         //get it from cache
-        $results = ${{../../name}}Redis->getSearch($data);
+        $results = ${{name}}Redis->getSearch($data);
     }
 
     //if no results
@@ -264,42 +277,104 @@ $cradle->on('{{../name}}-{{@key}}', function ($request, $response) {
         //if no flag
         if (!$request->hasGet('noindex')) {
             //get it from index
-            $results = ${{../../name}}Elastic->search($data);
+            $results = ${{name}}Elastic->search($data);
         }
 
         //if no results
         if (!$results) {
             //get it from database
-            $results = ${{../../name}}Sql->search($data);
+            $results = ${{name}}Sql->search($data);
         }
 
         if ($results) {
             //cache it from database or index
-            ${{../../name}}Redis->createSearch($data, $results);
+            ${{name}}Redis->createSearch($data, $results);
         }
     }
-        {{/when}}
 
-        {{#when this.0 '===' 'permissions'}}
-    //if permission is provided
-    $permission = $request->getStage('permission');
-    if ($permission
-        && isset($results['profile_id'])
-        && $results['profile_id'] != $permission
-    )
-    {
-        return $response->setError(true, 'Invalid Permissions');
+    //set response format
+    $response->setError(false)->setResults($results);
+});
+
+/**
+* {{camel name 1}} Update Job
+*
+* @param Request $request
+* @param Response $response
+*/
+$cradle->on('{{name}}-update', function ($request, $response) {
+    //get the {{name}} detail
+    $this->trigger('{{name}}-detail', $request, $response);
+
+    //if there's an error
+    if ($response->isError()) {
+        return;
     }
-        {{/when}}
 
-        {{#when this.0 '===' 'detail'}}
-    //get the {{../../name}} detail
-    $this->trigger('{{../../name}}-detail', $request, $response);
-        {{/when}}
-    {{/each}}
+    //get data
+    $data = [];
+    if ($request->hasStage()) {
+        $data = $request->getStage();
+    }
+
+    //this/these will be used a lot
+    ${{name}}Sql = {{camel name 1}}Service::get('sql');
+    ${{name}}Redis = {{camel name 1}}Service::get('redis');
+    ${{name}}Elastic = {{camel name 1}}Service::get('elastic');
+
+    //validate
+    $errors = {{camel name 1}}Validator::getUpdateErrors($data);
+
+    //if there are errors
+    if (!empty($errors)) {
+        return $response
+            ->setError(true, 'Invalid Parameters')
+            ->set('json', 'validation', $errors);
+    }
+
+    //prepare data
+    {{~#each fields}}
+        {{~#when type '===' 'json'}}
+
+    if($data['{{@key}}']) {
+        $data['{{@key}}'] = json_encode($data['{{@key}}']);
+    }
+        {{~/when}}
+
+        {{~#when type '===' 'date'}}
+
+        if($data['{{@key}}']) {
+            $data['{{@key}}'] = date('Y-m-d', strtotime($data['{{@key}}']));
+        }
+        {{~/when}}
+
+        {{~#when type '===' 'time'}}
+    if($data['{{@key}}']) {
+        $data['{{@key}}'] = date('H:i:s', strtotime($data['{{@key}}']));
+    }
+        {{~/when}}
+
+        {{~#when type '===' 'datetime'}}
+
+    if($data['{{@key}}']) {
+        $data['{{@key}}'] = date('Y-m-d H:i:s', strtotime($data['{{@key}}']));
+    }
+        {{~/when}}
+    {{~/each}}
+
+    //save {{name}} to database
+    $results = ${{name}}Sql->update($data);
+
+    //index {{name}}
+    ${{name}}Elastic->update($response->getResults('{{primary}}'));
+
+    //invalidate cache
+    ${{name}}Redis->removeDetail($response->getResults('{{primary}}'));
+    {{#if unique.length}}{{#each unique~}}
+    ${{name}}Redis->removeDetail($data['{{this}}']);
+    {{/each}}{{/if~}}
+    ${{name}}Redis->removeSearch();
 
     //return response format
     $response->setError(false)->setResults($results);
 });
-{{/each}}
-{{/if}}

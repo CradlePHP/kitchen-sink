@@ -8,7 +8,6 @@
  */
 
 use Cradle\CommandLine\Index as CommandLine;
-use Cradle\Sql\SqlFactory;
 
 return function($request, $response) {
     $cwd = $request->getServer('PWD');
@@ -16,6 +15,11 @@ return function($request, $response) {
     $schemaRoot = $cwd . '/schema';
     if(!is_dir($schemaRoot)) {
         return CommandLine::error('Schema folder not found. Generator Aborted.');
+    }
+
+    $appRoot = $cwd . '/app';
+    if(!is_dir($appRoot)) {
+        return CommandLine::error('App folder not found. Generator Aborted.');
     }
 
     //Available schemas
@@ -31,6 +35,21 @@ return function($request, $response) {
 
     if(empty($schemas)) {
         return CommandLine::error('No schemas found in ' . $schemaRoot);
+    }
+
+    //Available apps
+    $apps = [];
+    $paths = scandir($appRoot, 0);
+    foreach($paths as $path) {
+        if($path === '.' || $path === '..' || !is_dir($appRoot . '/' . $path)) {
+            continue;
+        }
+
+        $apps[] = pathinfo($path, PATHINFO_BASENAME);
+    }
+
+    if(empty($apps)) {
+        return CommandLine::error('No apps found in ' . $appRoot);
     }
 
     //determine the schema
@@ -55,21 +74,36 @@ return function($request, $response) {
         return CommandLine::error($schema . ' not found. Aborting.');
     }
 
-    CommandLine::system('Generating module...');
+    //determine the app
+    $appName = $request->getStage('app');
+
+    if(!$appName) {
+        CommandLine::info('Available apps:');
+        foreach($apps as $app) {
+            CommandLine::info(' - ' . $app);
+        }
+
+        $appName = CommandLine::input('Which app to use?');
+    }
+
+    if(!in_array($appName, $apps)) {
+        return CommandLine::error('Invalid app. Generator Aborted.');
+    }
+
+    $app = $appRoot . '/' . $appName;
+
+    if(!is_dir($app)) {
+        return CommandLine::error($app . ' not found. Aborting.');
+    }
+
+    CommandLine::system('Generating admin...');
 
     //get the template data
-    $appName = null;
     $handlebars = include __DIR__ . '/helper/handlebars.php';
     $data = include __DIR__ . '/helper/data.php';
 
-    //get destination root
-    $destinationRoot = $cwd . '/module/' . $schemaName;
-    if(!is_dir($destinationRoot)) {
-        //mkdir($destinationRoot, 0777);
-    }
-
     //get all the files
-    $sourceRoot = __DIR__ . '/template/module';
+    $sourceRoot = __DIR__ . '/template/admin';
     $paths = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($sourceRoot));
     foreach ($paths as $source) {
         //is it a folder ?
@@ -79,7 +113,8 @@ return function($request, $response) {
 
         //it's a file, determine the destination
         // if /template/module/src/events.php, then /path/to/file
-        $destination = $destinationRoot . substr($source->getPathname(), strlen($sourceRoot));
+        $destination = $app . substr($source->getPathname(), strlen($sourceRoot));
+        $destination = str_replace('NAME', $schemaName, $destination);
 
         //does it not exist?
         if(!is_dir(dirname($destination))) {
@@ -100,7 +135,6 @@ return function($request, $response) {
         CommandLine::info('Making ' . $destination);
 
         $contents = file_get_contents($source->getPathname());
-        $contents = str_replace('\\', '\\\\', $contents);
         $template = $handlebars->compile($contents);
 
         $contents = $template($data);
@@ -109,5 +143,5 @@ return function($request, $response) {
         file_put_contents($destination, $contents);
     }
 
-    CommandLine::success($schemaName . ' module was generated.');
+    CommandLine::success($schemaName . ' view was generated.');
 };

@@ -14,7 +14,7 @@ use Cradle\Module\{{capital name}}\Validator;
  *
  * @vendor   Acme
  * @package  {{capital name}}
- * @author   Christian Blanquera <cblanquera@openovate.com>
+ * @author   John Doe <john@acme.com>
  */
 class Cradle_Module_{{capital name}}_ValidatorTest extends PHPUnit_Framework_TestCase
 {
@@ -24,12 +24,10 @@ class Cradle_Module_{{capital name}}_ValidatorTest extends PHPUnit_Framework_Tes
     public function testGetCreateErrors()
     {
         $actual = Validator::getCreateErrors([]);
-
-        {{#each property}}{{#each validation.create~}}
-        {{#when type '===' 'required'}}
-        $this->assertEquals('Required', $data['{{../name}}']);
-        {{~/when}}
-        {{/each}}{{/each}}
+        {{#each fields}}{{#each valid}}
+        {{~#when this.0 '===' 'required'}}
+        $this->assertEquals('Required', $actual['{{../@key}}']);
+        {{~/when}}{{/each}}{{/each}}
     }
 
     /**
@@ -39,10 +37,6 @@ class Cradle_Module_{{capital name}}_ValidatorTest extends PHPUnit_Framework_Tes
     {
         $actual = Validator::getUpdateErrors([]);
 
-        {{#each property}}{{#each validation.update~}}
-        {{#when type '===' 'required'}}
-        $this->assertEquals('Required', $data['{{../name}}']);
-        {{~/when}}
-        {{/each}}{{/each}}
+        $this->assertEquals('Required', $actual['{{primary}}']);
     }
 }

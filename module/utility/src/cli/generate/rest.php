@@ -41,15 +41,15 @@ return function($request, $response) {
     $apps = [];
     $paths = scandir($appRoot, 0);
     foreach($paths as $path) {
-        if($path === '.' || $path === '..' || !is_dir($path)) {
+        if($path === '.' || $path === '..' || !is_dir($appRoot . '/' . $path)) {
             continue;
         }
 
-        $apps[] = pathinfo($file, PATHINFO_BASENAME);
+        $apps[] = pathinfo($path, PATHINFO_BASENAME);
     }
 
     if(empty($apps)) {
-        return CommandLine::error('No apps found in ' . $schemaRoot);
+        return CommandLine::error('No apps found in ' . $appRoot);
     }
 
     //determine the schema
@@ -96,14 +96,14 @@ return function($request, $response) {
         return CommandLine::error($app . ' not found. Aborting.');
     }
 
-    CommandLine::system('Generating view...');
+    CommandLine::system('Generating REST...');
 
     //get the template data
     $handlebars = include __DIR__ . '/helper/handlebars.php';
     $data = include __DIR__ . '/helper/data.php';
 
     //get all the files
-    $sourceRoot = realpath(__DIR__ . '/../template/view');
+    $sourceRoot = __DIR__ . '/template/rest';
     $paths = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($sourceRoot));
     foreach ($paths as $source) {
         //is it a folder ?
@@ -113,13 +113,13 @@ return function($request, $response) {
 
         //it's a file, determine the destination
         // if /template/module/src/events.php, then /path/to/file
-        $destination = $app . substr($path->getPathname(), strlen($sourceRoot));
+        $destination = $app . substr($source->getPathname(), strlen($sourceRoot));
         $destination = str_replace('NAME', $schemaName, $destination);
 
         //does it not exist?
         if(!is_dir(dirname($destination))) {
             //then make it
-            mkdir(dirname($destination), 0777, true);
+            //mkdir(dirname($destination), 0777, true);
         }
 
         //if the destination exists
@@ -134,13 +134,13 @@ return function($request, $response) {
 
         CommandLine::info('Making ' . $destination);
 
-        $contents = file_get_contents($path->getPathname());
+        $contents = file_get_contents($source->getPathname());
         $template = $handlebars->compile($contents);
 
         $contents = $template($data);
         $contents = str_replace('{{ ', '{{', $contents);
-
-        file_put_contents($destination, $contents);
+echo $contents;
+        //file_put_contents($destination, $contents);
     }
 
     CommandLine::success($schemaName . ' view was generated.');
