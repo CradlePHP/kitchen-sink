@@ -234,7 +234,7 @@ $cradle->on('{{name}}-remove', function ($request, $response) {
     {{~/if}}
 
     //remove from index
-    ${{name}}Elastic->remove($id);
+    ${{name}}Elastic->remove($data['{{primary}}']);
 
     //invalidate cache
     ${{name}}Redis->removeDetail($data['{{primary}}']);
@@ -275,16 +275,16 @@ $cradle->on('{{name}}-restore', function ($request, $response) {
     //save to database
     $results = ${{name}}Sql->update([
         '{{primary}}' => $data['{{primary}}'],
-        '{{name}}_active' => 1
+        '{{active}}' => 1
     ]);
 
     //create index
-    ${{name}}Elastic->create($id);
+    ${{name}}Elastic->create($data['{{primary}}']);
 
     //invalidate cache
     ${{name}}Redis->removeSearch();
 
-    $response->setError(false)->setResults($id);
+    $response->setError(false)->setResults($results);
 });
 {{~/if}}
 

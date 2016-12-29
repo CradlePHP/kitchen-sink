@@ -123,7 +123,7 @@ return function($request, $response) {
     }
 
     //add to bootstrap.php
-    $bootstrapFile = $cwd . '/boostrap.php';
+    $bootstrapFile = $cwd . '/bootstrap.php';
     if(file_exists($bootstrapFile)) {
         $flag = '->register(\'/module/utility\');';
         $add = '->register(\'/module/' . $data['name'] . '\')';
