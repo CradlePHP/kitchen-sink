@@ -1,0 +1,181 @@
+<div class="panel panel-default clear" >
+    <div class="panel-heading brand">
+        <div class="panel-title">{{title}}</div>
+    </div>
+
+    <div class="panel-body" >
+        <form enctype="multipart/form-data" method="post">
+            
+            <div class="form-group{{#if errors.profile_image}} has-error{{/if}}">
+                <label class="control-label">Image</label>
+                <div>
+                    
+                    <div data-do="image-field"
+                        data-name="profile_image"
+                        data-width="200"
+                        data-height="200"
+                        data-alt="Change this Photo"
+                        class="image-field">
+                            {{#if item.profile_image}}
+                                <input type="hidden" name="profile_image" value="{{item.profile_image}}" />
+                                <img alt="Change this Photo" width="200" src="{{item.profile_image}}" />
+                            {{else}}
+                                <img alt="Upload a Photo" width="200" class="placeholder" src="/images/default-image.png" />
+                            {{/if}}
+                    </div>
+
+                    {{#if errors.profile_image}}
+                    <span class="help-text">{{errors.profile_image}}</span>
+                    {{/if}}
+                </div>
+            </div>
+            
+            <div class="form-group{{#if errors.profile_name}} has-error{{/if}}">
+                <label class="control-label">Name</label>
+                <div>
+                    <input name="profile_name" value="{{item.profile_name}}" placeholder="John Doe" type="text" class="form-control" />
+
+                    {{#if errors.profile_name}}
+                    <span class="help-text">{{errors.profile_name}}</span>
+                    {{/if}}
+                </div>
+            </div>
+            
+            <div class="form-group{{#if errors.profile_email}} has-error{{/if}}">
+                <label class="control-label">Email</label>
+                <div>
+                    <input name="profile_email" value="{{item.profile_email}}" placeholder="john@doe.com" type="text" class="form-control" />
+
+                    {{#if errors.profile_email}}
+                    <span class="help-text">{{errors.profile_email}}</span>
+                    {{/if}}
+                </div>
+            </div>
+            
+            <div class="form-group{{#if errors.profile_phone}} has-error{{/if}}">
+                <label class="control-label">Phone</label>
+                <div>
+                    <input name="profile_phone" value="{{item.profile_phone}}" placeholder="John Doe" type="text" class="form-control" />
+
+                    {{#if errors.profile_phone}}
+                    <span class="help-text">{{errors.profile_phone}}</span>
+                    {{/if}}
+                </div>
+            </div>
+            
+            <div class="form-group{{#if errors.profile_detail}} has-error{{/if}}">
+                <label class="control-label">Detail</label>
+                <div>
+                    <textarea name="profile_detail" placeholder="Write about something" class="form-control">{{{item.profile_detail}}}</textarea>
+
+                    {{#if errors.profile_detail}}
+                    <span class="help-text">{{errors.profile_detail}}</span>
+                    {{/if}}
+                </div>
+            </div>
+            
+            <div class="form-group{{#if errors.profile_job}} has-error{{/if}}">
+                <label class="control-label">Job Title</label>
+                <div>
+                    <input name="profile_job" value="{{item.profile_job}}" placeholder="Janitor" type="text" class="form-control" />
+
+                    {{#if errors.profile_job}}
+                    <span class="help-text">{{errors.profile_job}}</span>
+                    {{/if}}
+                </div>
+            </div>
+            
+            <div class="form-group{{#if errors.profile_gender}} has-error{{/if}}">
+                <label class="control-label">Gender</label>
+                <div>
+                    
+                    <label>
+                        <input type="radio" name="profile_gender" value="Male"{{#when ../item.profile_gender '==' 'male'}} checked{{/when}} />
+                        <span>male</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="profile_gender" value="Female"{{#when ../item.profile_gender '==' 'female'}} checked{{/when}} />
+                        <span>female</span>
+                    </label>
+
+                    {{#if errors.profile_gender}}
+                    <span class="help-text">{{errors.profile_gender}}</span>
+                    {{/if}}
+                </div>
+            </div>
+            
+            <div class="form-group{{#if errors.profile_birth}} has-error{{/if}}">
+                <label class="control-label">Birth Date</label>
+                <div>
+                    <input name="profile_birth" value="{{item.profile_birth}}" type="date" class="form-control" />
+
+                    {{#if errors.profile_birth}}
+                    <span class="help-text">{{errors.profile_birth}}</span>
+                    {{/if}}
+                </div>
+            </div>
+            
+            <div class="form-group{{#if errors.profile_website}} has-error{{/if}}">
+                <label class="control-label">Website</label>
+                <div>
+                    <input name="profile_website" value="{{item.profile_website}}" placeholder="http://www.acme.com/" type="text" class="form-control" />
+
+                    {{#if errors.profile_website}}
+                    <span class="help-text">{{errors.profile_website}}</span>
+                    {{/if}}
+                </div>
+            </div>
+            
+            <div class="form-group{{#if errors.profile_facebook}} has-error{{/if}}">
+                <label class="control-label">Facebook</label>
+                <div>
+                    <input name="profile_facebook" value="{{item.profile_facebook}}" placeholder="http://www.acme.com/" type="text" class="form-control" />
+
+                    {{#if errors.profile_facebook}}
+                    <span class="help-text">{{errors.profile_facebook}}</span>
+                    {{/if}}
+                </div>
+            </div>
+            
+            <div class="form-group{{#if errors.profile_linkedin}} has-error{{/if}}">
+                <label class="control-label">LinkedIn</label>
+                <div>
+                    <input name="profile_linkedin" value="{{item.profile_linkedin}}" placeholder="http://www.acme.com/" type="text" class="form-control" />
+
+                    {{#if errors.profile_linkedin}}
+                    <span class="help-text">{{errors.profile_linkedin}}</span>
+                    {{/if}}
+                </div>
+            </div>
+            
+            <div class="form-group{{#if errors.profile_twitter}} has-error{{/if}}">
+                <label class="control-label">Twitter</label>
+                <div>
+                    <input name="profile_twitter" value="{{item.profile_twitter}}" placeholder="http://www.acme.com/" type="text" class="form-control" />
+
+                    {{#if errors.profile_twitter}}
+                    <span class="help-text">{{errors.profile_twitter}}</span>
+                    {{/if}}
+                </div>
+            </div>
+            
+            <div class="form-group{{#if errors.profile_google}} has-error{{/if}}">
+                <label class="control-label">Google</label>
+                <div>
+                    <input name="profile_google" value="{{item.profile_google}}" placeholder="http://www.acme.com/" type="text" class="form-control" />
+
+                    {{#if errors.profile_google}}
+                    <span class="help-text">{{errors.profile_google}}</span>
+                    {{/if}}
+                </div>
+            </div>
+            
+
+            <div class="clear form-group">
+                <input type="hidden" name="csrf" value="" />
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript" src="/scripts/cropper.js"></script>

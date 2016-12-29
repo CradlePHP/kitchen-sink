@@ -1,0 +1,90 @@
+<h3>{{title}}</h3>
+
+<div class="clearfix">
+    <!-- START: SEARCH FORM -->
+    <form class="pull-right search form-inline" method="get">
+        <div class="form-group">
+            <input name="q" placeholder="Search" type="text"
+            value="{{q}}" class="form-control" />
+        </div>
+        <button class="btn"><i class="fa fa-search"></i></button>
+    </form>
+    <!-- END: SEARCH FORM -->
+
+    <span>
+        <a class="btn btn-success" href="/admin/profile/create">
+            <i class="fa fa-plus"></i>
+            Create New Profile
+        </a>
+    </span>
+</div>
+
+<!-- START: BULK FORM -->
+<form method="post" class="form-inline bulk-form pad-vertical">
+    <div class="panel panel-default clear">
+        <div class="panel-body" >
+            {{#if rows}}
+                <div class="table-overflow">
+                    <!-- START: TABLE -->
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Actions</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each rows}}
+                            <tr data-id="{{profile_id}}">
+                                <td>
+                                    {{#when profile_active '==' 1}}
+                                    <a title="Edit" href="/admin/profile/update/{{profile_id}}">
+                                    <i class="fa fa-edit"></i></a>
+                                    &nbsp;
+                                    <a title="Remove" href="/admin/profile/remove/{{profile_id}}"
+                                    class="text-danger remove"><i class="fa fa-times"></i></a>
+                                    {{/when}}
+                                    {{#when profile_active '==' 0}}
+                                    <a title="Restore" href="/admin/profile/restore/{{profile_id}}" class="text-success restore">
+                                    <i class="fa fa-external-link"></i></a>
+                                    {{/when}}
+                                </td>
+                                <td>
+                                    <img src="{{profile_image}}" width="200" height="200" />
+                                </td>
+                                <td>
+                                    {{profile_name}}
+                                </td>
+                                <td>
+                                    {{profile_email}}
+                                </td>
+                                <td>
+                                    {{profile_phone}}
+                                </td>
+                                <td>
+                                    
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                    <!-- END: TABLE -->
+                </div>
+            {{else}}
+                <!-- START: NO RESULTS -->
+                <div class="well no-results">No Results Found</div>
+                <!-- END: NO RESULTS -->
+            {{/if}}
+        </div>
+    </div>
+
+    <ul class="pagination">
+        {{#pagination total range}}
+        <li{{#if active}} class="active"{{/if}}><a href="?{{href}}">{{page}}</a></li>
+        {{/pagination}}
+    </ul>
+</form>

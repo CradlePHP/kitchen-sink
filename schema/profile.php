@@ -8,6 +8,43 @@ return [
     'updated' => 'profile_updated',
     'relations' => [],
     'fields' => [
+        'profile_image' => [
+            'sql' => [
+                'type' => 'varchar',
+                'length' => 255
+            ],
+            'elastic' => [
+                'type' => 'string'
+            ],
+            'form' => [
+                'label' => 'Image',
+                'type' => 'image-field',
+                'attributes' => [
+                    'data-do' => 'image-field',
+                ]
+            ],
+            'validation' => [
+                [
+                    'method' => 'regexp',
+                    'message' => 'Should be a valid url',
+                    'parameters' => '/^(http|https|ftp):\/\/([A-Z0-9][A-Z0-9_-]*(?:.[A-Z0-9][A-Z0-9_-]*)+):?(d+)?\/?/i'
+                ]
+            ],
+            'list' => [
+                'label' => 'Image',
+                'format' => 'image',
+                'parameters' => [200, 200]
+            ],
+            'detail' => [
+                'label' => 'Image',
+                'format' => 'image',
+                'parameters' => [200, 200]
+            ],
+            'test' => [
+                'pass' => 'https://www.google.com.ph/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
+                'fail' => 'not a good image',
+            ]
+        ],
         'profile_name' => [
             'sql' => [
                 'type' => 'varchar',
@@ -178,43 +215,6 @@ return [
             'test' => [
                 'pass' => 'One Two Three Four Five Six Seven Eight Nine Ten Eleven',
                 'fail' => 'One Two Three Four'
-            ]
-        ],
-        'profile_image' => [
-            'sql' => [
-                'type' => 'varchar',
-                'length' => 255
-            ],
-            'elastic' => [
-                'type' => 'string'
-            ],
-            'form' => [
-                'label' => 'Image',
-                'type' => 'image-field',
-                'attributes' => [
-                    'data-do' => 'image-field',
-                ]
-            ],
-            'validation' => [
-                [
-                    'method' => 'regexp',
-                    'message' => 'Should be a valid url',
-                    'parameters' => '/^(http|https|ftp):\/\/([A-Z0-9][A-Z0-9_-]*(?:.[A-Z0-9][A-Z0-9_-]*)+):?(d+)?\/?/i'
-                ]
-            ],
-            'list' => [
-                'label' => 'Image',
-                'format' => 'image',
-                'parameters' => [200, 200]
-            ],
-            'detail' => [
-                'label' => 'Image',
-                'format' => 'image',
-                'parameters' => [200, 200]
-            ],
-            'test' => [
-                'pass' => 'https://www.google.com.ph/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
-                'fail' => 'not a good image',
             ]
         ],
         'profile_job' => [
