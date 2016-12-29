@@ -29,39 +29,13 @@ $cradle->get('/rest/profile/search', 'profile-search');
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/rest/profile/update', function($request, $response) {
-    $request->setStage('role', 'personal_profile');
+$cradle->post('/rest/profile/update', function($request, $response) {
+    $request->setStage('role', 'profile');
     cradle()->trigger('rest-permitted', $request, $response);
 
     if($response->isError()) {
         return;
     }
-
-    $profile = $request->get('source', 'profile_id');
-    $request->setStage('profile_id', $profile);
-    $request->setStage('permission', $profile);
-
-    //call the job
-    cradle()->trigger('profile-update', $request, $response);
-});
-
-/**
- * Profile remove only if i have user_profile
- *
- * @param Request $request
- * @param Response $response
- */
-$cradle->get('/rest/user/profile/update/:profile_id', function($request, $response) {
-    $request->setStage('role', 'user_profile');
-    cradle()->trigger('rest-permitted', $request, $response);
-
-    if($response->isError()) {
-        return;
-    }
-
-    //set the profile id
-    $profile = $request->get('source', 'profile_id');
-    $request->setStage('permission', $profile);
 
     //call the job
     cradle()->trigger('profile-update', $request, $response);

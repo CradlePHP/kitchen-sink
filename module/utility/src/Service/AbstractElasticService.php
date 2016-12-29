@@ -101,6 +101,16 @@ abstract class AbstractElasticService
     }
 
     /**
+     * Returns the ElasticSearch resource
+     *
+     * @return Resource
+     */
+    public function getResource()
+    {
+        return $this->resource;
+    }
+
+    /**
      * Remove from index
      *
      * @param *int $id

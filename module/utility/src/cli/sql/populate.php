@@ -33,6 +33,11 @@ return function ($request, $response) {
             continue;
         }
 
+        //if we just want to populate one table
+        if($request->hasStage('module') && $folder !== $request->getStage('module')) {
+            continue;
+        }
+
         $query = file_get_contents($file);
         $this->package('global')->service('sql-main')->query($query);
     }

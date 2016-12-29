@@ -24,6 +24,11 @@ return function ($request, $response) {
     //truncate all tables
     $tables = $database->getTables();
     foreach ($tables as $table) {
+        //if we just want to flush one table
+        if($request->hasStage('module') && strpos($table, $request->getStage('module')) !== 0) {
+            continue;
+        }
+
         $database->query('TRUNCATE TABLE `' . $table . '`;');
     }
 };

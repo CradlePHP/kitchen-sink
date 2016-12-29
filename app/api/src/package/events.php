@@ -14,55 +14,71 @@
  * @param Request $response
  */
 $cradle->on('rest-permitted', function($request, $response) {
+    if($request->hasStage('client_id')) {
+        $this->trigger('rest-app-permitted', $request, $response);
+    } else {
+        $this->trigger('rest-session-permitted', $request, $response);
+    }
+
+    if($response->isError() || !$request->hasStage('role')) {
+        return;
+    }
+
     $role = $request->getStage('role');
-    $token = $request->getStage('access_token');
-    $secret = $request->getStage('access_secret');
+    $profile = $request->getStage('profile_id');
 
-    if(!$token) {
-        return false;
-    }
-
-    if ($request->getMethod() === 'GET' && !$secret) {
-        return $response->setError(true, 'Unauthorize Request');
-    }
-
-    if (strpos($role, 'user_') === 0) {
-        //retreive the permissions based on the session token and session secret
-        $search = $this
-            ->package('global')
-            ->database()
-            ->search('session')
-            ->setColumns('session.*', 'profile.*', 'app.*')
-            ->innerJoinUsing('session_app', 'session_id')
-            ->innerJoinUsing('app', 'app_id')
-            ->innerJoinUsing('session_auth', 'session_id')
-            ->innerJoinUsing('auth_profile', 'auth_id')
-            ->innerJoinUsing('profile', 'profile_id')
-            ->filterBySessionToken($token)
-            ->filterBySessionStatus('ACCESS')
-            ->addFilter(
-                "JSON_SEARCH(session_permissions, 'one', %s) IS NOT NULL",
-                $role
-            );
-
-        if ($secret) {
-            $search->filterBySessionSecret($secret);
-        }
-
-        $row = $search->getRow();
-
-        if (empty($row)) {
+    //if there's a profile_id
+    if($profile) {
+        //it should be an app
+        if($request->get('source', 'type') !== 'app') {
             return $response->setError(true, 'Unauthorize Request');
         }
 
-        $request->set('source', $row);
-        $request->set('source', 'access_token', $token);
-        $request->set('source', 'access_secret', $secret);
+        //I should have an admin role
+        if(!in_array('admin_' . $role, $request->get('source', 'app_permissions'))) {
+            return $response->setError(true, 'Unauthorize Request');
+        }
+    } else if($request->get('source', 'type') === 'app') {
+        //I should have a personal role
+        if(!in_array('personal_' . $role, $request->get('source', 'app_permissions'))) {
+            return $response->setError(true, 'Unauthorize Request');
+        }
 
-        //CUSTOM FOR SALAAAP
-        $request->setStage('profile_experience_id', $row['profile_id']);
+        $profile = $request->get('source', 'profile_id');
+    } else {
+        //I should have a user role
+        if(!in_array('user_' . $role, $request->get('source', 'app_permissions'))) {
+            return $response->setError(true, 'Unauthorize Request');
+        }
 
-        return $response->setError(false);
+        $profile = $request->get('source', 'profile_id');
+    }
+
+    //set profile
+    $request->setStage('profile_id', $profile);
+    $request->setStage('permission', $profile);
+
+    //set app
+    $app = $request->get('source', 'app_id');
+    $request->setStage('app_id', $app);
+});
+
+/**
+ * OAuth App Permission Check
+ *
+ * @param Request $request
+ * @param Request $response
+ */
+$cradle->on('rest-app-permitted', function($request, $response) {
+    if(!$request->hasStage('client_id')) {
+        return $response->setError(true, 'Unauthorize Request');
+    }
+
+    $token = $request->getStage('client_id');
+    $secret = $request->getStage('client_secret');
+
+    if ($request->getMethod() !== 'GET' && !$secret) {
+        return $response->setError(true, 'Unauthorize Request');
     }
 
     $search = $this
@@ -72,11 +88,7 @@ $cradle->on('rest-permitted', function($request, $response) {
         ->setColumns('profile.*', 'app.*')
         ->innerJoinUsing('app_profile', 'app_id')
         ->innerJoinUsing('profile', 'profile_id')
-        ->filterByAppToken($token)
-        ->addFilter(
-            "JSON_SEARCH(app_permissions, 'one', %s) IS NOT NULL",
-            $role
-        );
+        ->filterByAppToken($token);
 
     if ($secret) {
         $search->filterByAppSecret($secret);
@@ -88,12 +100,71 @@ $cradle->on('rest-permitted', function($request, $response) {
         return $response->setError(true, 'Unauthorize Request');
     }
 
-    $request->set('source', $row);
-    $request->set('source', 'access_token', $token);
-    $request->set('source', 'access_secret', $secret);
+    if($row['app_permissions']) {
+        $row['app_permissions'] = json_decode($row['app_permissions'], true);
+    } else {
+        $row['app_permissions'] = [];
+    }
 
-    //CUSTOM FOR SALAAAP
-    $request->setStage('profile_experience_id', $row['profile_id']);
+    $request->set('source', $row);
+    $request->set('source', 'type', 'app');
+    $request->set('source', 'token', $token);
+    $request->set('source', 'secret', $secret);
+
+    return $response->setError(false);
+});
+
+/**
+ * OAuth Session Permission Check
+ *
+ * @param Request $request
+ * @param Request $response
+ */
+$cradle->on('rest-session-permitted', function($request, $response) {
+    if(!$request->hasStage('access_token')) {
+        return $response->setError(true, 'Unauthorize Request');
+    }
+
+    $token = $request->getStage('access_token');
+    $secret = $request->getStage('access_secret');
+
+    if ($request->getMethod() !== 'GET' && !$secret) {
+        return $response->setError(true, 'Unauthorize Request');
+    }
+
+    $search = $this
+        ->package('global')
+        ->database()
+        ->search('session')
+        ->setColumns('session.*', 'profile.*', 'app.*')
+        ->innerJoinUsing('session_app', 'session_id')
+        ->innerJoinUsing('app', 'app_id')
+        ->innerJoinUsing('session_auth', 'session_id')
+        ->innerJoinUsing('auth_profile', 'auth_id')
+        ->innerJoinUsing('profile', 'profile_id')
+        ->filterBySessionToken($token)
+        ->filterBySessionStatus('ACCESS');
+
+    if ($secret) {
+        $search->filterBySessionSecret($secret);
+    }
+
+    $row = $search->getRow();
+
+    if (empty($row)) {
+        return $response->setError(true, 'Unauthorize Request');
+    }
+
+    if($row['session_permissions']) {
+        $row['session_permissions'] = json_decode($row['session_permissions'], true);
+    } else {
+        $row['session_permissions'] = [];
+    }
+
+    $request->set('source', $row);
+    $request->set('source', 'type', 'session');
+    $request->set('source', 'token', $token);
+    $request->set('source', 'secret', $secret);
 
     return $response->setError(false);
 });

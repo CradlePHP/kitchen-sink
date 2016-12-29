@@ -58,15 +58,11 @@ return function($request, $response) {
     CommandLine::system('Generating module...');
 
     //get the template data
-    $appName = null;
     $handlebars = include __DIR__ . '/helper/handlebars.php';
     $data = include __DIR__ . '/helper/data.php';
 
     //get destination root
     $destinationRoot = $cwd . '/module/' . $schemaName;
-    if(!is_dir($destinationRoot)) {
-        //mkdir($destinationRoot, 0777);
-    }
 
     //get all the files
     $sourceRoot = __DIR__ . '/template/module';
@@ -90,7 +86,7 @@ return function($request, $response) {
         //if the destination exists
         if(file_exists($destination)) {
             //ask questions
-            $overwrite = Command::input($destination .' exists. Overwrite?(n)');
+            $overwrite = CommandLine::input($destination .' exists. Overwrite?(n)', 'n');
             if($overwrite === 'n') {
                 CommandLine::warning('Skipping...');
                 continue;
@@ -109,5 +105,36 @@ return function($request, $response) {
         file_put_contents($destination, $contents);
     }
 
-    CommandLine::success($schemaName . ' module was generated.');
+    //add to composer.json
+    $composerFile = $cwd . '/composer.json';
+    if(file_exists($composerFile)) {
+        $camel = str_replace(['-', '_'], ' ', $data['name']);
+        $camel = ucwords($camel);
+        $camel = str_replace(' ', '', $camel);
+        $flag = '"psr-4": {';
+        $add = '"Cradle\\\\Module\\\\' . $camel . '\\\\": "module/' . $data['name'] . '/src/",';
+
+        $contents = file_get_contents($composerFile);
+        if(strpos($contents, $flag) !== false && strpos($contents, $add) === false) {
+            $contents = str_replace($flag, $flag . "\n            " . $add, $contents);
+        }
+
+        file_put_contents($composerFile, $contents);
+    }
+
+    //add to bootstrap.php
+    $bootstrapFile = $cwd . '/boostrap.php';
+    if(file_exists($bootstrapFile)) {
+        $flag = '->register(\'/module/utility\');';
+        $add = '->register(\'/module/' . $data['name'] . '\')';
+
+        $contents = file_get_contents($bootstrapFile);
+        if(strpos($contents, $flag) !== false && strpos($contents, $add) === false) {
+            $contents = str_replace($flag, $add . "\n    " . $flag, $contents);
+        }
+
+        file_put_contents($bootstrapFile, $contents);
+    }
+
+    CommandLine::success($schemaName . ' module was generated. Run `composer update`.');
 };

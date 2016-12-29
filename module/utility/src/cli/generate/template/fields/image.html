@@ -1,15 +1,14 @@
-<div
-                        data-do="image-field"
-                        data-name="{{name}}"
+
+                    <div data-do="image-field"
+                        data-name="{NAME}"
                         data-width="200"
                         data-height="200"
-                        data-display="small"
                         data-alt="Change this Photo"
-                        class="image-field multiple center pad form-control">
-                            \{\{#if item.{{name}}\}\}
-                                <input type="hidden" name="{{name}}" value="\{\{item.{{name}}\}\}" />
-                                <img alt="Change this Photo" width="200" height="200" src="\{\{item.{{name}}\}\}" />
-                            \{\{else\}\}
-                                <img alt="Upload a Photo" width="200" class="placeholder" height="200" src="{{config 'cdn'}}/images/icon/icon-add-image.png" />
-                            \{\{/if\}\}
+                        class="image-field">
+                            {{#if item.{NAME}}}
+                                <input type="hidden" name="{NAME}" value="{{item.{NAME}}}" />
+                                <img alt="Change this Photo" width="200" src="{{item.{NAME}}}" />
+                            {{else}}
+                                <img alt="Upload a Photo" width="200" class="placeholder" src="/images/default-image.png" />
+                            {{/if}}
                     </div>

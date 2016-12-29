@@ -29,8 +29,7 @@ return function ($request, $response) {
             'deploy',
             'services',
             'settings',
-            'test',
-            'version'
+            'test'
         ];
 
         foreach ($configs as $config) {
@@ -54,7 +53,7 @@ return function ($request, $response) {
     }
 
     //name
-    $name = 'testing_db';
+    $name = false;
     if ($request->hasStage(0)) {
         $name = $request->getStage(0);
     }
@@ -189,6 +188,13 @@ return function ($request, $response) {
         foreach ($tables as $table) {
             $database->query('DROP TABLE `' . $table . '`;');
         }
+    }
+
+    $file = cradle('global')->path('config') . '/version.php';
+    //if there's a version file
+    if(file_exists($file)) {
+        //this is an install process so reset the versions
+        file_put_contents($file, '<?php return [];');
     }
 
     //now run the update

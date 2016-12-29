@@ -20,7 +20,9 @@ return function ($request, $response) {
     //setup the configs
     CommandLine::system('Updating project...');
 
-    $version = Installer::install();
+    $versions = Installer::install();
 
-    CommandLine::success('Updated to v' . $version);
+    foreach($versions as $path => $version) {
+        CommandLine::success('Updated ' . $path . ' to v' . $version);
+    }
 };

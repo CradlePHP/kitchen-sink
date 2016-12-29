@@ -17,11 +17,6 @@ return function($request, $response) {
         return CommandLine::error('Schema folder not found. Generator Aborted.');
     }
 
-    $appRoot = $cwd . '/app';
-    if(!is_dir($appRoot)) {
-        return CommandLine::error('App folder not found. Generator Aborted.');
-    }
-
     //Available schemas
     $schemas = [];
     $paths = scandir($schemaRoot, 0);
@@ -35,21 +30,6 @@ return function($request, $response) {
 
     if(empty($schemas)) {
         return CommandLine::error('No schemas found in ' . $schemaRoot);
-    }
-
-    //Available apps
-    $apps = [];
-    $paths = scandir($appRoot, 0);
-    foreach($paths as $path) {
-        if($path === '.' || $path === '..' || !is_dir($appRoot . '/' . $path)) {
-            continue;
-        }
-
-        $apps[] = pathinfo($path, PATHINFO_BASENAME);
-    }
-
-    if(empty($apps)) {
-        return CommandLine::error('No apps found in ' . $appRoot);
     }
 
     //determine the schema
@@ -74,33 +54,14 @@ return function($request, $response) {
         return CommandLine::error($schema . ' not found. Aborting.');
     }
 
-    //determine the app
-    $appName = $request->getStage('app');
-
-    if(!$appName) {
-        CommandLine::info('Available apps:');
-        foreach($apps as $app) {
-            CommandLine::info(' - ' . $app);
-        }
-
-        $appName = CommandLine::input('Which app to use?');
-    }
-
-    if(!in_array($appName, $apps)) {
-        return CommandLine::error('Invalid app. Generator Aborted.');
-    }
-
-    $app = $appRoot . '/' . $appName;
-
-    if(!is_dir($app)) {
-        return CommandLine::error($app . ' not found. Aborting.');
-    }
-
-    CommandLine::system('Generating REST...');
+    CommandLine::system('Generating admin...');
 
     //get the template data
     $handlebars = include __DIR__ . '/helper/handlebars.php';
     $data = include __DIR__ . '/helper/data.php';
+
+    //get destination root
+    $destinationRoot = $cwd . '/app/api/src/controller/rest';
 
     //get all the files
     $sourceRoot = __DIR__ . '/template/rest';
@@ -113,19 +74,19 @@ return function($request, $response) {
 
         //it's a file, determine the destination
         // if /template/module/src/events.php, then /path/to/file
-        $destination = $app . substr($source->getPathname(), strlen($sourceRoot));
+        $destination = $destinationRoot . substr($source->getPathname(), strlen($sourceRoot));
         $destination = str_replace('NAME', $schemaName, $destination);
 
         //does it not exist?
         if(!is_dir(dirname($destination))) {
             //then make it
-            //mkdir(dirname($destination), 0777, true);
+            mkdir(dirname($destination), 0777, true);
         }
 
         //if the destination exists
         if(file_exists($destination)) {
             //ask questions
-            $overwrite = Command::input($destination .' exists. Overwrite?(n)');
+            $overwrite = CommandLine::input($destination .' exists. Overwrite?(n)', 'n');
             if($overwrite === 'n') {
                 CommandLine::warning('Skipping...');
                 continue;
@@ -139,9 +100,9 @@ return function($request, $response) {
 
         $contents = $template($data);
         $contents = str_replace('{{ ', '{{', $contents);
-echo $contents;
-        //file_put_contents($destination, $contents);
+
+        file_put_contents($destination, $contents);
     }
 
-    CommandLine::success($schemaName . ' view was generated.');
+    CommandLine::success($schemaName . ' REST was generated.');
 };

@@ -7,33 +7,42 @@
  * distributed with this package.
  */
 
+{{~#if has_file}}
+
+use Cradle\Module\Utility\File;
+{{~/if}}
+
 /**
  * Render the {{capital name}} Search Page
  *
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('{{routes.admin.search}}', function($request, $response) {
+$cradle->get('/admin/{{name}}/search', function($request, $response) {
     //for logged in
     cradle('global')->requireLogin('admin');
 
     //Prepare body
+    if(!$request->hasStage('range')) {
+        $request->setStage('range', 50);
+    }
+
     cradle()->trigger('{{name}}-search', $request, $response);
     $data = array_merge($request->getStage(), $response->getResults());
 
     //Render body
     $class = 'page-admin-{{name}}-search page-admin';
-    $title = cradle('global')->translate('{{capital plural}}');
-    $body = cradle('/app/{{app}}')->template('{{name}}/search', $data);
+    $data['title'] = cradle('global')->translate('{{capital plural}}');
+    $body = cradle('/app/admin')->template('{{name}}/search', $data);
 
     //Set Content
     $response
-        ->setPage('title', $title)
+        ->setPage('title', $data['title'])
         ->setPage('class', $class)
         ->setContent($body);
 
     //Render page
-}, 'render-{{app}}-page');
+}, 'render-admin-page');
 
 /**
  * Render the {{capital name}} Create Page
@@ -41,12 +50,19 @@ $cradle->get('{{routes.admin.search}}', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('{{routes.admin.create}}', function($request, $response) {
+$cradle->get('/admin/{{name}}/create', function($request, $response) {
     //for logged in
     cradle('global')->requireLogin('admin');
 
     //Prepare body
     $data = ['item' => $request->getPost()];
+
+    {{~#if has_file}}
+
+    //add CDN
+    $config = $this->package('global')->service('s3-main');
+    $data['cdn_config'] = File::getS3Client($config);
+    {{~/if}}
 
     if($response->isError()) {
         $response->setFlash($response->getMessage(), 'danger');
@@ -55,17 +71,17 @@ $cradle->get('{{routes.admin.create}}', function($request, $response) {
 
     //Render body
     $class = 'page-developer-{{name}}-create page-admin';
-    $title = cradle('global')->translate('Create {{capital singular}}');
-    $body = cradle('/app/{{app}}')->template('{{name}}/form', $data);
+    $data['title'] = cradle('global')->translate('Create {{capital singular}}');
+    $body = cradle('/app/admin')->template('{{name}}/form', $data);
 
     //Set Content
     $response
-        ->setPage('title', $title)
+        ->setPage('title', $data['title'])
         ->setPage('class', $class)
         ->setContent($body);
 
     //Render page
-}, 'render-{{app}}-page');
+}, 'render-admin-page');
 
 /**
  * Render the {{capital name}} Update Page
@@ -73,7 +89,7 @@ $cradle->get('{{routes.admin.create}}', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('{{routes.admin.update}}', function($request, $response) {
+$cradle->get('/admin/{{name}}/update/:{{primary}}', function($request, $response) {
     //for logged in
     cradle('global')->requireLogin('admin');
 
@@ -88,7 +104,7 @@ $cradle->get('{{routes.admin.update}}', function($request, $response) {
         if($response->isError()) {
             //add a flash
             cradle('global')->flash($response->getMessage(), 'danger');
-            return cradle('global')->redirect('{{search}}');
+            return cradle('global')->redirect('/admin/{{name}}/search');
         }
 
         $data['item'] = $response->getResults();
@@ -101,17 +117,17 @@ $cradle->get('{{routes.admin.update}}', function($request, $response) {
 
     //Render body
     $class = 'page-developer-{{name}}-update page-admin';
-    $title = cradle('global')->translate('Updating {{capital singular}}');
-    $body = cradle('/app/{{app}}')->template('{{name}}/form', $data);
+    $data['title'] = cradle('global')->translate('Updating {{capital singular}}');
+    $body = cradle('/app/admin')->template('{{name}}/form', $data);
 
     //Set Content
     $response
-        ->setPage('title', $title)
+        ->setPage('title', $data['title'])
         ->setPage('class', $class)
         ->setContent($body);
 
     //Render page
-}, 'render-{{app}}-page');
+}, 'render-admin-page');
 
 /**
  * Process the {{capital name}} Create Page
@@ -119,14 +135,51 @@ $cradle->get('{{routes.admin.update}}', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->post('{{routes.admin.create}}', function($request, $response) {
+$cradle->post('/admin/{{name}}/create', function($request, $response) {
     //for logged in
     cradle('global')->requireLogin('admin');
+
+    {{~#each fields}}
+        {{~#unless form.length}}
+
+    //{{name}} is disallowed
+    $request->removeStage('{{name}}');
+        {{~else}}
+            {{~#if sql.default}}
+
+    //if {{name}} has no value use the default value
+    if ($request->hasStage('{{name}}') && !$request->getStage('{{name}}')) {
+        $request->setStage('{{name}}', '{{sql.default}}');
+    }
+            {{~else}}
+                {{~#unless sql.required}}
+
+    //if {{name}} has no value make it null
+    if ($request->hasStage('{{name}}') && !$request->getStage('{{name}}')) {
+        $request->setStage('{{name}}', null);
+    }
+                {{~/unless}}
+            {{~/if}}
+        {{~/unless}}
+    {{~/each}}
+
+    {{~#if relations.profile}}
+
+    if(!$request->hasStage('profile_id')) {
+        $request->setStage('profile_id', $request->getSession('me', 'profile_id'));
+    }
+    {{~/if}}
+    {{~#if relations.app}}
+
+    if(!$request->hasStage('app_id')) {
+        $request->setStage('app_id', $request->getSession('me', 'app_id'));
+    }
+    {{~/if}}
 
     cradle()->trigger('{{name}}-create', $request, $response);
 
     if($response->isError()) {
-        return cradle()->triggerRoute('get', '{{routes.admin.create}}', $request, $response);
+        return cradle()->triggerRoute('get', '/admin/{{name}}/create', $request, $response);
     }
 
     //it was good
@@ -134,7 +187,7 @@ $cradle->post('{{routes.admin.create}}', function($request, $response) {
     cradle('global')->flash('{{capital singular}} was Created', 'success');
 
     //redirect
-    cradle('global')->redirect('{{routes.admin.search}}');
+    cradle('global')->redirect('/admin/{{name}}/search');
 });
 
 /**
@@ -143,14 +196,38 @@ $cradle->post('{{routes.admin.create}}', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->post('{{routes.admin.update}}', function($request, $response) {
+$cradle->post('/admin/{{name}}/update/:{{primary}}', function($request, $response) {
     //for logged in
     cradle('global')->requireLogin('admin');
+
+    {{~#each fields}}
+        {{~#unless form.length}}
+
+    //{{name}} is disallowed
+    $request->removeStage('{{name}}');
+        {{~else}}
+            {{~#if sql.default}}
+
+    //if {{name}} has no value use the default value
+    if ($request->hasStage('{{name}}') && !$request->getStage('{{name}}')) {
+        $request->setStage('{{name}}', '{{sql.default}}');
+    }
+            {{~else}}
+                {{~#unless sql.required}}
+
+    //if {{name}} has no value make it null
+    if ($request->hasStage('{{name}}') && !$request->getStage('{{name}}')) {
+        $request->setStage('{{name}}', null);
+    }
+                {{~/unless}}
+            {{~/if}}
+        {{~/unless}}
+    {{~/each}}
 
     cradle()->trigger('{{name}}-update', $request, $response);
 
     if($response->isError()) {
-        $route = '{{routes.admin.update}}/' . $request->getStage('{{primary}}');
+        $route = '/admin/{{name}}/update/' . $request->getStage('{{primary}}');
         return cradle()->triggerRoute('get', $route, $request, $response);
     }
 
@@ -159,7 +236,7 @@ $cradle->post('{{routes.admin.update}}', function($request, $response) {
     cradle('global')->flash('{{capital singular}} was Updated', 'success');
 
     //redirect
-    cradle('global')->redirect('{{routes.admin.search}}');
+    cradle('global')->redirect('/admin/{{name}}/search');
 });
 
 /**
@@ -168,7 +245,7 @@ $cradle->post('{{routes.admin.update}}', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('{{routes.admin.remove}}', function($request, $response) {
+$cradle->get('/admin/{{name}}/remove/:{{primary}}', function($request, $response) {
     //for logged in
     cradle('global')->requireLogin('admin');
 
@@ -184,7 +261,7 @@ $cradle->get('{{routes.admin.remove}}', function($request, $response) {
         cradle('global')->flash($message, 'success');
     }
 
-    cradle('global')->redirect('{{routes.admin.search}}');
+    cradle('global')->redirect('/admin/{{name}}/search');
 });
 {{#if active}}
 /**
@@ -193,7 +270,7 @@ $cradle->get('{{routes.admin.remove}}', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('{{routes.admin.restore}}', function($request, $response) {
+$cradle->get('/admin/{{name}}/restore/:{{primary}}', function($request, $response) {
     //for logged in
     cradle('global')->requireLogin('admin');
 
@@ -209,6 +286,6 @@ $cradle->get('{{routes.admin.restore}}', function($request, $response) {
         cradle('global')->flash($message, 'success');
     }
 
-    cradle('global')->redirect('{{routes.admin.search}}');
+    cradle('global')->redirect('/admin/{{name}}/search');
 });
 {{/if}}

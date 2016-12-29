@@ -1,4 +1,11 @@
 <?php //-->
+/**
+ * This file is part of a Custom Project.
+ * (c) 2017-2019 Acme Inc.
+ *
+ * Copyright and license information can be found at LICENSE.txt
+ * distributed with this package.
+ */
 
 use Cradle\Handlebars\HandlebarsHandler;
 
@@ -21,6 +28,21 @@ $handlebarsBuilder = function() {
             }
 
             return str_replace(' ', '', $value);
+        });
+
+        $handlebars->registerHelper('implode', function(array $list, $separator, $options) {
+            foreach($list as $i => $variable) {
+                if(is_string($variable)) {
+                    $list[$i] = "'".$variable."'";
+                    continue;
+                }
+
+                if(is_array($variable)) {
+                    $list[$i] = "'".implode(',', $variable)."'";
+                }
+            }
+
+            return implode($separator, $list);
         });
 
         $handlebars->registerHelper('when', function($value1, $operator, $value2, $options) {
@@ -47,45 +69,6 @@ $handlebarsBuilder = function() {
 
             return $options['inverse']();
         });
-
-        $file = file_get_contents(__DIR__ . '/../template/blocks/table.html');
-        $handlebars->registerPartial('block_table', $file);
-
-        $file = file_get_contents(__DIR__ . '/../template/fields/checkbox.html');
-        $handlebars->registerPartial('field_checkbox', $file);
-
-        $file = file_get_contents(__DIR__ . '/../template/fields/images.html');
-        $handlebars->registerPartial('field_images', $file);
-
-        $file = file_get_contents(__DIR__ . '/../template/fields/image.html');
-        $handlebars->registerPartial('field_image', $file);
-
-        $file = file_get_contents(__DIR__ . '/../template/fields/file.html');
-        $handlebars->registerPartial('field_file', $file);
-
-        $file = file_get_contents(__DIR__ . '/../template/fields/radio.html');
-        $handlebars->registerPartial('field_radio', $file);
-
-        $file = file_get_contents(__DIR__ . '/../template/fields/select.html');
-        $handlebars->registerPartial('field_select', $file);
-
-        $file = file_get_contents(__DIR__ . '/../template/fields/tags.html');
-        $handlebars->registerPartial('field_tags', $file);
-
-        $file = file_get_contents(__DIR__ . '/../template/fields/text.html');
-        $handlebars->registerPartial('field_text', $file);
-
-        $file = file_get_contents(__DIR__ . '/../template/fields/textarea.html');
-        $handlebars->registerPartial('field_textarea', $file);
-
-        $file = file_get_contents(__DIR__ . '/../template/formats/input.html');
-        $handlebars->registerPartial('format_input', $file);
-
-        $file = file_get_contents(__DIR__ . '/../template/formats/output.html');
-        $handlebars->registerPartial('format_output', $file);
-
-        $file = file_get_contents(__DIR__ . '/../template/formats/template.html');
-        $handlebars->registerPartial('format_template', $file);
     }
 
     return $handlebars;

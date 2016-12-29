@@ -17,11 +17,6 @@ return function($request, $response) {
         return CommandLine::error('Schema folder not found. Generator Aborted.');
     }
 
-    $appRoot = $cwd . '/app';
-    if(!is_dir($appRoot)) {
-        return CommandLine::error('App folder not found. Generator Aborted.');
-    }
-
     //Available schemas
     $schemas = [];
     $paths = scandir($schemaRoot, 0);
@@ -35,21 +30,6 @@ return function($request, $response) {
 
     if(empty($schemas)) {
         return CommandLine::error('No schemas found in ' . $schemaRoot);
-    }
-
-    //Available apps
-    $apps = [];
-    $paths = scandir($appRoot, 0);
-    foreach($paths as $path) {
-        if($path === '.' || $path === '..' || !is_dir($appRoot . '/' . $path)) {
-            continue;
-        }
-
-        $apps[] = pathinfo($path, PATHINFO_BASENAME);
-    }
-
-    if(empty($apps)) {
-        return CommandLine::error('No apps found in ' . $appRoot);
     }
 
     //determine the schema
@@ -74,33 +54,14 @@ return function($request, $response) {
         return CommandLine::error($schema . ' not found. Aborting.');
     }
 
-    //determine the app
-    $appName = $request->getStage('app');
-
-    if(!$appName) {
-        CommandLine::info('Available apps:');
-        foreach($apps as $app) {
-            CommandLine::info(' - ' . $app);
-        }
-
-        $appName = CommandLine::input('Which app to use?');
-    }
-
-    if(!in_array($appName, $apps)) {
-        return CommandLine::error('Invalid app. Generator Aborted.');
-    }
-
-    $app = $appRoot . '/' . $appName;
-
-    if(!is_dir($app)) {
-        return CommandLine::error($app . ' not found. Aborting.');
-    }
-
     CommandLine::system('Generating admin...');
 
     //get the template data
     $handlebars = include __DIR__ . '/helper/handlebars.php';
     $data = include __DIR__ . '/helper/data.php';
+
+    //get destination root
+    $destinationRoot = $cwd . '/app/admin/src';
 
     //get all the files
     $sourceRoot = __DIR__ . '/template/admin';
@@ -113,7 +74,7 @@ return function($request, $response) {
 
         //it's a file, determine the destination
         // if /template/module/src/events.php, then /path/to/file
-        $destination = $app . substr($source->getPathname(), strlen($sourceRoot));
+        $destination = $destinationRoot . substr($source->getPathname(), strlen($sourceRoot));
         $destination = str_replace('NAME', $schemaName, $destination);
 
         //does it not exist?
@@ -125,7 +86,7 @@ return function($request, $response) {
         //if the destination exists
         if(file_exists($destination)) {
             //ask questions
-            $overwrite = Command::input($destination .' exists. Overwrite?(n)');
+            $overwrite = CommandLine::input($destination .' exists. Overwrite?(n)', 'n');
             if($overwrite === 'n') {
                 CommandLine::warning('Skipping...');
                 continue;
@@ -143,5 +104,37 @@ return function($request, $response) {
         file_put_contents($destination, $contents);
     }
 
-    CommandLine::success($schemaName . ' view was generated.');
+    //add to cradle.php
+    $cradleFile = $cwd . '/app/admin/.cradle.php';
+    if(file_exists($cwd . '/app/admin/.cradle')) {
+        $cradleFile = $cwd . '/app/admin/.cradle';
+    }
+
+    if(file_exists($cradleFile)) {
+        $flag = '//START: GENERATED CONTROLLERS';
+        $add = 'include_once __DIR__ . \'/src/controller/' . $data['name'] . '.php\';';
+
+        $contents = file_get_contents($cradleFile);
+        if(strpos($contents, $flag) !== false && strpos($contents, $add) === false) {
+            $contents = str_replace($flag, $flag . PHP_EOL . $add, $contents);
+        }
+
+        file_put_contents($cradleFile, $contents);
+    }
+
+    //add to _head.html
+    $headFile = $destinationRoot . '/template/_head.html';
+    if(file_exists($headFile)) {
+        $flag = '<!-- START: GENERATED MENU -->';
+        $add = '<li><a href="/admin/' . $data['name'] . '/search">' . $data['plural'] . '</a></li>';
+
+        $contents = file_get_contents($headFile);
+        if(strpos($contents, $flag) !== false && strpos($contents, $add) === false) {
+            $contents = str_replace($flag, $flag . PHP_EOL . $add, $contents);
+        }
+
+        file_put_contents($headFile, $contents);
+    }
+
+    CommandLine::success($schemaName . ' admin was generated.');
 };

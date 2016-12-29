@@ -1,9 +1,14 @@
 <?php //-->
-
-$dataBuilder = function() use ($schemas, $schema, $schemaRoot, $schemaName, $appName) {
+/**
+ * This file is part of a Custom Project.
+ * (c) 2017-2019 Acme Inc.
+ *
+ * Copyright and license information can be found at LICENSE.txt
+ * distributed with this package.
+ */
+$dataBuilder = function($schemas, $schema, $schemaRoot, $schemaName) {
     $data = include_once $schema;
     $data['name'] = $schemaName;
-    $data['app'] = $appName;
 
     if(isset($data['relations']) && is_array($data['relations'])) {
         foreach($data['relations'] as $name => $relation) {
@@ -11,6 +16,15 @@ $dataBuilder = function() use ($schemas, $schema, $schemaRoot, $schemaName, $app
                 $data['one-to-many'][$name] = $relation;
             } else {
                 $data['one-to-one'][$name] = $relation;
+
+                //because there are no schemas for this
+                if($name === 'app') {
+                    $data['json'][] = 'app_permissions';
+                } else if($name === 'auth') {
+                    $data['json'][] = 'auth_permissions';
+                } else if($name === 'session') {
+                    $data['json'][] = 'session_permissions';
+                }
             }
         }
     }
@@ -18,21 +32,41 @@ $dataBuilder = function() use ($schemas, $schema, $schemaRoot, $schemaName, $app
     $normalizeField = include __DIR__ . '/field.php';
 
     foreach($data['fields'] as $name => $field) {
+        $field['name'] = $name;
         $field = $normalizeField($field);
 
-        if($field['unique']) {
+        if(isset($field['sql']['unique']) && $field['sql']['unique']) {
             $data['unique'][] = $name;
         }
 
-        if($field['searchable']) {
+        if(isset($field['sql']['type']) && $field['sql']['type'] === 'json') {
+            $data['json'][] = $name;
+        }
+
+        if(isset($field['list']['searchable']) && $field['list']['searchable']) {
             $data['searchable'][] = $name;
         }
 
-        if($field['sortable']) {
+        if(isset($field['list']['sortable']) && $field['list']['sortable']) {
             $data['sortable'][] = $name;
         }
 
-        $field['name'] = $name;
+        if(isset($field['list']['filterable']) && $field['list']['filterable']) {
+            $data['filterable'][] = $name;
+        }
+
+        if(isset($field['form']['type'])
+            && (
+                $field['form']['type'] === 'image-field'
+                || $field['form']['type'] === 'images-field'
+                || $field['form']['type'] === 'file'
+                || $field['form']['type'] === 'image'
+            )
+        )
+        {
+            $data['has_file'] = true;
+        }
+
         $data['fields'][$name] = $field;
     }
 
@@ -55,7 +89,7 @@ $dataBuilder = function() use ($schemas, $schema, $schemaRoot, $schemaName, $app
         foreach($metaData['fields'] as $name => $field) {
             $data['meta'][$name] = $field;
 
-            if(isset($data['one-to-one'][$metaSchema]) && $field['type'] === 'json') {
+            if(isset($data['one-to-one'][$metaSchema]) && $field['sql']['type'] === 'json') {
                 $data['json'][] = $name;
             }
         }
@@ -64,4 +98,4 @@ $dataBuilder = function() use ($schemas, $schema, $schemaRoot, $schemaName, $app
     return $data;
 };
 
-return $dataBuilder();
+return $dataBuilder($schemas, $schema, $schemaRoot, $schemaName);

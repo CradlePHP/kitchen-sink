@@ -159,6 +159,16 @@ abstract class AbstractRedisService
     }
 
     /**
+     * Returns the Redis resource
+     *
+     * @return Resource
+     */
+    public function getResource()
+    {
+        return $this->resource;
+    }
+
+    /**
      * Returns a cached search
      *
      * @param array $parameters

@@ -13,6 +13,11 @@ use Cradle\Module\{{camel name 1}}\Validator as {{camel name 1}}Validator;
 use Cradle\Http\Request;
 use Cradle\Http\Response;
 
+{{~#if has_file}}
+
+use Cradle\Module\Utility\File;
+{{~/if}}
+
 /**
  * {{camel name 1}} Create Job
  *
@@ -43,36 +48,71 @@ $cradle->on('{{name}}-create', function ($request, $response) {
 
     //prepare data
     {{~#each fields}}
-        {{~#when type '===' 'json'}}
+        {{~#when sql.type '===' 'json'}}
 
     if($data['{{@key}}']) {
         $data['{{@key}}'] = json_encode($data['{{@key}}']);
     }
         {{~/when}}
 
-        {{~#when type '===' 'date'}}
+        {{~#when sql.type '===' 'date'}}
 
         if($data['{{@key}}']) {
             $data['{{@key}}'] = date('Y-m-d', strtotime($data['{{@key}}']));
         }
         {{~/when}}
 
-        {{~#when type '===' 'time'}}
+        {{~#when sql.type '===' 'time'}}
     if($data['{{@key}}']) {
         $data['{{@key}}'] = date('H:i:s', strtotime($data['{{@key}}']));
     }
         {{~/when}}
 
-        {{~#when type '===' 'datetime'}}
+        {{~#when sql.type '===' 'datetime'}}
 
     if($data['{{@key}}']) {
         $data['{{@key}}'] = date('Y-m-d H:i:s', strtotime($data['{{@key}}']));
+    }
+        {{~/when}}
+
+        {{~#when field.type '===' 'image-field'}}
+
+    //if there is an image
+    if (isset($data['{{@key}}'])) {
+        //upload files
+        //try cdn if enabled
+        $config = $this->package('global')->service('s3-main');
+        $data['{{@key}}'] = File::base64ToS3($data['{{@key}}'], $config);
+        //try being old school
+        $upload = $this->package('global')->path('upload');
+        $data['{{@key}}'] = File::base64ToUpload($data['{{@key}}'], $upload);
+    }
+        {{~/when}}
+
+        {{~#when field.type '===' 'images-field'}}
+
+    //if there is an image
+    if (isset($data['{{@key}}'])) {
+        //upload files
+        //try cdn if enabled
+        $config = $this->package('global')->service('s3-main');
+        $data['{{@key}}'] = File::base64ToS3($data['{{@key}}'], $config);
+        //try being old school
+        $upload = $this->package('global')->path('upload');
+        $data['{{@key}}'] = File::base64ToUpload($data['{{@key}}'], $upload);
     }
         {{~/when}}
     {{~/each}}
 
     //save {{name}} to database
     $results = ${{name}}Sql->create($data);
+
+    {{~#each relations}}
+    //link {{@key}}
+    if(isset($data['{{primary}}'])) {
+        ${{name}}Sql->link{{camel @key 1}}($results['{{../primary}}'], $data['{{primary}}']);
+    }
+    {{~/each}}
 
     //index {{name}}
     ${{name}}Elastic->create($results['{{primary}}']);
@@ -85,11 +125,11 @@ $cradle->on('{{name}}-create', function ($request, $response) {
 });
 
 /**
-* {{camel name 1}} Detail Job
-*
-* @param Request $request
-* @param Response $response
-*/
+ * {{camel name 1}} Detail Job
+ *
+ * @param Request $request
+ * @param Response $response
+ */
 $cradle->on('{{name}}-detail', function ($request, $response) {
     //get data
     $data = [];
@@ -101,7 +141,7 @@ $cradle->on('{{name}}-detail', function ($request, $response) {
     if (isset($data['{{primary}}'])) {
         $id = $data['{{primary}}'];
     {{#if unique.length}}{{#each unique~}}
-    } else if (isset($data['{{this}}']) && $data['{{this}}']) {
+    } else if (isset($data['{{this}}'])) {
         $id = $data['{{this}}'];
     {{/each}}{{/if~}}
     }
@@ -150,7 +190,7 @@ $cradle->on('{{name}}-detail', function ($request, $response) {
 
     //if permission is provided
     $permission = $request->getStage('permission');
-    if ($permission && $results['{{primary}}'] != $permission) {
+    if ($permission && $results['profile_id'] != $permission) {
         return $response->setError(true, 'Invalid Permissions');
     }
 
@@ -158,11 +198,11 @@ $cradle->on('{{name}}-detail', function ($request, $response) {
 });
 
 /**
-* {{camel name 1}} Remove Job
-*
-* @param Request $request
-* @param Response $response
-*/
+ * {{camel name 1}} Remove Job
+ *
+ * @param Request $request
+ * @param Response $response
+ */
 $cradle->on('{{name}}-remove', function ($request, $response) {
     //get the {{name}} detail
     $this->trigger('{{name}}-detail', $request, $response);
@@ -181,12 +221,14 @@ $cradle->on('{{name}}-remove', function ($request, $response) {
     ${{name}}Elastic = {{camel name 1}}Service::get('elastic');
 
     {{~#if active}}
+
     //save to database
     $results = ${{name}}Sql->update([
         '{{primary}}' => $data['{{primary}}'],
         '{{active}}' => 0
     ]);
     {{~else}}
+
     //remove from database
     $results = ${{name}}Sql->remove($data['{{primary}}']);
     {{~/if}}
@@ -197,7 +239,7 @@ $cradle->on('{{name}}-remove', function ($request, $response) {
     //invalidate cache
     ${{name}}Redis->removeDetail($data['{{primary}}']);
     {{#if unique.length}}{{#each unique~}}
-    ${{name}}Redis->removeDetail($data['{{this}}']);
+    ${{../name}}Redis->removeDetail($data['{{this}}']);
     {{/each}}{{/if~}}
 
     ${{name}}Redis->removeSearch();
@@ -208,11 +250,11 @@ $cradle->on('{{name}}-remove', function ($request, $response) {
 {{~#if active}}
 
 /**
-* {{camel name 1}} Restore Job
-*
-* @param Request $request
-* @param Response $response
-*/
+ * {{camel name 1}} Restore Job
+ *
+ * @param Request $request
+ * @param Response $response
+ */
 $cradle->on('{{name}}-restore', function ($request, $response) {
     //get the {{name}} detail
     $this->trigger('{{name}}-detail', $request, $response);
@@ -247,11 +289,11 @@ $cradle->on('{{name}}-restore', function ($request, $response) {
 {{~/if}}
 
 /**
-* {{camel name 1}} Search Job
-*
-* @param Request $request
-* @param Response $response
-*/
+ * {{camel name 1}} Search Job
+ *
+ * @param Request $request
+ * @param Response $response
+ */
 $cradle->on('{{name}}-search', function ($request, $response) {
     //get data
     $data = [];
@@ -297,11 +339,11 @@ $cradle->on('{{name}}-search', function ($request, $response) {
 });
 
 /**
-* {{camel name 1}} Update Job
-*
-* @param Request $request
-* @param Response $response
-*/
+ * {{camel name 1}} Update Job
+ *
+ * @param Request $request
+ * @param Response $response
+ */
 $cradle->on('{{name}}-update', function ($request, $response) {
     //get the {{name}} detail
     $this->trigger('{{name}}-detail', $request, $response);
@@ -334,30 +376,58 @@ $cradle->on('{{name}}-update', function ($request, $response) {
 
     //prepare data
     {{~#each fields}}
-        {{~#when type '===' 'json'}}
+        {{~#when sql.type '===' 'json'}}
 
     if($data['{{@key}}']) {
         $data['{{@key}}'] = json_encode($data['{{@key}}']);
     }
         {{~/when}}
 
-        {{~#when type '===' 'date'}}
+        {{~#when sql.type '===' 'date'}}
 
         if($data['{{@key}}']) {
             $data['{{@key}}'] = date('Y-m-d', strtotime($data['{{@key}}']));
         }
         {{~/when}}
 
-        {{~#when type '===' 'time'}}
+        {{~#when sql.type '===' 'time'}}
     if($data['{{@key}}']) {
         $data['{{@key}}'] = date('H:i:s', strtotime($data['{{@key}}']));
     }
         {{~/when}}
 
-        {{~#when type '===' 'datetime'}}
+        {{~#when sql.type '===' 'datetime'}}
 
     if($data['{{@key}}']) {
         $data['{{@key}}'] = date('Y-m-d H:i:s', strtotime($data['{{@key}}']));
+    }
+        {{~/when}}
+
+        {{~#when field.type '===' 'image-field'}}
+
+    //if there is an image
+    if (isset($data['{{@key}}'])) {
+        //upload files
+        //try cdn if enabled
+        $config = $this->package('global')->service('s3-main');
+        $data['{{@key}}'] = File::base64ToS3($data['{{@key}}'], $config);
+        //try being old school
+        $upload = $this->package('global')->path('upload');
+        $data['{{@key}}'] = File::base64ToUpload($data['{{@key}}'], $upload);
+    }
+        {{~/when}}
+
+        {{~#when field.type '===' 'images-field'}}
+
+    //if there is an image
+    if (isset($data['{{@key}}'])) {
+        //upload files
+        //try cdn if enabled
+        $config = $this->package('global')->service('s3-main');
+        $data['{{@key}}'] = File::base64ToS3($data['{{@key}}'], $config);
+        //try being old school
+        $upload = $this->package('global')->path('upload');
+        $data['{{@key}}'] = File::base64ToUpload($data['{{@key}}'], $upload);
     }
         {{~/when}}
     {{~/each}}
@@ -371,7 +441,7 @@ $cradle->on('{{name}}-update', function ($request, $response) {
     //invalidate cache
     ${{name}}Redis->removeDetail($response->getResults('{{primary}}'));
     {{#if unique.length}}{{#each unique~}}
-    ${{name}}Redis->removeDetail($data['{{this}}']);
+    ${{../name}}Redis->removeDetail($data['{{this}}']);
     {{/each}}{{/if~}}
     ${{name}}Redis->removeSearch();
 

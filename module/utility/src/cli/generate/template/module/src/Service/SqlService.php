@@ -51,10 +51,10 @@ class SqlService extends AbstractSqlService implements SqlServiceInterface
     {
         return $this->resource
             ->model($data)
-            {{#if created}}
+            {{#if created~}}
             ->set{{camel created 1}}(date('Y-m-d H:i:s'))
             {{/if~}}
-            {{#if updated}}
+            {{#if updated~}}
             ->set{{camel updated 1}}(date('Y-m-d H:i:s'))
             {{/if~}}
             ->save('{{name}}')
@@ -71,11 +71,11 @@ class SqlService extends AbstractSqlService implements SqlServiceInterface
     public function get($id)
     {
         $search = $this->resource->search('{{name}}');
-
         {{#if one-to-one}}
-        {{~#each one-to-one}}
+            {{~#each one-to-one}}
         $search->innerJoinUsing('{{../name}}_{{@key}}', '{{../primary}}');
-        {{/each~}}
+        $search->innerJoinUsing('{{@key}}', '{{primary}}');
+            {{~/each}}
         {{/if}}
         {{#if unique~}}
         if (is_numeric($id)) {
@@ -95,15 +95,16 @@ class SqlService extends AbstractSqlService implements SqlServiceInterface
             return $results;
         }
 
-        {{#if json}}
-        {{~#each json}}
+        {{~#if json}}
+            {{~#each json}}
+
         if($results['{{this}}']) {
             $results['{{this}}'] = json_decode($results['{{this}}'], true);
         } else {
             $results['{{this}}'] = [];
         }
-        {{/each~}}
-        {{/if}}
+            {{~/each}}
+        {{~/if}}
 
         return $results;
     }
@@ -178,6 +179,7 @@ class SqlService extends AbstractSqlService implements SqlServiceInterface
         //relations
         {{~#each one-to-one}}
         $search->innerJoinUsing('{{../name}}_{{@key}}', '{{../primary}}');
+        $search->innerJoinUsing('{{@key}}', '{{primary}}');
         {{/each~}}
         {{/if}}
 
@@ -227,7 +229,7 @@ class SqlService extends AbstractSqlService implements SqlServiceInterface
 
         //return response format
         return [
-            'rows' => $results,
+            'rows' => $rows,
             'total' => $search->getTotal()
         ];
     }
@@ -243,20 +245,40 @@ class SqlService extends AbstractSqlService implements SqlServiceInterface
     {
         return $this->resource
             ->model($data)
-            {{#if updated}}
+            {{#if updated~}}
             ->set{{camel updated 1}}(date('Y-m-d H:i:s'))
             {{/if~}}
             ->save('{{name}}')
             ->get();
     }
-    {{#each relations~}}
+    {{~#if unique.0}}
+
+    /**
+     * Checks to see if unique.0 already exists
+     *
+     * @param *string ${{camel unique.0}}
+     *
+     * @return bool
+     */
+    public function exists(${{camel unique.0}})
+    {
+        $search = $this->resource
+            ->search('{{name}}')
+            ->filterBy{{camel unique.0 1}}(${{camel unique.0}});
+
+        return !!$search->getRow();
+    }
+    {{/if}}
+
+    {{~#each relations}}
+
     /**
      * Links {{@key}}
      *
      * @param *int ${{../name}}Primary
      * @param *int ${{@key}}Primary
      */
-    public function link{{capital @key}}(${{../name}}Primary, ${{@key}}Primary)
+    public function link{{camel @key 1}}(${{../name}}Primary, ${{@key}}Primary)
     {
         return $this->resource
             ->model()
@@ -271,7 +293,7 @@ class SqlService extends AbstractSqlService implements SqlServiceInterface
      * @param *int ${{../name}}Primary
      * @param *int ${{@key}}Primary
      */
-    public function unlink{{capital @key}}(${{../name}}Primary, ${{@key}}Primary)
+    public function unlink{{capital @key 1}}(${{../name}}Primary, ${{@key}}Primary)
     {
         return $this->resource
             ->model()
@@ -279,5 +301,21 @@ class SqlService extends AbstractSqlService implements SqlServiceInterface
             ->set{{camel primary 1}}(${{@key}}Primary)
             ->remove('{{../name}}_{{@key}}');
     }
+        {{~#if many}}
+
+    /**
+     * Unlinks All {{@key}}
+     *
+     * @param *int ${{../name}}Primary
+     * @param *int ${{@key}}Primary
+     */
+    public function unlinkAll{{camel @key 1}}(${{../name}}Primary)
+    {
+        return $this->resource
+            ->model()
+            ->set{{camel ../primary 1}}(${{../name}}Primary)
+            ->remove('{{../name}}_{{@key}}');
+    }
+        {{~/if}}
     {{/each}}
 }

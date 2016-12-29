@@ -57,7 +57,7 @@ return function($request, $response) {
         //if the destination exists
         if(file_exists($destination)) {
             //ask questions
-            $overwrite = Command::input($destination .' exists. Overwrite?(n)');
+            $overwrite = CommandLine::input($destination .' exists. Overwrite?(n)', 'n');
             if($overwrite === 'n') {
                 CommandLine::warning('Skipping...');
                 continue;
@@ -73,6 +73,20 @@ return function($request, $response) {
         $contents = str_replace('{{ ', '{{', $contents);
 
         file_put_contents($destination, $contents);
+    }
+
+    //add to public/index.php
+    $indexFile = $cwd . '/public/index.php';
+    if(file_exists($indexFile)) {
+        $flag = 'return cradle()';
+        $add = '->register(\'/app/' . $appName . '\')';
+
+        $contents = file_get_contents($indexFile);
+        if(strpos($contents, $flag) !== false && strpos($contents, $add) === false) {
+            $contents = str_replace($flag, $flag . "\n    " . $add, $contents);
+        }
+
+        file_put_contents($indexFile, $contents);
     }
 
     CommandLine::success('App was generated.');

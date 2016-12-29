@@ -24,8 +24,8 @@ class Cradle_Module_{{capital name}}_ValidatorTest extends PHPUnit_Framework_Tes
     public function testGetCreateErrors()
     {
         $actual = Validator::getCreateErrors([]);
-        {{#each fields}}{{#each valid}}
-        {{~#when this.0 '===' 'required'}}
+        {{~#each fields}}{{~#each validation}}
+        {{~#when method '===' 'required'}}
         $this->assertEquals('Required', $actual['{{../@key}}']);
         {{~/when}}{{/each}}{{/each}}
     }

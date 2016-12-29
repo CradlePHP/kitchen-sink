@@ -7,7 +7,7 @@
  * distributed with this package.
  */
 
-use Cradle\Module\{{capital name}}\Service;
+use Cradle\Module\{{camel name 1}}\Service;
 
 /**
  * SQL service test
@@ -25,7 +25,7 @@ class Cradle_Module_{{capital name}}_Service_SqlServiceTest extends PHPUnit_Fram
     protected $object;
 
     /**
-     * @covers Cradle\Module\{{capital name}}\Service\SqlService::__construct
+     * @covers Cradle\Module\{{camel name 1}}\Service\SqlService::__construct
      */
     protected function setUp()
     {
@@ -33,14 +33,14 @@ class Cradle_Module_{{capital name}}_Service_SqlServiceTest extends PHPUnit_Fram
     }
 
     /**
-     * @covers Cradle\Module\{{capital name}}\Service\SqlService::create
+     * @covers Cradle\Module\{{camel name 1}}\Service\SqlService::create
      */
     public function testCreate()
     {
         $actual = $this->object->create([
-            {{~#each fields}}{{#each valid}}
-            {{~#when this.0 '===' 'required'}}
-            '{{../@key}}' => {{../sample}},
+            {{~#each fields}}{{~#each validation}}
+            {{~#when method '===' 'required'}}
+            '{{../@key}}' => {{../test.pass}},
             {{~/when}}{{/each}}{{/each}}
         ]);
 
@@ -48,7 +48,7 @@ class Cradle_Module_{{capital name}}_Service_SqlServiceTest extends PHPUnit_Fram
     }
 
     /**
-     * @covers Cradle\Module\{{capital name}}\Service\SqlService::get
+     * @covers Cradle\Module\{{camel name 1}}\Service\SqlService::get
      */
     public function testGet()
     {
@@ -58,7 +58,7 @@ class Cradle_Module_{{capital name}}_Service_SqlServiceTest extends PHPUnit_Fram
     }
 
     /**
-     * @covers Cradle\Module\{{capital name}}\Service\SqlService::search
+     * @covers Cradle\Module\{{camel name 1}}\Service\SqlService::search
      */
     public function testSearch()
     {
@@ -70,22 +70,36 @@ class Cradle_Module_{{capital name}}_Service_SqlServiceTest extends PHPUnit_Fram
     }
 
     /**
-     * @covers Cradle\Module\{{capital name}}\Service\SqlService::update
+     * @covers Cradle\Module\{{camel name 1}}\Service\SqlService::update
      */
     public function testUpdate()
     {
         $actual = $this->object->update([
-            {{~#each fields}}{{#each valid}}
-            {{~#when this.0 '===' 'required'}}
+            {{~#each fields}}{{~#each validation}}
+            {{~#when method '===' 'required'}}
             '{{../@key}}' => {{../sample}},
             {{~/when}}{{/each}}{{/each}}
         ]);
 
         $this->assertEquals(2, $actual['{{primary}}']);
     }
+    {{~#if unique.0}}
 
     /**
-     * @covers Cradle\Module\{{capital name}}\Service\SqlService::remove
+     * @covers Cradle\Module\{{camel name 1}}\Service\SqlService::exists
+     */
+    public function testExists()
+    { {{#each fields}}{{#if sql.unique}}
+        $actual = $this->object->exists('{{test.pass}}');
+        {{~/if}}{{/each}}
+        // it returns a boolean so we're expecting it to be true because
+        // the slug provided is saved in the database
+        $this->assertTrue($actual);
+    }
+    {{/if}}
+
+    /**
+     * @covers Cradle\Module\{{camel name 1}}\Service\SqlService::remove
      */
     public function testRemove()
     {
@@ -94,4 +108,45 @@ class Cradle_Module_{{capital name}}_Service_SqlServiceTest extends PHPUnit_Fram
         $this->assertTrue(!empty($actual));
         $this->assertEquals(2, $actual['{{primary}}']);
     }
+
+    {{~#each relations}}
+
+    /**
+     * @covers Cradle\Module\{{camel name 1}}\Service\SqlService::link{{camel @key 1}}
+     */
+    public function testLink{{camel @key 1}}()
+    {
+        $actual = $this->object->link{{camel @key 1}}(999, 999);
+
+        $this->assertTrue(!empty($actual));
+        $this->assertEquals(999, $actual['{{../primary}}']);
+        $this->assertEquals(999, $actual['{{primary}}']);
+    }
+
+    /**
+     * @covers Cradle\Module\{{camel name 1}}\Service\SqlService::unlink{{camel @key 1}}
+     */
+    public function testUnlink{{camel @key 1}}()
+    {
+        $actual = $this->object->unlink{{camel @key 1}}(999, 999);
+
+        $this->assertTrue(!empty($actual));
+        $this->assertEquals(999, $actual['{{../primary}}']);
+        $this->assertEquals(999, $actual['{{primary}}']);
+    }
+
+        {{~#if many}}
+
+    /**
+     * @covers Cradle\Module\{{camel name 1}}\Service\SqlService::unlink{{camel @key 1}}
+     */
+    public function testUnlinkAll{{camel @key 1}}()
+    {
+        $actual = $this->object->unlinkAll{{camel @key 1}}(999);
+
+        $this->assertTrue(!empty($actual));
+        $this->assertEquals(999, $actual['{{../primary}}']);
+    }
+        {{~/if}}
+    {{/each}}
 }

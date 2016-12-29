@@ -52,6 +52,16 @@ abstract class AbstractSqlService
     abstract public function get($id);
 
     /**
+     * Returns the SQL resource
+     *
+     * @return Resource
+     */
+    public function getResource()
+    {
+        return $this->resource;
+    }
+
+    /**
      * Remove from database
      * PLEASE BECAREFUL USING THIS !!!
      * It's here for clean up scripts

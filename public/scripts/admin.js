@@ -7,25 +7,13 @@ jQuery(function($) {
          * Tag Field
          */
         $(window).on('tag-field-init', function(e, target) {
-            //translations
-            try {
-                var translations = JSON.parse($('#tag-translations').html());
-            } catch(e) {
-                var translations = {};
-            }
-
-            [
-                'Tag'
-            ].forEach(function(translation) {
-                translations[translation] = translations[translation] || translation;
-            });
-
             target = $(target);
+
+            var name = target.attr('data-name');
 
             //TEMPLATES
             var tagTemplate = '<div class="tag"><input type="text" class="tag-input'
-            + ' text-field" name="product_tags[]" placeholder="'
-            + translations['Tag']+'" value="" />'
+            + ' text-field" name="' + name + '[]" placeholder="Tag" value="" />'
             + '<a class="remove" href="javascript:void(0)"><i class="fa fa-times">'
             + '</i></a></div>';
 

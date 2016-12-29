@@ -1,51 +1,67 @@
 <div class="panel panel-default clear" >
     <div class="panel-heading brand">
-        <div class="panel-title">{{capital singular}}</div>
+        <div class="panel-title">\{\{title\}\}</div>
     </div>
 
     <div class="panel-body" >
         <form enctype="multipart/form-data" method="post">
-            {{#each fields}}{{#if field}}
+            {{#each fields}}{{#if form}}
             <div class="form-group\{\{#if errors.{{@key}}\}\} has-error\{\{/if\}\}">
-                <label class="control-label">{{label}}</label>
+                <label class="control-label">{{form.label}}</label>
                 <div>
                     {{#noop~}}
-                    {{~#when field.0 '==' 'checkbox'}}
-                        {{> field_checkbox field name=name options=options}}
+                    {{~#when form.type '==' 'input'~}}
+                    <input name="{{name}}" value="\{\{ item.{{name}}\}\}"{{#if form.attributes}}{{#each form.attributes}} {{@key}}="{{this}}"{{/each}}{{/if}} />
                     {{~/when}}
-                    {{~#when field.0 '==' 'file'}}
-                        {{> field_file field name=name}}
+
+                    {{~#when form.type '==' 'textarea'~}}
+                    <textarea name="{{name}}"{{#if form.attributes}}{{#each form.attributes}} {{@key}}="{{this}}"{{/each}}{{/if}}>\{\{\{item.{{name}}\}\}\}</textarea>
                     {{~/when}}
-                    {{~#when field.0 '==' 'images'}}
-                        {{> field_images field name=name}}
+
+                    {{~#when form.type '==' 'select'~}}
+                    <select name="{{name}}"{{#if form.attributes}}{{#each form.attributes}} {{@key}}="{{this}}"{{/each}}{{/if}}>
+                        {{~#each form.options}}
+                        <option value="{{@key}}"\{\{#when ../item.{{../name}} '==' '{{@key}}'\}\} selected\{\{/when\}\}>{{this}}</option>
+                        {{~/each}}
+                    </select>
                     {{~/when}}
-                    {{~#when field.0 '==' 'image'}}
-                        {{> field_image field name=name}}
+
+                    {{~#when form.type '==' 'checkbox'}}
+                    <input type="hidden" name="{{name}}" value="0" />
+                    <input type="checkbox" name="{{name}}" value="1"{{#if form.attributes}}{{#each form.attributes}} {{@key}}="{{this}}"{{/each}}{{/if}}\{\{#if item.{{name}}\}\} checked\{\{/if\}\} />
                     {{~/when}}
-                    {{~#when field.0 '==' 'radio'}}
-                        {{> field_radio field name=name options=options}}
+
+                    {{~#when form.type '==' 'radio'}}
+                    <input type="hidden" name="{{name}}" value="0" />
+                    <input type="radio" name="{{name}}" value="1"{{#if form.attributes}}{{#each form.attributes}} {{@key}}="{{this}}"{{/each}}{{/if}}\{\{#if item.{{name}}\}\} checked\{\{/if\}\} />
                     {{~/when}}
-                    {{~#when field.0 '==' 'tags'}}
-                        {{> field_tags field name=name}}
+
+                    {{~#when form.type '==' 'checkboxes'}}
+                        {{~#each form.options}}
+                    <label>
+                        <input type="checkbox" name="{{../name}}[]" value="{{this}}"{{#if form.attributes}}{{#each ../form.attributes}} {{@key}}="{{this}}"{{/each}}{{/if}}\{\{#in value ../item.{{../name}}\}\}checked\{\{/in\}\} />
+                        <span>{{@key}}</span>
+                    </label>
+                        {{~/each}}
                     {{~/when}}
-                    {{~#when field.0 '==' 'textarea'~}}
-                        {{> field_textarea field name=name}}
+
+                    {{~#when form.type '==' 'radios'}}
+                        {{~#each form.options}}
+                    <label>
+                        <input type="radio" name="{{../name}}" value="{{this}}"{{#if form.attributes}}{{#each ../form.attributes}} {{@key}}="{{this}}"{{/each}}{{/if}}\{\{#when ../item.{{../name}} '==' '{{@key}}'\}\} checked\{\{/when\}\} />
+                        <span>{{@key}}</span>
+                    </label>
+                        {{~/each}}
                     {{~/when}}
-                    {{~#when field.0 '==' 'color'~}}
-                        {{> field_text field type="color" name=name}}
+
+                    {{~#when form.type '==' 'button'}}
+                    <button name="{{../name}}[]" value="{{this}}"{{#if form.attributes}}{{#each ../form.attributes}} {{@key}}="{{this}}"{{/each}}{{/if}}\{\{#in value ../item.{{../name}}\}\}checked\{\{/in\}\}>{{this}}</button>
                     {{~/when}}
-                    {{~#when field.0 '==' 'date'~}}
-                        {{> field_text field type="date" name=name}}
+
+                    {{~#when form.type '==' 'inline'}}
+                    {{{form.code}}}
                     {{~/when}}
-                    {{~#when field.0 '==' 'range'~}}
-                        {{> field_text field type="range" name=name}}
-                    {{~/when}}
-                    {{~#when field.0 '==' 'number'~}}
-                        {{> field_text field type="number" name=name}}
-                    {{~/when}}
-                    {{~#when field.0 '==' 'text'~}}
-                        {{> field_text field type="text" name=name}}
-                    {{~/when}}
+
                     {{~/noop}}
 
                     \{\{#if errors.{{@key}}\}\}
@@ -54,6 +70,11 @@
                 </div>
             </div>
             {{/if}}{{/each}}
+
+            <div class="clear form-group">
+                <input type="hidden" name="csrf" value="{{csrf}}" />
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
         </form>
     </div>
 </div>
