@@ -1,7 +1,7 @@
 <?php //-->
 /**
- * This file is part of a Custom Project.
- * (c) 2017-2019 Acme Inc.
+ * This file is part of a Custom Project
+ * (c) 2017-2019 Acme Inc
  *
  * Copyright and license information can be found at LICENSE.txt
  * distributed with this package.
@@ -19,7 +19,7 @@ use Cradle\Module\Utility\Service\AbstractSqlService;
  * Profile SQL Service
  *
  * @vendor   Acme
- * @package  Profile
+ * @package  profile
  * @author   John Doe <john@acme.com>
  * @standard PSR-2
  */
@@ -58,39 +58,6 @@ class SqlService extends AbstractSqlService implements SqlServiceInterface
     }
 
     /**
-     * Checks to see if email or phone already exists
-     *
-     * @param *string $email
-     * @param *string $phone
-     * @param *string $type
-     *
-     * @return bool
-     */
-    public function exists($email = null, $phone = null, $type = null)
-    {
-        $search = $this->resource->search('profile');
-
-        if ($type) {
-            $search->filterByProfileType($type);
-        }
-
-        if ($email && $phone) {
-            $search->addFilter(
-                '(profile_email = %s OR profile_phone = %s)',
-                $email,
-                $phone
-            );
-        } else if ($email) {
-            $search->filterByProfileEmail($email);
-        //profile phone
-        } else {
-            $search->filterByProfilePhone($phone);
-        }
-
-        return $search->getRow();
-    }
-
-    /**
      * Get detail from database
      *
      * @param *int $id
@@ -100,14 +67,16 @@ class SqlService extends AbstractSqlService implements SqlServiceInterface
     public function get($id)
     {
         $search = $this->resource->search('profile');
+        
+        $search->filterByProfileId($id);
 
-        if (!is_numeric($id) && $id) {
-            $search->filterByProfileSlug($id);
-        } else {
-            $search->filterByProfileId($id);
+        $results = $search->getRow();
+
+        if(!$results) {
+            return $results;
         }
 
-        return $search->getRow();
+        return $results;
     }
 
     /**
@@ -140,8 +109,9 @@ class SqlService extends AbstractSqlService implements SqlServiceInterface
         $start = 0;
         $order = [];
         $count = 0;
+        
         $keywords = null;
-
+        
         if (isset($data['filter']) && is_array($data['filter'])) {
             $filter = $data['filter'];
         }
@@ -158,18 +128,24 @@ class SqlService extends AbstractSqlService implements SqlServiceInterface
             $order = $data['order'];
         }
 
+        
         if (isset($data['q']) && is_array($data['q'])) {
             $keywords = $data['q'];
         }
+        
 
+        
         if (!isset($filter['profile_active'])) {
             $filter['profile_active'] = 1;
         }
+        
 
         $search = $this->resource
             ->search('profile')
             ->setStart($start)
             ->setRange($range);
+
+        
 
         //add filters
         foreach ($filter as $column => $value) {
@@ -178,29 +154,39 @@ class SqlService extends AbstractSqlService implements SqlServiceInterface
             }
         }
 
+        
         //keyword?
         if (isset($keywords)) {
             foreach ($keywords as $keyword) {
                 $or = [];
                 $where = [];
-
                 $where[] = 'LOWER(profile_name) LIKE %s';
+                $or[] = '%' . strtolower($keyword) . '%';$where[] = 'LOWER(profile_email) LIKE %s';
+                $or[] = '%' . strtolower($keyword) . '%';$where[] = 'LOWER(profile_phone) LIKE %s';
+                $or[] = '%' . strtolower($keyword) . '%';$where[] = 'LOWER(profile_detail) LIKE %s';
                 $or[] = '%' . strtolower($keyword) . '%';
-
                 array_unshift($or, '(' . implode(' OR ', $where) . ')');
 
                 call_user_func([$search, 'addFilter'], ...$or);
             }
         }
+        
 
         //add sorting
         foreach ($order as $sort => $direction) {
             $search->addSort($sort, $direction);
         }
 
+        $rows = $search->getRows();
+
+        foreach($rows as $i => $results) {
+            
+            $rows[$i] = $results;
+        }
+
         //return response format
         return [
-            'rows' => $search->getRows(),
+            'rows' => $rows,
             'total' => $search->getTotal()
         ];
     }

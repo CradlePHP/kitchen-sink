@@ -4,7 +4,27 @@
     </div>
 
     <div class="panel-body" >
-        <form enctype="multipart/form-data" method="post">
+        <form {{#if has_file}}
+            enctype="multipart/form-data"
+            method="post"
+            \{\{#if cdn_config\}\}
+                data-do="cdn-upload"
+                data-on="submit"
+                data-progress="We are uploading your files. Please do not refresh page."
+                data-complete="Upload Complete"
+                data-enctype="\{\{cdn_config.form.enctype\}\}"
+                data-method="\{\{cdn_config.form.method\}\}"
+                data-action="\{\{cdn_config.form.action\}\}"
+                data-cdn="\{\{cdn_config.form.action\}\}"
+                data-acl="\{\{cdn_config.inputs.acl\}\}"
+                data-key="\{\{cdn_config.inputs.key\}\}"
+                data-credential="\{\{cdn_config.inputs.X-Amz-Credential\}\}"
+                data-algorythm="\{\{cdn_config.inputs.X-Amz-Algorithm\}\}"
+                data-date="\{\{cdn_config.inputs.X-Amz-Date\}\}"
+                data-policy="\{\{cdn_config.inputs.Policy\}\}"
+                data-signature="\{\{cdn_config.inputs.X-Amz-Signature\}\}"
+            \{\{/if\}\}
+        {{else}}enctype="multipart/form-data" method="post"{{/if}}>
             {{#each fields}}{{#if form}}
             <div class="form-group\{\{#if errors.{{@key}}\}\} has-error\{\{/if\}\}">
                 <label class="control-label">{{form.label}}</label>
@@ -21,7 +41,7 @@
                     {{~#when form.type '==' 'select'~}}
                     <select name="{{name}}"{{#if form.attributes}}{{#each form.attributes}} {{@key}}="{{this}}"{{/each}}{{/if}}>
                         {{~#each form.options}}
-                        <option value="{{@key}}"\{\{#when ../item.{{../name}} '==' '{{@key}}'\}\} selected\{\{/when\}\}>{{this}}</option>
+                        <option value="{{@key}}"\{\{#when item.{{../name}} '==' '{{@key}}'\}\} selected\{\{/when\}\}>{{this}}</option>
                         {{~/each}}
                     </select>
                     {{~/when}}
@@ -39,8 +59,8 @@
                     {{~#when form.type '==' 'checkboxes'}}
                         {{~#each form.options}}
                     <label>
-                        <input type="checkbox" name="{{../name}}[]" value="{{this}}"{{#if form.attributes}}{{#each ../form.attributes}} {{@key}}="{{this}}"{{/each}}{{/if}}\{\{#in value ../item.{{../name}}\}\}checked\{\{/in\}\} />
-                        <span>{{@key}}</span>
+                        <input type="checkbox" name="{{../name}}[]" value="{{@key}}"{{#if form.attributes}}{{#each ../form.attributes}} {{@key}}="{{this}}"{{/each}}{{/if}}\{\{#in value item.{{../name}}\}\}checked\{\{/in\}\} />
+                        <span>{{this}}</span>
                     </label>
                         {{~/each}}
                     {{~/when}}
@@ -48,8 +68,8 @@
                     {{~#when form.type '==' 'radios'}}
                         {{~#each form.options}}
                     <label>
-                        <input type="radio" name="{{../name}}" value="{{this}}"{{#if form.attributes}}{{#each ../form.attributes}} {{@key}}="{{this}}"{{/each}}{{/if}}\{\{#when ../item.{{../name}} '==' '{{@key}}'\}\} checked\{\{/when\}\} />
-                        <span>{{@key}}</span>
+                        <input type="radio" name="{{../name}}" value="{{@key}}"{{#if form.attributes}}{{#each ../form.attributes}} {{@key}}="{{this}}"{{/each}}{{/if}}\{\{#when item.{{../name}} '==' '{{@key}}'\}\} checked\{\{/when\}\} />
+                        <span>{{this}}</span>
                     </label>
                         {{~/each}}
                     {{~/when}}

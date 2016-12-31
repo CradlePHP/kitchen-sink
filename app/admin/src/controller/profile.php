@@ -7,6 +7,8 @@
  * distributed with this package.
  */
 
+use Cradle\Module\Utility\File;
+
 /**
  * Render the Profile Search Page
  *
@@ -14,29 +16,50 @@
  * @param Response $response
  */
 $cradle->get('/admin/profile/search', function($request, $response) {
-    //for logged in
+    //----------------------------//
+    // 1. Route Permissions
+    //only for admin
     cradle('global')->requireLogin('admin');
 
-    //Prepare body
+    //----------------------------//
+    // 2. Prepare Data
     if(!$request->hasStage('range')) {
         $request->setStage('range', 50);
     }
 
+    //filter possible sorting options
+    //we do this to prevent SQL injections
+    if(is_array($request->getStage('order'))) {
+        $sortable = [
+            'profile_name'
+        ];
+
+        foreach($request->getStage('order') as $key => $direction) {
+            if(!in_array($key, $sortable)) {
+                $request->removeStage('order', $key);
+            } else if ($direction !== 'ASC' && $direction !== 'DESC') {
+                $request->removeStage('order', $key);
+            }
+        }
+    }
+
+    //trigger job
     cradle()->trigger('profile-search', $request, $response);
     $data = array_merge($request->getStage(), $response->getResults());
 
-    //Render body
+    //----------------------------//
+    // 3. Render Template
     $class = 'page-admin-profile-search page-admin';
     $data['title'] = cradle('global')->translate('Profiles');
     $body = cradle('/app/admin')->template('profile/search', $data);
 
-    //Set Content
+    //set content
     $response
         ->setPage('title', $data['title'])
         ->setPage('class', $class)
         ->setContent($body);
 
-    //Render page
+    //render page
 }, 'render-admin-page');
 
 /**
@@ -46,29 +69,37 @@ $cradle->get('/admin/profile/search', function($request, $response) {
  * @param Response $response
  */
 $cradle->get('/admin/profile/create', function($request, $response) {
-    //for logged in
+    //----------------------------//
+    // 1. Route Permissions
+    //only for admin
     cradle('global')->requireLogin('admin');
 
-    //Prepare body
+    //----------------------------//
+    // 2. Prepare Data
     $data = ['item' => $request->getPost()];
+
+    //add CDN
+    $config = $this->package('global')->service('s3-main');
+    $data['cdn_config'] = File::getS3Client($config);
 
     if($response->isError()) {
         $response->setFlash($response->getMessage(), 'danger');
         $data['errors'] = $response->getValidation();
     }
 
-    //Render body
+    //----------------------------//
+    // 3. Render Template
     $class = 'page-developer-profile-create page-admin';
     $data['title'] = cradle('global')->translate('Create Profile');
     $body = cradle('/app/admin')->template('profile/form', $data);
 
-    //Set Content
+    //set content
     $response
         ->setPage('title', $data['title'])
         ->setPage('class', $class)
         ->setContent($body);
 
-    //Render page
+    //render page
 }, 'render-admin-page');
 
 /**
@@ -78,10 +109,13 @@ $cradle->get('/admin/profile/create', function($request, $response) {
  * @param Response $response
  */
 $cradle->get('/admin/profile/update/:profile_id', function($request, $response) {
-    //for logged in
+    //----------------------------//
+    // 1. Route Permissions
+    //only for admin
     cradle('global')->requireLogin('admin');
 
-    //Prepare body
+    //----------------------------//
+    // 2. Prepare Data
     $data = ['item' => $request->getPost()];
 
     //if no item
@@ -103,7 +137,8 @@ $cradle->get('/admin/profile/update/:profile_id', function($request, $response) 
         $data['errors'] = $response->getValidation();
     }
 
-    //Render body
+    //----------------------------//
+    // 3. Render Template
     $class = 'page-developer-profile-update page-admin';
     $data['title'] = cradle('global')->translate('Updating Profile');
     $body = cradle('/app/admin')->template('profile/form', $data);
@@ -124,8 +159,17 @@ $cradle->get('/admin/profile/update/:profile_id', function($request, $response) 
  * @param Response $response
  */
 $cradle->post('/admin/profile/create', function($request, $response) {
-    //for logged in
+    //----------------------------//
+    // 1. Route Permissions
+    //only for admin
     cradle('global')->requireLogin('admin');
+
+    //----------------------------//
+    // 2. Prepare Data
+    //if profile_image has no value make it null
+    if ($request->hasStage('profile_image') && !$request->getStage('profile_image')) {
+        $request->setStage('profile_image', null);
+    }
 
     //if profile_email has no value make it null
     if ($request->hasStage('profile_email') && !$request->getStage('profile_email')) {
@@ -143,11 +187,6 @@ $cradle->post('/admin/profile/create', function($request, $response) {
     //if profile_detail has no value make it null
     if ($request->hasStage('profile_detail') && !$request->getStage('profile_detail')) {
         $request->setStage('profile_detail', null);
-    }
-
-    //if profile_image has no value make it null
-    if ($request->hasStage('profile_image') && !$request->getStage('profile_image')) {
-        $request->setStage('profile_image', null);
     }
 
     //if profile_job has no value make it null
@@ -196,8 +235,12 @@ $cradle->post('/admin/profile/create', function($request, $response) {
     //profile_flag is disallowed
     $request->removeStage('profile_flag');
 
+    //----------------------------//
+    // 3. Process Request
     cradle()->trigger('profile-create', $request, $response);
 
+    //----------------------------//
+    // 4. Interpret Results
     if($response->isError()) {
         return cradle()->triggerRoute('get', '/admin/profile/create', $request, $response);
     }
@@ -217,8 +260,18 @@ $cradle->post('/admin/profile/create', function($request, $response) {
  * @param Response $response
  */
 $cradle->post('/admin/profile/update/:profile_id', function($request, $response) {
-    //for logged in
+    //----------------------------//
+    // 1. Route Permissions
+    //only for admin
     cradle('global')->requireLogin('admin');
+
+    //----------------------------//
+    // 2. Prepare Data
+
+    //if profile_image has no value make it null
+    if ($request->hasStage('profile_image') && !$request->getStage('profile_image')) {
+        $request->setStage('profile_image', null);
+    }
 
     //if profile_email has no value make it null
     if ($request->hasStage('profile_email') && !$request->getStage('profile_email')) {
@@ -236,11 +289,6 @@ $cradle->post('/admin/profile/update/:profile_id', function($request, $response)
     //if profile_detail has no value make it null
     if ($request->hasStage('profile_detail') && !$request->getStage('profile_detail')) {
         $request->setStage('profile_detail', null);
-    }
-
-    //if profile_image has no value make it null
-    if ($request->hasStage('profile_image') && !$request->getStage('profile_image')) {
-        $request->setStage('profile_image', null);
     }
 
     //if profile_job has no value make it null
@@ -289,8 +337,12 @@ $cradle->post('/admin/profile/update/:profile_id', function($request, $response)
     //profile_flag is disallowed
     $request->removeStage('profile_flag');
 
+    //----------------------------//
+    // 3. Process Request
     cradle()->trigger('profile-update', $request, $response);
 
+    //----------------------------//
+    // 4. Interpret Results
     if($response->isError()) {
         $route = '/admin/profile/update/' . $request->getStage('profile_id');
         return cradle()->triggerRoute('get', $route, $request, $response);
@@ -311,12 +363,20 @@ $cradle->post('/admin/profile/update/:profile_id', function($request, $response)
  * @param Response $response
  */
 $cradle->get('/admin/profile/remove/:profile_id', function($request, $response) {
-    //for logged in
+    //----------------------------//
+    // 1. Route Permissions
+    //only for admin
     cradle('global')->requireLogin('admin');
 
+    //----------------------------//
+    // 2. Prepare Data
+    // no data to preapre
+    //----------------------------//
+    // 3. Process Request
     cradle()->trigger('profile-remove', $request, $response);
 
-    //deal with results
+    //----------------------------//
+    // 4. Interpret Results
     if($response->isError()) {
         //add a flash
         cradle('global')->flash($response->getMessage(), 'danger');
@@ -336,12 +396,20 @@ $cradle->get('/admin/profile/remove/:profile_id', function($request, $response) 
  * @param Response $response
  */
 $cradle->get('/admin/profile/restore/:profile_id', function($request, $response) {
-    //for logged in
+    //----------------------------//
+    // 1. Route Permissions
+    //only for admin
     cradle('global')->requireLogin('admin');
 
+    //----------------------------//
+    // 2. Prepare Data
+    // no data to preapre
+    //----------------------------//
+    // 3. Process Request
     cradle()->trigger('profile-restore', $request, $response);
 
-    //deal with results
+    //----------------------------//
+    // 4. Interpret Results
     if($response->isError()) {
         //add a flash
         cradle('global')->flash($response->getMessage(), 'danger');
@@ -353,4 +421,3 @@ $cradle->get('/admin/profile/restore/:profile_id', function($request, $response)
 
     cradle('global')->redirect('/admin/profile/search');
 });
-

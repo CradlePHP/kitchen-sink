@@ -17,7 +17,8 @@ use Cradle\Module\Oauth\Session\Validator as SessionValidator;
  * @param Response $response
  */
 $cradle->on('session-access', function ($request, $response) {
-    //get the session detail
+    //----------------------------//
+    // 1. Get Data
     $this->trigger('session-detail', $request, $response);
 
     //if there's an error
@@ -25,18 +26,13 @@ $cradle->on('session-access', function ($request, $response) {
         return;
     }
 
-    //get data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
     }
 
-    //this/these will be used a lot
-    $sessionSql = SessionService::get('sql');
-    $sessionRedis = SessionService::get('redis');
-    $sessionElastic = SessionService::get('elastic');
-
-    //validate
+    //----------------------------//
+    // 2. Validate Data
     $errors = SessionValidator::getAccessErrors($data);
 
     //if there are errors
@@ -45,6 +41,16 @@ $cradle->on('session-access', function ($request, $response) {
             ->setError(true, 'Invalid Parameters')
             ->set('json', 'validation', $errors);
     }
+
+    //----------------------------//
+    // 3. Prepare Data
+    //no preparation needed
+    //----------------------------//
+    // 4. Process Data
+    //this/these will be used a lot
+    $sessionSql = SessionService::get('sql');
+    $sessionRedis = SessionService::get('redis');
+    $sessionElastic = SessionService::get('elastic');
 
     //save to database
     $results = $sessionSql->update([
@@ -80,18 +86,15 @@ $cradle->on('session-access', function ($request, $response) {
  * @param Response $response
  */
 $cradle->on('session-create', function ($request, $response) {
-    //get data
+    //----------------------------//
+    // 1. Get Data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
     }
 
-    //this/these will be used a lot
-    $sessionSql = SessionService::get('sql');
-    $sessionRedis = SessionService::get('redis');
-    $sessionElastic = SessionService::get('elastic');
-
-    //validate
+    //----------------------------//
+    // 2. Validate Data
     $errors = SessionValidator::getCreateErrors($data);
 
     //if there are errors
@@ -101,8 +104,17 @@ $cradle->on('session-create', function ($request, $response) {
             ->set('json', 'validation', $errors);
     }
 
+    //----------------------------//
+    // 3. Prepare Data
     //deflate permissions
     $data['session_permissions'] = json_encode($data['session_permissions']);
+
+    //----------------------------//
+    // 4. Process Data
+    //this/these will be used a lot
+    $sessionSql = SessionService::get('sql');
+    $sessionRedis = SessionService::get('redis');
+    $sessionElastic = SessionService::get('elastic');
 
     //save to database
     $results = $sessionSql->create($data);
@@ -130,7 +142,8 @@ $cradle->on('session-create', function ($request, $response) {
 * @param Response $response
 */
 $cradle->on('session-detail', function ($request, $response) {
-    //get data
+    //----------------------------//
+    // 1. Get Data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
@@ -143,11 +156,18 @@ $cradle->on('session-detail', function ($request, $response) {
         $id = $data['session_token'];
     }
 
+    //----------------------------//
+    // 2. Validate Data
     //we need a app id
     if (!$id) {
         return $response->setError(true, 'Invalid ID');
     }
 
+    //----------------------------//
+    // 3. Prepare Data
+    //no preparation needed
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     $sessionSql = SessionService::get('sql');
     $sessionRedis = SessionService::get('redis');
@@ -202,17 +222,22 @@ $cradle->on('session-detail', function ($request, $response) {
 * @param Response $response
 */
 $cradle->on('session-refresh', function ($request, $response) {
-    //get the item detail
+    //----------------------------//
+    // 1. Get Data
     $this->trigger('session-detail', $request, $response);
 
-    //if there's an error
+    //----------------------------//
+    // 2. Validate Data
     if ($response->isError()) {
         return;
     }
 
-    //get data
+    //----------------------------//
+    // 3. Prepare Data
     $data = $response->getResults();
 
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     $sessionSql = SessionService::get('sql');
     $sessionRedis = SessionService::get('redis');
@@ -244,21 +269,26 @@ $cradle->on('session-refresh', function ($request, $response) {
 * @param Response $response
 */
 $cradle->on('session-remove', function ($request, $response) {
-    //get the session detail
+    //----------------------------//
+    // 1. Get Data
     $this->trigger('session-detail', $request, $response);
 
-    //if there's an error
+    //----------------------------//
+    // 2. Validate Data
     if ($response->isError()) {
         return;
     }
 
+    //----------------------------//
+    // 3. Prepare Data
+    $data = $response->getResults();
+
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     $sessionSql = SessionService::get('sql');
     $sessionRedis = SessionService::get('redis');
     $sessionElastic = SessionService::get('elastic');
-
-    //get data
-    $data = $response->getResults();
 
     //remove from database
     $sessionSql->remove($data['session_id']);
@@ -288,12 +318,21 @@ $cradle->on('session-remove', function ($request, $response) {
 * @param Response $response
 */
 $cradle->on('session-search', function ($request, $response) {
-    //get data
+    //----------------------------//
+    // 1. Get Data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
     }
 
+    //----------------------------//
+    // 2. Validate Data
+    //no validation needed
+    //----------------------------//
+    // 3. Prepare Data
+    //no preparation needed
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     $sessionSql = SessionService::get('sql');
     $sessionRedis = SessionService::get('redis');
@@ -338,7 +377,8 @@ $cradle->on('session-search', function ($request, $response) {
 * @param Response $response
 */
 $cradle->on('session-update', function ($request, $response) {
-    //get the session detail
+    //----------------------------//
+    // 1. Get Data
     $this->trigger('session-detail', $request, $response);
 
     //if there's an error
@@ -352,12 +392,8 @@ $cradle->on('session-update', function ($request, $response) {
         $data = $request->getStage();
     }
 
-    //this/these will be used a lot
-    $sessionSql = SessionService::get('sql');
-    $sessionRedis = SessionService::get('redis');
-    $sessionElastic = SessionService::get('elastic');
-
-    //validate
+    //----------------------------//
+    // 2. Validate Data
     $errors = SessionValidator::getUpdateErrors($data);
 
     //if there are errors
@@ -367,10 +403,19 @@ $cradle->on('session-update', function ($request, $response) {
             ->set('json', 'validation', $errors);
     }
 
+    //----------------------------//
+    // 3. Prepare Data
     //deflate permissions
     if (isset($data['session_permissions'])) {
         $data['session_permissions'] = json_encode($data['session_permissions']);
     }
+
+    //----------------------------//
+    // 4. Process Data
+    //this/these will be used a lot
+    $sessionSql = SessionService::get('sql');
+    $sessionRedis = SessionService::get('redis');
+    $sessionElastic = SessionService::get('elastic');
 
     //save app to database
     $results = $sessionSql->update($data);

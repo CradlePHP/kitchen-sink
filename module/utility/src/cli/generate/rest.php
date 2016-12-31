@@ -104,5 +104,23 @@ return function($request, $response) {
         file_put_contents($destination, $contents);
     }
 
+    //add to cradle.php
+    $cradleFile = $cwd . '/app/api/.cradle.php';
+    if(file_exists($cwd . '/app/api/.cradle')) {
+        $cradleFile = $cwd . '/app/api/.cradle';
+    }
+
+    if(file_exists($cradleFile)) {
+        $flag = '//START: GENERATED CONTROLLERS';
+        $add = 'include_once __DIR__ . \'/src/controller/' . $data['name'] . '.php\';';
+
+        $contents = file_get_contents($cradleFile);
+        if(strpos($contents, $flag) !== false && strpos($contents, $add) === false) {
+            $contents = str_replace($flag, $flag . PHP_EOL . $add, $contents);
+        }
+
+        file_put_contents($cradleFile, $contents);
+    }
+
     CommandLine::success($schemaName . ' REST was generated.');
 };

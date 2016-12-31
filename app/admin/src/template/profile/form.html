@@ -4,7 +4,27 @@
     </div>
 
     <div class="panel-body" >
-        <form enctype="multipart/form-data" method="post">
+        <form 
+            enctype="multipart/form-data"
+            method="post"
+            {{#if cdn_config}}
+                data-do="cdn-upload"
+                data-on="submit"
+                data-progress="We are uploading your files. Please do not refresh page."
+                data-complete="Upload Complete"
+                data-enctype="{{cdn_config.form.enctype}}"
+                data-method="{{cdn_config.form.method}}"
+                data-action="{{cdn_config.form.action}}"
+                data-cdn="{{cdn_config.form.action}}"
+                data-acl="{{cdn_config.inputs.acl}}"
+                data-key="{{cdn_config.inputs.key}}"
+                data-credential="{{cdn_config.inputs.X-Amz-Credential}}"
+                data-algorythm="{{cdn_config.inputs.X-Amz-Algorithm}}"
+                data-date="{{cdn_config.inputs.X-Amz-Date}}"
+                data-policy="{{cdn_config.inputs.Policy}}"
+                data-signature="{{cdn_config.inputs.X-Amz-Signature}}"
+            {{/if}}
+        >
             
             <div class="form-group{{#if errors.profile_image}} has-error{{/if}}">
                 <label class="control-label">Image</label>
@@ -90,12 +110,12 @@
                 <div>
                     
                     <label>
-                        <input type="radio" name="profile_gender" value="Male"{{#when ../item.profile_gender '==' 'male'}} checked{{/when}} />
-                        <span>male</span>
+                        <input type="radio" name="profile_gender" value="male"{{#when item.profile_gender '==' 'male'}} checked{{/when}} />
+                        <span>Male</span>
                     </label>
                     <label>
-                        <input type="radio" name="profile_gender" value="Female"{{#when ../item.profile_gender '==' 'female'}} checked{{/when}} />
-                        <span>female</span>
+                        <input type="radio" name="profile_gender" value="female"{{#when item.profile_gender '==' 'female'}} checked{{/when}} />
+                        <span>Female</span>
                     </label>
 
                     {{#if errors.profile_gender}}

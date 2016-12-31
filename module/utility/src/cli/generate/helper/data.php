@@ -57,10 +57,16 @@ $dataBuilder = function($schemas, $schema, $schemaRoot, $schemaName) {
 
         if(isset($field['form']['type'])
             && (
-                $field['form']['type'] === 'image-field'
-                || $field['form']['type'] === 'images-field'
-                || $field['form']['type'] === 'file'
+                $field['form']['type'] === 'file'
                 || $field['form']['type'] === 'image'
+            )
+        )
+        {
+            $data['has_file'] = true;
+        } else if(isset($field['form']['inline_type'])
+            && (
+                $field['form']['inline_type'] === 'image-field'
+                || $field['form']['inline_type'] === 'images-field'
             )
         )
         {

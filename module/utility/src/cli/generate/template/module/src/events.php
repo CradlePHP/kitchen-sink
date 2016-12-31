@@ -25,18 +25,15 @@ use Cradle\Module\Utility\File;
  * @param Response $response
  */
 $cradle->on('{{name}}-create', function ($request, $response) {
-    //get data
+    //----------------------------//
+    // 1. Get Data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
     }
 
-    //this/these will be used a lot
-    ${{name}}Sql = {{camel name 1}}Service::get('sql');
-    ${{name}}Redis = {{camel name 1}}Service::get('redis');
-    ${{name}}Elastic = {{camel name 1}}Service::get('elastic');
-
-    //validate
+    //----------------------------//
+    // 2. Validate Data
     $errors = {{camel name 1}}Validator::getCreateErrors($data);
 
     //if there are errors
@@ -46,63 +43,72 @@ $cradle->on('{{name}}-create', function ($request, $response) {
             ->set('json', 'validation', $errors);
     }
 
-    //prepare data
+    //----------------------------//
+    // 3. Prepare Data
     {{~#each fields}}
+        {{~#when form.inline_type '===' 'image-field'}}
+
+    //if there is an image
+    if (isset($data['{{@key}}'])) {
+        //upload files
+        //try cdn if enabled
+        $config = $this->package('global')->service('s3-main');
+        $data['{{@key}}'] = File::base64ToS3($data['{{@key}}'], $config);
+        //try being old school
+        $upload = $this->package('global')->path('upload');
+        $data['{{@key}}'] = File::base64ToUpload($data['{{@key}}'], $upload);
+    }
+        {{~/when}}
+
+        {{~#when form.inline_type '===' 'images-field'}}
+
+    //if there is an image
+    if (isset($data['{{@key}}'])) {
+        //upload files
+        //try cdn if enabled
+        $config = $this->package('global')->service('s3-main');
+        $data['{{@key}}'] = File::base64ToS3($data['{{@key}}'], $config);
+        //try being old school
+        $upload = $this->package('global')->path('upload');
+        $data['{{@key}}'] = File::base64ToUpload($data['{{@key}}'], $upload);
+    }
+        {{~/when}}
+
         {{~#when sql.type '===' 'json'}}
 
-    if($data['{{@key}}']) {
+    if(isset($data['{{@key}}'])) {
         $data['{{@key}}'] = json_encode($data['{{@key}}']);
     }
         {{~/when}}
 
         {{~#when sql.type '===' 'date'}}
 
-        if($data['{{@key}}']) {
-            $data['{{@key}}'] = date('Y-m-d', strtotime($data['{{@key}}']));
-        }
+    if(isset($data['{{@key}}'])) {
+        $data['{{@key}}'] = date('Y-m-d', strtotime($data['{{@key}}']));
+    }
         {{~/when}}
 
         {{~#when sql.type '===' 'time'}}
-    if($data['{{@key}}']) {
+
+    if(isset($data['{{@key}}'])) {
         $data['{{@key}}'] = date('H:i:s', strtotime($data['{{@key}}']));
     }
         {{~/when}}
 
         {{~#when sql.type '===' 'datetime'}}
 
-    if($data['{{@key}}']) {
+    if(isset($data['{{@key}}'])) {
         $data['{{@key}}'] = date('Y-m-d H:i:s', strtotime($data['{{@key}}']));
     }
         {{~/when}}
-
-        {{~#when field.type '===' 'image-field'}}
-
-    //if there is an image
-    if (isset($data['{{@key}}'])) {
-        //upload files
-        //try cdn if enabled
-        $config = $this->package('global')->service('s3-main');
-        $data['{{@key}}'] = File::base64ToS3($data['{{@key}}'], $config);
-        //try being old school
-        $upload = $this->package('global')->path('upload');
-        $data['{{@key}}'] = File::base64ToUpload($data['{{@key}}'], $upload);
-    }
-        {{~/when}}
-
-        {{~#when field.type '===' 'images-field'}}
-
-    //if there is an image
-    if (isset($data['{{@key}}'])) {
-        //upload files
-        //try cdn if enabled
-        $config = $this->package('global')->service('s3-main');
-        $data['{{@key}}'] = File::base64ToS3($data['{{@key}}'], $config);
-        //try being old school
-        $upload = $this->package('global')->path('upload');
-        $data['{{@key}}'] = File::base64ToUpload($data['{{@key}}'], $upload);
-    }
-        {{~/when}}
     {{~/each}}
+
+    //----------------------------//
+    // 4. Process Data
+    //this/these will be used a lot
+    ${{name}}Sql = {{camel name 1}}Service::get('sql');
+    ${{name}}Redis = {{camel name 1}}Service::get('redis');
+    ${{name}}Elastic = {{camel name 1}}Service::get('elastic');
 
     //save {{name}} to database
     $results = ${{name}}Sql->create($data);
@@ -110,7 +116,7 @@ $cradle->on('{{name}}-create', function ($request, $response) {
     {{~#each relations}}
     //link {{@key}}
     if(isset($data['{{primary}}'])) {
-        ${{name}}Sql->link{{camel @key 1}}($results['{{../primary}}'], $data['{{primary}}']);
+        ${{../name}}Sql->link{{camel @key 1}}($results['{{../primary}}'], $data['{{primary}}']);
     }
     {{~/each}}
 
@@ -131,7 +137,8 @@ $cradle->on('{{name}}-create', function ($request, $response) {
  * @param Response $response
  */
 $cradle->on('{{name}}-detail', function ($request, $response) {
-    //get data
+    //----------------------------//
+    // 1. Get Data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
@@ -146,11 +153,18 @@ $cradle->on('{{name}}-detail', function ($request, $response) {
     {{/each}}{{/if~}}
     }
 
+    //----------------------------//
+    // 2. Validate Data
     //we need an id
     if (!$id) {
         return $response->setError(true, 'Invalid ID');
     }
 
+    //----------------------------//
+    // 3. Prepare Data
+    //no preparation needed
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     ${{name}}Sql = {{camel name 1}}Service::get('sql');
     ${{name}}Redis = {{camel name 1}}Service::get('redis');
@@ -204,17 +218,23 @@ $cradle->on('{{name}}-detail', function ($request, $response) {
  * @param Response $response
  */
 $cradle->on('{{name}}-remove', function ($request, $response) {
+    //----------------------------//
+    // 1. Get Data
     //get the {{name}} detail
     $this->trigger('{{name}}-detail', $request, $response);
 
-    //if there's an error
+    //----------------------------//
+    // 2. Validate Data
     if ($response->isError()) {
         return;
     }
 
-    //get data
+    //----------------------------//
+    // 3. Prepare Data
     $data = $response->getResults();
 
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     ${{name}}Sql = {{camel name 1}}Service::get('sql');
     ${{name}}Redis = {{camel name 1}}Service::get('redis');
@@ -256,17 +276,23 @@ $cradle->on('{{name}}-remove', function ($request, $response) {
  * @param Response $response
  */
 $cradle->on('{{name}}-restore', function ($request, $response) {
+    //----------------------------//
+    // 1. Get Data
     //get the {{name}} detail
     $this->trigger('{{name}}-detail', $request, $response);
 
-    //if there's an error
+    //----------------------------//
+    // 2. Validate Data
     if ($response->isError()) {
         return;
     }
 
-    //get data
+    //----------------------------//
+    // 3. Prepare Data
     $data = $response->getResults();
 
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     ${{name}}Sql = {{camel name 1}}Service::get('sql');
     ${{name}}Redis = {{camel name 1}}Service::get('redis');
@@ -295,12 +321,21 @@ $cradle->on('{{name}}-restore', function ($request, $response) {
  * @param Response $response
  */
 $cradle->on('{{name}}-search', function ($request, $response) {
-    //get data
+    //----------------------------//
+    // 1. Get Data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
     }
 
+    //----------------------------//
+    // 2. Validate Data
+    //no validation needed
+    //----------------------------//
+    // 3. Prepare Data
+    //no preparation needed
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     ${{name}}Sql = {{camel name 1}}Service::get('sql');
     ${{name}}Redis = {{camel name 1}}Service::get('redis');
@@ -345,6 +380,8 @@ $cradle->on('{{name}}-search', function ($request, $response) {
  * @param Response $response
  */
 $cradle->on('{{name}}-update', function ($request, $response) {
+    //----------------------------//
+    // 1. Get Data
     //get the {{name}} detail
     $this->trigger('{{name}}-detail', $request, $response);
 
@@ -353,18 +390,14 @@ $cradle->on('{{name}}-update', function ($request, $response) {
         return;
     }
 
-    //get data
+    //get data from stage
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
     }
 
-    //this/these will be used a lot
-    ${{name}}Sql = {{camel name 1}}Service::get('sql');
-    ${{name}}Redis = {{camel name 1}}Service::get('redis');
-    ${{name}}Elastic = {{camel name 1}}Service::get('elastic');
-
-    //validate
+    //----------------------------//
+    // 2. Validate Data
     $errors = {{camel name 1}}Validator::getUpdateErrors($data);
 
     //if there are errors
@@ -374,63 +407,72 @@ $cradle->on('{{name}}-update', function ($request, $response) {
             ->set('json', 'validation', $errors);
     }
 
-    //prepare data
+    //----------------------------//
+    // 3. Prepare Data
     {{~#each fields}}
+        {{~#when form.inline_type '===' 'image-field'}}
+
+    //if there is an image
+    if (isset($data['{{@key}}'])) {
+        //upload files
+        //try cdn if enabled
+        $config = $this->package('global')->service('s3-main');
+        $data['{{@key}}'] = File::base64ToS3($data['{{@key}}'], $config);
+        //try being old school
+        $upload = $this->package('global')->path('upload');
+        $data['{{@key}}'] = File::base64ToUpload($data['{{@key}}'], $upload);
+    }
+        {{~/when}}
+
+        {{~#when form.inline_type '===' 'images-field'}}
+
+    //if there is an image
+    if (isset($data['{{@key}}'])) {
+        //upload files
+        //try cdn if enabled
+        $config = $this->package('global')->service('s3-main');
+        $data['{{@key}}'] = File::base64ToS3($data['{{@key}}'], $config);
+        //try being old school
+        $upload = $this->package('global')->path('upload');
+        $data['{{@key}}'] = File::base64ToUpload($data['{{@key}}'], $upload);
+    }
+        {{~/when}}
+
         {{~#when sql.type '===' 'json'}}
 
-    if($data['{{@key}}']) {
+    if(isset($data['{{@key}}'])) {
         $data['{{@key}}'] = json_encode($data['{{@key}}']);
     }
         {{~/when}}
 
         {{~#when sql.type '===' 'date'}}
 
-        if($data['{{@key}}']) {
-            $data['{{@key}}'] = date('Y-m-d', strtotime($data['{{@key}}']));
-        }
+    if(isset($data['{{@key}}'])) {
+        $data['{{@key}}'] = date('Y-m-d', strtotime($data['{{@key}}']));
+    }
         {{~/when}}
 
         {{~#when sql.type '===' 'time'}}
-    if($data['{{@key}}']) {
+
+    if(isset($data['{{@key}}'])) {
         $data['{{@key}}'] = date('H:i:s', strtotime($data['{{@key}}']));
     }
         {{~/when}}
 
         {{~#when sql.type '===' 'datetime'}}
 
-    if($data['{{@key}}']) {
+    if(isset($data['{{@key}}'])) {
         $data['{{@key}}'] = date('Y-m-d H:i:s', strtotime($data['{{@key}}']));
     }
         {{~/when}}
-
-        {{~#when field.type '===' 'image-field'}}
-
-    //if there is an image
-    if (isset($data['{{@key}}'])) {
-        //upload files
-        //try cdn if enabled
-        $config = $this->package('global')->service('s3-main');
-        $data['{{@key}}'] = File::base64ToS3($data['{{@key}}'], $config);
-        //try being old school
-        $upload = $this->package('global')->path('upload');
-        $data['{{@key}}'] = File::base64ToUpload($data['{{@key}}'], $upload);
-    }
-        {{~/when}}
-
-        {{~#when field.type '===' 'images-field'}}
-
-    //if there is an image
-    if (isset($data['{{@key}}'])) {
-        //upload files
-        //try cdn if enabled
-        $config = $this->package('global')->service('s3-main');
-        $data['{{@key}}'] = File::base64ToS3($data['{{@key}}'], $config);
-        //try being old school
-        $upload = $this->package('global')->path('upload');
-        $data['{{@key}}'] = File::base64ToUpload($data['{{@key}}'], $upload);
-    }
-        {{~/when}}
     {{~/each}}
+
+    //----------------------------//
+    // 4. Process Data
+    //this/these will be used a lot
+    ${{name}}Sql = {{camel name 1}}Service::get('sql');
+    ${{name}}Redis = {{camel name 1}}Service::get('redis');
+    ${{name}}Elastic = {{camel name 1}}Service::get('elastic');
 
     //save {{name}} to database
     $results = ${{name}}Sql->update($data);

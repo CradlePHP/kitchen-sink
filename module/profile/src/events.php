@@ -10,9 +10,6 @@
 use Cradle\Module\Profile\Service as ProfileService;
 use Cradle\Module\Profile\Validator as ProfileValidator;
 
-use Aws\S3\S3Client;
-use Aws\S3\PostObjectV4;
-
 use Cradle\Http\Request;
 use Cradle\Http\Response;
 
@@ -25,18 +22,15 @@ use Cradle\Module\Utility\File;
  * @param Response $response
  */
 $cradle->on('profile-create', function ($request, $response) {
-    //get data
+    //----------------------------//
+    // 1. Get Data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
     }
 
-    //this/these will be used a lot
-    $profileSql = ProfileService::get('sql');
-    $profileRedis = ProfileService::get('redis');
-    $profileElastic = ProfileService::get('elastic');
-
-    //validate
+    //----------------------------//
+    // 2. Validate Data
     $errors = ProfileValidator::getCreateErrors($data);
 
     //if there are errors
@@ -46,27 +40,30 @@ $cradle->on('profile-create', function ($request, $response) {
             ->set('json', 'validation', $errors);
     }
 
+    //----------------------------//
+    // 3. Prepare Data
+
     //if there is an image
-    if ($request->hasStage('profile_image')) {
+    if (isset($data['profile_image'])) {
         //upload files
         //try cdn if enabled
-        $this->trigger('profile-image-base64-cdn', $request, $response);
+        $config = $this->package('global')->service('s3-main');
+        $data['profile_image'] = File::base64ToS3($data['profile_image'], $config);
         //try being old school
-        $this->trigger('profile-image-base64-upload', $request, $response);
-
-        $data['profile_image'] = $request->getStage('profile_image');
-    } else {
-        //generate image
-        $protocol = 'http';
-        if ($request->getServer('SERVER_PORT') === 443) {
-            $protocol = 'https';
-        }
-
-        $host = $protocol . '://' . $request->getServer('HTTP_HOST');
-
-        $data['profile_image'] = $host . '/images/avatar/avatar-'
-            . ((floor(rand() * 1000) % 11) + 1) . '.png';
+        $upload = $this->package('global')->path('upload');
+        $data['profile_image'] = File::base64ToUpload($data['profile_image'], $upload);
     }
+
+    if(isset($data['profile_birth'])) {
+        $data['profile_birth'] = date('Y-m-d', strtotime($data['profile_birth']));
+    }
+
+    //----------------------------//
+    // 4. Process Data
+    //this/these will be used a lot
+    $profileSql = ProfileService::get('sql');
+    $profileRedis = ProfileService::get('redis');
+    $profileElastic = ProfileService::get('elastic');
 
     //save profile to database
     $results = $profileSql->create($data);
@@ -82,13 +79,14 @@ $cradle->on('profile-create', function ($request, $response) {
 });
 
 /**
-* Profile Detail Job
-*
-* @param Request $request
-* @param Response $response
-*/
+ * Profile Detail Job
+ *
+ * @param Request $request
+ * @param Response $response
+ */
 $cradle->on('profile-detail', function ($request, $response) {
-    //get data
+    //----------------------------//
+    // 1. Get Data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
@@ -97,15 +95,20 @@ $cradle->on('profile-detail', function ($request, $response) {
     $id = null;
     if (isset($data['profile_id'])) {
         $id = $data['profile_id'];
-    } else if (isset($data['profile_slug']) && $data['profile_slug']) {
-        $id = $data['profile_slug'];
     }
 
+    //----------------------------//
+    // 2. Validate Data
     //we need an id
     if (!$id) {
         return $response->setError(true, 'Invalid ID');
     }
 
+    //----------------------------//
+    // 3. Prepare Data
+    //no preparation needed
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     $profileSql = ProfileService::get('sql');
     $profileRedis = ProfileService::get('redis');
@@ -153,192 +156,29 @@ $cradle->on('profile-detail', function ($request, $response) {
 });
 
 /**
-* File Base64 Upload Job (supporting job)
-*
-* @param Request $request
-* @param Response $response
-*/
-$cradle->on('profile-image-base64-upload', function ($request, $response) {
-    $data = $request->getStage('profile_image');
-
-    //if not base 64
-    if (strpos($data, ';base64,') === false) {
-        //we don't need to convert
-        return;
-    }
-
-    //first get the destination
-    $destination = $this->package('global')->path('upload');
-
-    //if not
-    if (!is_dir($destination)) {
-        //make one
-        mkdir($destination);
-    }
-
-    //this is the root for file_link
-    $protocol = 'http';
-    if ($request->getServer('SERVER_PORT') === 443) {
-        $protocol = 'https';
-    }
-
-    $host = $protocol . '://' . $request->getServer('HTTP_HOST');
-    $extension = File::getExtensionFromData($data);
-
-    $file = '/' . md5(uniqid()) . '.' . $extension;
-
-    $path = $destination . $file;
-    $link = $host . '/upload' . $file;
-
-    //data:mime;base64,data
-    $base64 = substr($data, strpos($data, ',') + 1);
-    file_put_contents($path, base64_decode($base64));
-
-    //now put it back
-    $request->setStage('profile_image', $link);
-});
-
-/**
-* Upload Base64 images to CDN (supporting job)
-*
-* @param Request $request
-* @param Response $response
-*/
-$cradle->on('profile-image-base64-cdn', function ($request, $response) {
-    //profile_image can be a link or base64
-    $data = $request->getStage('profile_image');
-
-    //if not base 64
-    if (strpos($data, ';base64,') === false) {
-        //we don't need to convert
-        return;
-    }
-
-    $config = $this->package('global')->service('s3-main');
-
-    //if there's no service
-    if (!$config) {
-        //we cannot continue
-        return;
-    }
-
-    //if it's not configured
-    if($config['token'] === '<AWS TOKEN>'
-        || $config['secret'] === '<AWS SECRET>'
-        || $config['bucket'] === '<S3 BUCKET>'
-    )
-    {
-        return;
-    }
-
-    // load s3
-    $s3 = S3Client::factory([
-        'version' => 'latest',
-        'region'  => $config['region'], //example ap-southeast-1
-        'credentials' => array(
-            'key'    => $config['token'],
-            'secret' => $config['secret'],
-        )
-    ]);
-
-    $mime = File::getMimeFromData($data);
-    $extension = File::getExtensionFromData($data);
-    $file = md5(uniqid()) . '.' . $extension;
-    $base64 = substr($data, strpos($data, ',') + 1);
-    $body = fopen('data://' . $mime . ';base64,' . $base64, 'r');
-
-    $s3->putObject([
-        'Bucket'         => $config['bucket'],
-        'ACL'            => 'public-read',
-        'ContentType'    => $mime,
-        'Key'            => 'upload/' . $file,
-        'Body'           => $body,
-        'CacheControl'   => 'max-age=43200'
-    ]);
-
-    fclose($body);
-
-    $link = $config['host'] . '/' . $config['bucket'] . '/upload/' . $file;
-    $request->setStage('profile_image', $link);
-});
-
-/**
-* Upload images to CDN from client (supporting job)
-*
-* @param Request $request
-* @param Response $response
-*/
-$cradle->on('profile-image-client-cdn', function ($request, $response) {
-    $config = $this->package('global')->service('s3-main');
-
-    //if there's no service
-    if (!$config) {
-        //we cannot continue
-        return;
-    }
-
-    //if it's not configured
-    if($config['token'] === '<AWS TOKEN>'
-        || $config['secret'] === '<AWS SECRET>'
-        || $config['bucket'] === '<S3 BUCKET>'
-    )
-    {
-        return;
-    }
-
-    // load s3
-    $s3 = S3Client::factory([
-        'version' => 'latest',
-        'region'  => $config['region'], //example ap-southeast-1
-        'credentials' => array(
-            'key'    => $config['token'],
-            'secret' => $config['secret'],
-        )
-    ]);
-
-    $postObject = new PostObjectV4(
-        $s3,
-        $config['bucket'],
-        [
-            'acl' => 'public-read',
-            'key' => 'upload/' . md5(uniqid())
-        ],
-        [
-            ['acl' => 'public-read'],
-            ['bucket' => $config['bucket']],
-            ['starts-with', '$key', 'upload/']
-        ],
-        '+2 hours'
-    );
-
-    $response->setResults('cdn', [
-        // Get attributes to set on an HTML form, e.g., action, method, enctype
-        'form' => $postObject->getFormAttributes(),
-        // Get form input fields. This will include anything set as a form input in
-        // the constructor, the provided JSON policy, your AWS Access Key ID, and an
-        // auth signature.
-        'inputs' => $postObject->getFormInputs()
-    ]);
-});
-
-/**
-* Profile Remove Job
-*
-* @param Request $request
-* @param Response $response
-*/
+ * Profile Remove Job
+ *
+ * @param Request $request
+ * @param Response $response
+ */
 $cradle->on('profile-remove', function ($request, $response) {
+    //----------------------------//
+    // 1. Get Data
     //get the profile detail
     $this->trigger('profile-detail', $request, $response);
 
-    //if there's an error
+    //----------------------------//
+    // 2. Validate Data
     if ($response->isError()) {
         return;
     }
 
-    //get data
+    //----------------------------//
+    // 3. Prepare Data
     $data = $response->getResults();
 
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     $profileSql = ProfileService::get('sql');
     $profileRedis = ProfileService::get('redis');
@@ -351,34 +191,39 @@ $cradle->on('profile-remove', function ($request, $response) {
     ]);
 
     //remove from index
-    $profileElastic->remove($id);
+    $profileElastic->remove($data['profile_id']);
 
     //invalidate cache
     $profileRedis->removeDetail($data['profile_id']);
-    $profileRedis->removeDetail($data['profile_slug']);
     $profileRedis->removeSearch();
 
     $response->setError(false)->setResults($results);
 });
 
 /**
-* Profile Restore Job
-*
-* @param Request $request
-* @param Response $response
-*/
+ * Profile Restore Job
+ *
+ * @param Request $request
+ * @param Response $response
+ */
 $cradle->on('profile-restore', function ($request, $response) {
+    //----------------------------//
+    // 1. Get Data
     //get the profile detail
     $this->trigger('profile-detail', $request, $response);
 
-    //if there's an error
+    //----------------------------//
+    // 2. Validate Data
     if ($response->isError()) {
         return;
     }
 
-    //get data
+    //----------------------------//
+    // 3. Prepare Data
     $data = $response->getResults();
 
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     $profileSql = ProfileService::get('sql');
     $profileRedis = ProfileService::get('redis');
@@ -391,27 +236,36 @@ $cradle->on('profile-restore', function ($request, $response) {
     ]);
 
     //create index
-    $profileElastic->create($id);
+    $profileElastic->create($data['profile_id']);
 
     //invalidate cache
     $profileRedis->removeSearch();
 
-    $response->setError(false)->setResults($id);
+    $response->setError(false)->setResults($results);
 });
 
 /**
-* Profile Search Job
-*
-* @param Request $request
-* @param Response $response
-*/
+ * Profile Search Job
+ *
+ * @param Request $request
+ * @param Response $response
+ */
 $cradle->on('profile-search', function ($request, $response) {
-    //get data
+    //----------------------------//
+    // 1. Get Data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
     }
 
+    //----------------------------//
+    // 2. Validate Data
+    //no validation needed
+    //----------------------------//
+    // 3. Prepare Data
+    //no preparation needed
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     $profileSql = ProfileService::get('sql');
     $profileRedis = ProfileService::get('redis');
@@ -450,12 +304,14 @@ $cradle->on('profile-search', function ($request, $response) {
 });
 
 /**
-* Profile Update Job
-*
-* @param Request $request
-* @param Response $response
-*/
+ * Profile Update Job
+ *
+ * @param Request $request
+ * @param Response $response
+ */
 $cradle->on('profile-update', function ($request, $response) {
+    //----------------------------//
+    // 1. Get Data
     //get the profile detail
     $this->trigger('profile-detail', $request, $response);
 
@@ -464,18 +320,14 @@ $cradle->on('profile-update', function ($request, $response) {
         return;
     }
 
-    //get data
+    //get data from stage
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
     }
 
-    //this/these will be used a lot
-    $profileSql = ProfileService::get('sql');
-    $profileRedis = ProfileService::get('redis');
-    $profileElastic = ProfileService::get('elastic');
-
-    //validate
+    //----------------------------//
+    // 2. Validate Data
     $errors = ProfileValidator::getUpdateErrors($data);
 
     //if there are errors
@@ -485,16 +337,30 @@ $cradle->on('profile-update', function ($request, $response) {
             ->set('json', 'validation', $errors);
     }
 
+    //----------------------------//
+    // 3. Prepare Data
+
     //if there is an image
-    if ($request->hasStage('profile_image')) {
+    if (isset($data['profile_image'])) {
         //upload files
         //try cdn if enabled
-        $this->trigger('profile-image-base64-cdn', $request, $response);
+        $config = $this->package('global')->service('s3-main');
+        $data['profile_image'] = File::base64ToS3($data['profile_image'], $config);
         //try being old school
-        $this->trigger('profile-image-base64-upload', $request, $response);
-
-        $data['profile_image'] = $request->getStage('profile_image');
+        $upload = $this->package('global')->path('upload');
+        $data['profile_image'] = File::base64ToUpload($data['profile_image'], $upload);
     }
+
+    if(isset($data['profile_birth'])) {
+        $data['profile_birth'] = date('Y-m-d', strtotime($data['profile_birth']));
+    }
+
+    //----------------------------//
+    // 4. Process Data
+    //this/these will be used a lot
+    $profileSql = ProfileService::get('sql');
+    $profileRedis = ProfileService::get('redis');
+    $profileElastic = ProfileService::get('elastic');
 
     //save profile to database
     $results = $profileSql->update($data);
@@ -504,7 +370,6 @@ $cradle->on('profile-update', function ($request, $response) {
 
     //invalidate cache
     $profileRedis->removeDetail($response->getResults('profile_id'));
-    $profileRedis->removeDetail($response->getResults('profile_slug'));
     $profileRedis->removeSearch();
 
     //return response format

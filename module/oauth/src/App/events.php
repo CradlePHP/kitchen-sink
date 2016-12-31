@@ -17,18 +17,15 @@ use Cradle\Module\Oauth\App\Validator as AppValidator;
  * @param Response $response
  */
 $cradle->on('app-create', function ($request, $response) {
-    //get data
+    //----------------------------//
+    // 1. Get Data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
     }
 
-    //this/these will be used a lot
-    $appSql = AppService::get('sql');
-    $appRedis = AppService::get('redis');
-    $appElastic = AppService::get('elastic');
-
-    //validate
+    //----------------------------//
+    // 2. Validate Data
     $errors = AppValidator::getCreateErrors($data);
 
     //if there are errors
@@ -38,8 +35,17 @@ $cradle->on('app-create', function ($request, $response) {
             ->set('json', 'validation', $errors);
     }
 
+    //----------------------------//
+    // 3. Prepare Data
     //deflate permissions
     $data['app_permissions'] = json_encode($data['app_permissions']);
+
+    //----------------------------//
+    // 4. Process Data
+    //this/these will be used a lot
+    $appSql = AppService::get('sql');
+    $appRedis = AppService::get('redis');
+    $appElastic = AppService::get('elastic');
 
     //save item to database
     $results = $appSql->create($data);
@@ -64,7 +70,8 @@ $cradle->on('app-create', function ($request, $response) {
 * @param Response $response
 */
 $cradle->on('app-detail', function ($request, $response) {
-    //get data
+    //----------------------------//
+    // 1. Get Data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
@@ -77,11 +84,18 @@ $cradle->on('app-detail', function ($request, $response) {
         $id = $data['app_token'];
     }
 
+    //----------------------------//
+    // 2. Validate Data
     //we need an id
     if (!$id) {
         return $response->setError(true, 'Invalid ID');
     }
 
+    //----------------------------//
+    // 3. Prepare Data
+    //no preparation needed
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     $appSql = AppService::get('sql');
     $appRedis = AppService::get('redis');
@@ -136,17 +150,22 @@ $cradle->on('app-detail', function ($request, $response) {
 * @param Response $response
 */
 $cradle->on('app-refresh', function ($request, $response) {
-    //get the item detail
+    //----------------------------//
+    // 1. Get Data
     $this->trigger('app-detail', $request, $response);
 
-    //if there's an error
+    //----------------------------//
+    // 2. Validate Data
     if ($response->isError()) {
         return;
     }
 
-    //get data
+    //----------------------------//
+    // 3. Prepare Data
     $data = $response->getResults();
 
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     $appSql = AppService::get('sql');
     $appRedis = AppService::get('redis');
@@ -178,17 +197,22 @@ $cradle->on('app-refresh', function ($request, $response) {
 * @param Response $response
 */
 $cradle->on('app-remove', function ($request, $response) {
-    //get the item detail
+    //----------------------------//
+    // 1. Get Data
     $this->trigger('app-detail', $request, $response);
 
-    //if there's an error
+    //----------------------------//
+    // 2. Validate Data
     if ($response->isError()) {
         return;
     }
 
-    //get data
+    //----------------------------//
+    // 3. Prepare Data
     $data = $response->getResults();
 
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     $appSql = AppService::get('sql');
     $appRedis = AppService::get('redis');
@@ -219,17 +243,22 @@ $cradle->on('app-remove', function ($request, $response) {
 * @param Response $response
 */
 $cradle->on('app-restore', function ($request, $response) {
-    //get the app detail
+    //----------------------------//
+    // 1. Get Data
     $this->trigger('app-detail', $request, $response);
 
-    //if there's an error
+    //----------------------------//
+    // 2. Validate Data
     if ($response->isError()) {
         return;
     }
 
-    //get data
+    //----------------------------//
+    // 3. Prepare Data
     $data = $response->getResults();
 
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     $appSql = AppService::get('sql');
     $appRedis = AppService::get('redis');
@@ -258,12 +287,21 @@ $cradle->on('app-restore', function ($request, $response) {
 * @param Response $response
 */
 $cradle->on('app-search', function ($request, $response) {
-    //get data
+    //----------------------------//
+    // 1. Get Data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
     }
 
+    //----------------------------//
+    // 2. Validate Data
+    //no validation needed
+    //----------------------------//
+    // 3. Prepare Data
+    //no preparation needed
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     $appSql = AppService::get('sql');
     $appRedis = AppService::get('redis');
@@ -308,7 +346,8 @@ $cradle->on('app-search', function ($request, $response) {
 * @param Response $response
 */
 $cradle->on('app-update', function ($request, $response) {
-    //get the app detail
+    //----------------------------//
+    // 1. Get Data
     $this->trigger('app-detail', $request, $response);
 
     //if there's an error
@@ -316,18 +355,13 @@ $cradle->on('app-update', function ($request, $response) {
         return;
     }
 
-    //get data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
     }
 
-    //this/these will be used a lot
-    $appSql = AppService::get('sql');
-    $appRedis = AppService::get('redis');
-    $appElastic = AppService::get('elastic');
-
-    //validate
+    //----------------------------//
+    // 2. Validate Data
     $errors = AppValidator::getUpdateErrors($data);
 
     //if there are errors
@@ -337,10 +371,19 @@ $cradle->on('app-update', function ($request, $response) {
             ->set('json', 'validation', $errors);
     }
 
+    //----------------------------//
+    // 3. Prepare Data
     //deflate permissions
     if (isset($data['app_permissions'])) {
         $data['app_permissions'] = json_encode($data['app_permissions']);
     }
+
+    //----------------------------//
+    // 4. Process Data
+    //this/these will be used a lot
+    $appSql = AppService::get('sql');
+    $appRedis = AppService::get('redis');
+    $appElastic = AppService::get('elastic');
 
     //save to database
     $results = $appSql->update($data);

@@ -136,11 +136,11 @@ class File
 
         if(!$host) {
             $protocol = 'http';
-            if ($request->getServer('SERVER_PORT') === 443) {
+            if ($_SERVER['SERVER_PORT'] === 443) {
                 $protocol = 'https';
             }
 
-            $host = $protocol . '://' . $request->getServer('HTTP_HOST');
+            $host = $protocol . '://' .$_SERVER['HTTP_HOST'];
         }
 
         $extension = self::getExtensionFromData($data);

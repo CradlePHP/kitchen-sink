@@ -1,7 +1,7 @@
 <?php //-->
 /**
- * This file is part of a Custom Project.
- * (c) 2017-2019 Acme Inc.
+ * This file is part of a Custom Project
+ * (c) 2017-2019 Acme Inc
  *
  * Copyright and license information can be found at LICENSE.txt
  * distributed with this package.
@@ -11,29 +11,7 @@ use Cradle\Module\Profile\Service;
 
 /**
  * SQL service test
-  * Profile Model Test
-  *
-  * Columns
-  * - profile_name         string    REQUIRED
-  * - profile_slug         string
-  * - profile_email        string
-  * - profile_phone        string
-  * - profile_detail       float
-  * - profile_image        string
-  * - profile_company      string
-  * - profile_job          string
-  * - profile_gender       string
-  * - profile_birth        date
-  * - profile_website      string
-  * - profile_facebook     string
-  * - profile_linkedin     string
-  * - profile_twitter      string
-  * - profile_google       string
-  * - profile_active       bool     1
-  * - profile_type         string
-  * - profile_flag         small    0
-  * - profile_created      datetime generated
-  * - profile_updated      datetime generated
+ * Profile Model Test
  *
  * @vendor   Acme
  * @package  Profile
@@ -59,11 +37,9 @@ class Cradle_Module_Profile_Service_SqlServiceTest extends PHPUnit_Framework_Tes
      */
     public function testCreate()
     {
-        $actual = $this->object->create(array(
-            'profile_email'     => 'model_profile_1@email.com',
-            'profile_name'      => 'Model Profile 1',
-            'profile_locale'  => 'philippines'
-        ));
+        $actual = $this->object->create([
+            'profile_name' => John Doe,
+        ]);
 
         $this->assertEquals(2, $actual['profile_id']);
     }
@@ -95,25 +71,11 @@ class Cradle_Module_Profile_Service_SqlServiceTest extends PHPUnit_Framework_Tes
      */
     public function testUpdate()
     {
-        $actual = $this->object->update(array(
-            'profile_id' => 2,
-            'profile_name' => 'Model Profile 3'
-        ));
+        $actual = $this->object->update([
+            'profile_name' => ,
+        ]);
 
-        $this->assertTrue(is_numeric($actual['profile_id']));
         $this->assertEquals(2, $actual['profile_id']);
-        $this->assertEquals('Model Profile 3', $actual['profile_name']);
-    }
-
-    /**
-     * @covers Cradle\Module\Profile\Service\SqlService::exists
-     */
-    public function testExists()
-    {
-        $actual = $this->object->exists('john@doe.com');
-
-        $this->assertTrue(!empty($actual));
-        $this->assertEquals('john@doe.com', $actual['profile_email']);
     }
 
     /**

@@ -52,6 +52,8 @@
  * @param Response $response
  */
 $cradle->get('/dialog/request', function($request, $response) {
+    //----------------------------//
+    // 1. Route Permissions
     //for logged in
     cradle('global')->requireLogin();
 
@@ -60,6 +62,8 @@ $cradle->get('/dialog/request', function($request, $response) {
         return cradle()->triggerRoute('get', '/dialog/invalid', $request, $response);
     }
 
+    //----------------------------//
+    // 2. Prepare Data`
     //get app detail
     $token = $request->getStage('client_id');
     $request->setStage('app_token', $token);
@@ -125,7 +129,7 @@ $cradle->get('/dialog/request', function($request, $response) {
         $permissions[$permission] = $types[$permission];
     }
 
-    //Prepare body
+    //set data
     $data = [
         'permissions' => $permissions,
         'app' => $app
@@ -140,7 +144,8 @@ $cradle->get('/dialog/request', function($request, $response) {
         $data['errors'] = $response->getValidation();
     }
 
-    //Render body
+    //----------------------------//
+    // 3. Render Template
     $class = 'page-dialog-request';
     $title = cradle('global')->translate('Request Access');
     $body = cradle('/app/api')->template('dialog/request', $data);
@@ -161,6 +166,8 @@ $cradle->get('/dialog/request', function($request, $response) {
  * @param Response $response
  */
 $cradle->post('/dialog/request', function($request, $response) {
+    //----------------------------//
+    // 1. Route Permissions
     //for logged in
     cradle('global')->requireLogin();
 
@@ -182,6 +189,8 @@ $cradle->post('/dialog/request', function($request, $response) {
         cradle()->getDispatcher()->redirect($url . '?error=deny');
     }
 
+    //----------------------------//
+    // 2. Prepare Data
     //get auth id and app id
     $auth = $request->getSession('me', 'auth_id');
     $token = $request->getStage('client_id');
@@ -199,9 +208,12 @@ $cradle->post('/dialog/request', function($request, $response) {
         $request->setStage('session_permissions', []);
     }
 
-    //now call the job
+    //----------------------------//
+    // 3. Process Request
     cradle()->trigger('session-create', $request, $response);
 
+    //----------------------------//
+    // 4. Interpret Results
     if($response->isError()) {
         return cradle()->triggerRoute('get', '/dialog/invalid', $request, $response);
     }
@@ -234,22 +246,28 @@ $cradle->get('/dialog/logout', function($request, $response) {
  * @param Response $response
  */
 $cradle->get('/dialog/invalid', function($request, $response) {
+    //----------------------------//
+    // 1. Route Permissions
+    //not needed
+    //----------------------------//
+    // 2. Prepare Data
     //prepare data
     $data = [];
     if ($response->hasJson()) {
         $data = $response->getJson();
     }
 
-    //Render body
+    //----------------------------//
+    // 3. Render Template
     $class = 'page-dialog-invalid';
     $title = cradle('global')->translate('Invalid Request');
     $body = cradle('/app/api')->template('dialog/invalid', $data);
 
-    //Set Content
+    //set Content
     $response
         ->setPage('title', $title)
         ->setPage('class', $class)
         ->setContent($body);
 
-    //Render page
+    //render page
 }, 'render-dialog-page');

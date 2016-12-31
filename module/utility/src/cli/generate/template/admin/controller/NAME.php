@@ -19,29 +19,78 @@ use Cradle\Module\Utility\File;
  * @param Response $response
  */
 $cradle->get('/admin/{{name}}/search', function($request, $response) {
-    //for logged in
+    //----------------------------//
+    // 1. Route Permissions
+    //only for admin
     cradle('global')->requireLogin('admin');
 
-    //Prepare body
+    //----------------------------//
+    // 2. Prepare Data
     if(!$request->hasStage('range')) {
         $request->setStage('range', 50);
     }
 
+    {{~#if sortable.length}}
+
+    //filter possible sorting options
+    //we do this to prevent SQL injections
+    if(is_array($request->getStage('order'))) {
+        $sortable = [
+        {{~#each sortable}}
+            {{~#noop}}
+            '{{this}}'{{#unless @last}},{{/unless}}
+            {{~/noop~}}
+        {{/each}}
+        ];
+
+        foreach($request->getStage('order') as $key => $direction) {
+            if(!in_array($key, $sortable)) {
+                $request->removeStage('order', $key);
+            } else if ($direction !== 'ASC' && $direction !== 'DESC') {
+                $request->removeStage('order', $key);
+            }
+        }
+    }
+    {{~/if}}
+
+    {{~#if filterable.length}}
+
+    //filter possible filter options
+    //we do this to prevent SQL injections
+    if(is_array($request->getStage('filter'))) {
+        $filterable = [
+            {{~#each filerable}}
+                {{~#noop}}
+                '{{this}}'{{#unless @last}},{{/unless}}
+                {{~/noop~}}
+            {{/each}}
+        ];
+
+        foreach($request->getStage('filter') as $key => $value) {
+            if(!in_array($key, $sortable)) {
+                $request->removeStage('filter', $key);
+            }
+        }
+    }
+    {{~/if}}
+
+    //trigger job
     cradle()->trigger('{{name}}-search', $request, $response);
     $data = array_merge($request->getStage(), $response->getResults());
 
-    //Render body
+    //----------------------------//
+    // 3. Render Template
     $class = 'page-admin-{{name}}-search page-admin';
     $data['title'] = cradle('global')->translate('{{capital plural}}');
     $body = cradle('/app/admin')->template('{{name}}/search', $data);
 
-    //Set Content
+    //set content
     $response
         ->setPage('title', $data['title'])
         ->setPage('class', $class)
         ->setContent($body);
 
-    //Render page
+    //render page
 }, 'render-admin-page');
 
 /**
@@ -51,10 +100,13 @@ $cradle->get('/admin/{{name}}/search', function($request, $response) {
  * @param Response $response
  */
 $cradle->get('/admin/{{name}}/create', function($request, $response) {
-    //for logged in
+    //----------------------------//
+    // 1. Route Permissions
+    //only for admin
     cradle('global')->requireLogin('admin');
 
-    //Prepare body
+    //----------------------------//
+    // 2. Prepare Data
     $data = ['item' => $request->getPost()];
 
     {{~#if has_file}}
@@ -69,18 +121,19 @@ $cradle->get('/admin/{{name}}/create', function($request, $response) {
         $data['errors'] = $response->getValidation();
     }
 
-    //Render body
+    //----------------------------//
+    // 3. Render Template
     $class = 'page-developer-{{name}}-create page-admin';
     $data['title'] = cradle('global')->translate('Create {{capital singular}}');
     $body = cradle('/app/admin')->template('{{name}}/form', $data);
 
-    //Set Content
+    //set content
     $response
         ->setPage('title', $data['title'])
         ->setPage('class', $class)
         ->setContent($body);
 
-    //Render page
+    //render page
 }, 'render-admin-page');
 
 /**
@@ -90,10 +143,13 @@ $cradle->get('/admin/{{name}}/create', function($request, $response) {
  * @param Response $response
  */
 $cradle->get('/admin/{{name}}/update/:{{primary}}', function($request, $response) {
-    //for logged in
+    //----------------------------//
+    // 1. Route Permissions
+    //only for admin
     cradle('global')->requireLogin('admin');
 
-    //Prepare body
+    //----------------------------//
+    // 2. Prepare Data
     $data = ['item' => $request->getPost()];
 
     //if no item
@@ -115,7 +171,8 @@ $cradle->get('/admin/{{name}}/update/:{{primary}}', function($request, $response
         $data['errors'] = $response->getValidation();
     }
 
-    //Render body
+    //----------------------------//
+    // 3. Render Template
     $class = 'page-developer-{{name}}-update page-admin';
     $data['title'] = cradle('global')->translate('Updating {{capital singular}}');
     $body = cradle('/app/admin')->template('{{name}}/form', $data);
@@ -136,9 +193,13 @@ $cradle->get('/admin/{{name}}/update/:{{primary}}', function($request, $response
  * @param Response $response
  */
 $cradle->post('/admin/{{name}}/create', function($request, $response) {
-    //for logged in
+    //----------------------------//
+    // 1. Route Permissions
+    //only for admin
     cradle('global')->requireLogin('admin');
 
+    //----------------------------//
+    // 2. Prepare Data
     {{~#each fields}}
         {{~#unless form.length}}
 
@@ -172,12 +233,16 @@ $cradle->post('/admin/{{name}}/create', function($request, $response) {
     {{~#if relations.app}}
 
     if(!$request->hasStage('app_id')) {
-        $request->setStage('app_id', $request->getSession('me', 'app_id'));
+        $request->setStage('app_id', 1);
     }
     {{~/if}}
 
+    //----------------------------//
+    // 3. Process Request
     cradle()->trigger('{{name}}-create', $request, $response);
 
+    //----------------------------//
+    // 4. Interpret Results
     if($response->isError()) {
         return cradle()->triggerRoute('get', '/admin/{{name}}/create', $request, $response);
     }
@@ -197,9 +262,13 @@ $cradle->post('/admin/{{name}}/create', function($request, $response) {
  * @param Response $response
  */
 $cradle->post('/admin/{{name}}/update/:{{primary}}', function($request, $response) {
-    //for logged in
+    //----------------------------//
+    // 1. Route Permissions
+    //only for admin
     cradle('global')->requireLogin('admin');
 
+    //----------------------------//
+    // 2. Prepare Data
     {{~#each fields}}
         {{~#unless form.length}}
 
@@ -224,8 +293,12 @@ $cradle->post('/admin/{{name}}/update/:{{primary}}', function($request, $respons
         {{~/unless}}
     {{~/each}}
 
+    //----------------------------//
+    // 3. Process Request
     cradle()->trigger('{{name}}-update', $request, $response);
 
+    //----------------------------//
+    // 4. Interpret Results
     if($response->isError()) {
         $route = '/admin/{{name}}/update/' . $request->getStage('{{primary}}');
         return cradle()->triggerRoute('get', $route, $request, $response);
@@ -246,12 +319,20 @@ $cradle->post('/admin/{{name}}/update/:{{primary}}', function($request, $respons
  * @param Response $response
  */
 $cradle->get('/admin/{{name}}/remove/:{{primary}}', function($request, $response) {
-    //for logged in
+    //----------------------------//
+    // 1. Route Permissions
+    //only for admin
     cradle('global')->requireLogin('admin');
 
+    //----------------------------//
+    // 2. Prepare Data
+    // no data to preapre
+    //----------------------------//
+    // 3. Process Request
     cradle()->trigger('{{name}}-remove', $request, $response);
 
-    //deal with results
+    //----------------------------//
+    // 4. Interpret Results
     if($response->isError()) {
         //add a flash
         cradle('global')->flash($response->getMessage(), 'danger');
@@ -271,12 +352,20 @@ $cradle->get('/admin/{{name}}/remove/:{{primary}}', function($request, $response
  * @param Response $response
  */
 $cradle->get('/admin/{{name}}/restore/:{{primary}}', function($request, $response) {
-    //for logged in
+    //----------------------------//
+    // 1. Route Permissions
+    //only for admin
     cradle('global')->requireLogin('admin');
 
+    //----------------------------//
+    // 2. Prepare Data
+    // no data to preapre
+    //----------------------------//
+    // 3. Process Request
     cradle()->trigger('{{name}}-restore', $request, $response);
 
-    //deal with results
+    //----------------------------//
+    // 4. Interpret Results
     if($response->isError()) {
         //add a flash
         cradle('global')->flash($response->getMessage(), 'danger');

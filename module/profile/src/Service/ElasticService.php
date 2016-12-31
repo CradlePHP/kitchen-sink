@@ -1,7 +1,7 @@
 <?php //-->
 /**
- * This file is part of a Custom Project.
- * (c) 2017-2019 Acme Inc.
+ * This file is part of a Custom Project
+ * (c) 2017-2019 Acme Inc
  *
  * Copyright and license information can be found at LICENSE.txt
  * distributed with this package.
@@ -22,7 +22,7 @@ use Cradle\Module\Utility\Service\AbstractElasticService;
  * Profile ElasticSearch Service
  *
  * @vendor   Acme
- * @package  Profile
+ * @package  profile
  * @author   John Doe <john@acme.com>
  * @standard PSR-2
  */
@@ -80,6 +80,7 @@ class ElasticService extends AbstractElasticService implements ElasticServiceInt
         //prepare the search object
         $search = [];
 
+        
         //keyword search
         if (isset($data['q'])) {
             if (!is_array($data['q'])) {
@@ -89,18 +90,22 @@ class ElasticService extends AbstractElasticService implements ElasticServiceInt
             foreach ($data['q'] as $keyword) {
                 $search['query']['bool']['filter'][]['query_string'] = [
                     'query' => $keyword . '*',
-                    'fields' => ['profile_name', 'profile_email', 'profile_locale'],
+                    'fields' => [
+                        'profile_name','profile_email','profile_phone','profile_detail',
+                    ],
                     'default_operator' => 'AND'
                 ];
             }
         }
+        
 
         //generic full match filters
-
+        
         //profile_active
         if (!isset($filter['profile_active'])) {
             $filter['profile_active'] = 1;
         }
+        
 
         foreach ($filter as $key => $value) {
             $search['query']['bool']['filter'][]['term'][$key] = $value;

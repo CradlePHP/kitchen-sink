@@ -189,6 +189,7 @@ return function($field) {
         if($field['form']['type'] === 'tag-field') {
             $code = file_get_contents(__DIR__ . '/../template/fields/tags.html');
             $code = str_replace('{NAME}', $field['name'], $code);
+            $field['form']['inline_type'] = $field['form']['type'];
             $field['form']['type'] = 'inline';
             $field['form']['code'] = trim($code);
         }
@@ -197,6 +198,7 @@ return function($field) {
         if($field['form']['type'] === 'image-field') {
             $code = file_get_contents(__DIR__ . '/../template/fields/image.html');
             $code = str_replace('{NAME}', $field['name'], $code);
+            $field['form']['inline_type'] = $field['form']['type'];
             $field['form']['type'] = 'inline';
             $field['form']['code'] = trim($code);
         }
@@ -205,6 +207,7 @@ return function($field) {
         if($field['form']['type'] === 'images-field') {
             $code = file_get_contents(__DIR__ . '/../template/fields/images.html');
             $code = str_replace('{NAME}', $field['name'], $code);
+            $field['form']['inline_type'] = $field['form']['type'];
             $field['form']['type'] = 'inline';
             $field['form']['code'] = trim($code);
         }
@@ -213,6 +216,7 @@ return function($field) {
         if($field['form']['type'] === 'meta-field') {
             $code = file_get_contents(__DIR__ . '/../template/fields/meta.html');
             $code = str_replace('{NAME}', $field['name'], $code);
+            $field['form']['inline_type'] = $field['form']['type'];
             $field['form']['type'] = 'inline';
             $field['form']['code'] = trim($code);
         }

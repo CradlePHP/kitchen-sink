@@ -15,6 +15,9 @@ include_once __DIR__ . '/src/controller/dialog/auth.php';
 include_once __DIR__ . '/src/controller/developer/auth.php';
 include_once __DIR__ . '/src/controller/developer/app.php';
 
+//START: GENERATED CONTROLLERS
+//END: GENERATED CONTROLLERS
+
 //include globals, events, methods
 include_once __DIR__ . '/src/package/methods.php';
 include_once __DIR__ . '/src/package/events.php';

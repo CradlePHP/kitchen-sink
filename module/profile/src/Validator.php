@@ -1,12 +1,14 @@
 <?php //-->
 /**
- * This file is part of a Custom Project.
- * (c) 2017-2019 Acme Inc.
+ * This file is part of a Custom Project
+ * (c) 2017-2019 Acme Inc
  *
  * Copyright and license information can be found at LICENSE.txt
  * distributed with this package.
  */
 namespace Cradle\Module\Profile;
+
+use Cradle\Module\Profile\Service as ProfileService;
 
 use Cradle\Module\Utility\Validator as UtilityValidator;
 
@@ -14,7 +16,7 @@ use Cradle\Module\Utility\Validator as UtilityValidator;
  * Validator layer
  *
  * @vendor   Acme
- * @package  Profile
+ * @package  profile
  * @author   John Doe <john@acme.com>
  * @standard PSR-2
  */
@@ -29,23 +31,16 @@ class Validator
      * @return array
      */
     public static function getCreateErrors(array $data, array $errors = [])
-    {
-        // profile_name - required
-        if (!isset($data['profile_name']) || empty($data['profile_name'])) {
-            $errors['profile_name'] = 'Cannot be empty';
+    { 
+        if(!isset($data['profile_name']) || empty($data['profile_name'])) {
+            $errors['profile_name'] = 'Name is required';
         }
-
-        // profile_locale - required
-        if (!isset($data['profile_locale']) || empty($data['profile_locale'])) {
-            $errors['profile_locale'] = 'Cannot be empty';
-        }
-
-        //also add optional errors
+                
         return self::getOptionalErrors($data, $errors);
     }
 
     /**
-     * Returns Product Update Errors
+     * Returns Update Errors
      *
      * @param *array $data
      * @param array  $errors
@@ -54,22 +49,15 @@ class Validator
      */
     public static function getUpdateErrors(array $data, array $errors = [])
     {
-        // profile_id            Required
-        if (!isset($data['profile_id']) || empty($data['profile_id'])) {
-            $errors['profile_id'] = 'Cannot be empty';
+        if(!isset($data['profile_id']) || !is_numeric($data['profile_id'])) {
+            $errors['profile_id'] = 'Invalid ID';
         }
 
-        //profile_name        Required
-        if (isset($data['profile_name']) && empty($data['profile_name'])) {
-            $errors['profile_name'] = 'Cannot be empty, if set';
+        
+        if(isset($data['profile_name']) && empty($data['profile_name'])) {
+            $errors['profile_name'] = 'Name is required';
         }
-
-        //profile_locale        Required
-        if (isset($data['profile_locale']) && empty($data['profile_locale'])) {
-            $errors['profile_locale'] = 'Cannot be empty, if set';
-        }
-
-        //also add optional errors
+                
         return self::getOptionalErrors($data, $errors);
     }
 
@@ -83,64 +71,49 @@ class Validator
      */
     public static function getOptionalErrors(array $data, array $errors = [])
     {
-        // profile_gender - one of
-        $choices = ['male', 'female'];
+        //validations
+        
+        if (isset($data['profile_image']) && !preg_match('/^(http|https|ftp):\/\/([A-Z0-9][A-Z0-9_-]*(?:.[A-Z0-9][A-Z0-9_-]*)+):?(d+)?\/?/i', $data['profile_image'])) {
+            $errors['profile_image'] = 'Should be a valid url';
+        }
+                
+        if (isset($data['profile_email']) && !preg_match('/^(?:(?:(?:[^@,&quot;\[\]\x5c\x00-\x20\x7f-\xff\.]|\x5c(?=[@,&quot;\[\]\x5c\x00-\x20\x7f-\xff]))(?:[^@,&quot;\[\]\x5c\x00-\x20\x7f-\xff\.]|(?&lt;=\x5c)[@,&quot;\[\]\x5c\x00-\x20\x7f-\xff]|\x5c(?=[@,&quot;\[\]\x5c\x00-\x20\x7f-\xff])|\.(?=[^\.])){1,62}(?:[^@,&quot;\[\]\x5c\x00-\x20\x7f-\xff\.]|(?&lt;=\x5c)[@,&quot;\[\]\x5c\x00-\x20\x7f-\xff])|[^@,&quot;\[\]\x5c\x00-\x20\x7f-\xff\.]{1,2})|&quot;(?:[^&quot;]|(?&lt;=\x5c)&quot;){1,62}&quot;)@(?:(?!.{64})(?:[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.?|[a-zA-Z0-9]\.?)+\.(?:xn--[a-zA-Z0-9]+|[a-zA-Z]{2,6})|\[(?:[0-1]?\d?\d|2[0-4]\d|25[0-5])(?:\.(?:[0-1]?\d?\d|2[0-4]\d|25[0-5])){3}\])$/', $data['profile_email'])) {
+            $errors['profile_email'] = 'Must be a valid email';
+        }
+                
+        if (isset($data['profile_slug']) && !preg_match('#^[a-zA-Z0-9\-_]+$#', $data['profile_slug'])) {
+            $errors['profile_slug'] = 'Slug must only have letters, numbers, dashes';
+        }
+                
+        if(isset($data['profile_detail']) && str_word_count($data['profile_detail']) <= 10) {
+            $errors['profile_detail'] = 'Detail should have more than 10 words';
+        }
+                
+        $choices = array('male', 'female');
         if (isset($data['profile_gender']) && !in_array($data['profile_gender'], $choices)) {
-            $errors['profile_gender'] = sprintf('Should be one of %s', implode(',', $choices));
+            $errors['profile_gender'] = 'Should be either male or female';
         }
-
-        // profile_birth - date
-        if (isset($data['profile_birth']) && !UtilityValidator::isUrl($data['profile_birth'])) {
-            $errors['profile_birth'] = 'Must be a valid date YYYY-MM-DD';
+                
+        if (isset($data['profile_website']) && !preg_match('/^(http|https|ftp):\/\/([A-Z0-9][A-Z0-9_-]*(?:.[A-Z0-9][A-Z0-9_-]*)+):?(d+)?\/?/i', $data['profile_website'])) {
+            $errors['profile_website'] = 'Must be a valid URL';
         }
-
-        // profile_facebook - url
-        if (isset($data['profile_facebook']) && !UtilityValidator::isUrl($data['profile_facebook'])) {
-            $errors['profile_facebook'] = 'Should be a valid URL';
+                
+        if (isset($data['profile_facebook']) && !preg_match('/^(http|https|ftp):\/\/([A-Z0-9][A-Z0-9_-]*(?:.[A-Z0-9][A-Z0-9_-]*)+):?(d+)?\/?/i', $data['profile_facebook'])) {
+            $errors['profile_facebook'] = 'Must be a valid URL';
         }
-
-        // profile_linkedin - url
-        if (isset($data['profile_linkedin']) && !UtilityValidator::isUrl($data['profile_linkedin'])) {
-            $errors['profile_linkedin'] = 'Should be a valid URL';
+                
+        if (isset($data['profile_linkedin']) && !preg_match('/^(http|https|ftp):\/\/([A-Z0-9][A-Z0-9_-]*(?:.[A-Z0-9][A-Z0-9_-]*)+):?(d+)?\/?/i', $data['profile_linkedin'])) {
+            $errors['profile_linkedin'] = 'Must be a valid URL';
         }
-
-        // profile_twitter - url
-        if (isset($data['profile_twitter']) && !UtilityValidator::isUrl($data['profile_twitter'])) {
-            $errors['profile_twitter'] = 'Should be a valid URL';
+                
+        if (isset($data['profile_twitter']) && !preg_match('/^(http|https|ftp):\/\/([A-Z0-9][A-Z0-9_-]*(?:.[A-Z0-9][A-Z0-9_-]*)+):?(d+)?\/?/i', $data['profile_twitter'])) {
+            $errors['profile_twitter'] = 'Must be a valid URL';
         }
-
-        // profile_google - url
-        if (isset($data['profile_google']) && !UtilityValidator::isUrl($data['profile_google'])) {
-            $errors['profile_google'] = 'Should be a valid URL';
+                
+        if (isset($data['profile_google']) && !preg_match('/^(http|https|ftp):\/\/([A-Z0-9][A-Z0-9_-]*(?:.[A-Z0-9][A-Z0-9_-]*)+):?(d+)?\/?/i', $data['profile_google'])) {
+            $errors['profile_google'] = 'Must be a valid URL';
         }
-
-        // profile_rating - small
-        if (isset($data['profile_rating']) && !UtilityValidator::isSmall($data['profile_rating'])) {
-            $errors['profile_rating'] = 'Should be between 0 and 9';
-        }
-
-        // profile_experience - int
-        if (isset($data['profile_experience']) && !UtilityValidator::isInt($data['profile_experience'])) {
-            $errors['profile_experience'] = 'Must be a valid integrer';
-        }
-
-        if (isset($data['profile_email']) && !UtilityValidator::isEmail($data['profile_email'])) {
-            $errors['profile_email'] = 'Must be a valid e-mail address';
-        //mailinator
-        } else if (isset($data['profile_email']) &&
-            strpos(strtolower($data['profile_email']), 'mailinator') !== false) {
-            $errors['profile_email'] = 'This email has been blocked';
-        }
-
-        if (isset($data['profile_phone']) && preg_match('/[a-zA-Z]/i', $data['profile_phone'])) {
-            $errors['profile_phone'] = 'Must be a valid phone number';
-        }
-
-        // profile_flag - small
-        if (isset($data['profile_flag']) && !UtilityValidator::isSmall($data['profile_flag'])) {
-            $errors['profile_flag'] = 'Should be between 0 and 9';
-        }
-
+                
         return $errors;
     }
 }

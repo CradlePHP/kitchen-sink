@@ -19,19 +19,16 @@ use Cradle\Module\Profile\Validator as ProfileValidator;
  * @param Response $response
  */
 $cradle->on('auth-create', function ($request, $response) {
-    //get data
+    //----------------------------//
+    // 1. Get Data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
         $data['auth_slug'] = $data['profile_email'];
     }
 
-    //this/these will be used a lot
-    $authSql = AuthService::get('sql');
-    $authRedis = AuthService::get('redis');
-    $authElastic = AuthService::get('elastic');
-
-    //validate
+    //----------------------------//
+    // 2. Validate Data
     $errors = AuthValidator::getCreateErrors($data);
     $errors = ProfileValidator::getCreateErrors($data, $errors);
 
@@ -42,6 +39,8 @@ $cradle->on('auth-create', function ($request, $response) {
             ->set('json', 'validation', $errors);
     }
 
+    //----------------------------//
+    // 3. Prepare Data
     //salt on password
     $data['auth_password'] = md5($data['auth_password']);
 
@@ -50,6 +49,13 @@ $cradle->on('auth-create', function ($request, $response) {
 
     //deactive account
     $data['auth_active'] = 0;
+
+    //----------------------------//
+    // 4. Process Data
+    //this/these will be used a lot
+    $authSql = AuthService::get('sql');
+    $authRedis = AuthService::get('redis');
+    $authElastic = AuthService::get('elastic');
 
     //save item to database
     $results = $authSql->create($data);
@@ -97,7 +103,8 @@ $cradle->on('auth-create', function ($request, $response) {
  * @param Response $response
  */
 $cradle->on('auth-detail', function ($request, $response) {
-    //get data
+    //----------------------------//
+    // 1. Get Data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
@@ -110,11 +117,18 @@ $cradle->on('auth-detail', function ($request, $response) {
         $id = $data['auth_slug'];
     }
 
+    //----------------------------//
+    // 2. Validate Data
     //we need an id
     if (!$id) {
         return $response->setError(true, 'Invalid ID');
     }
 
+    //----------------------------//
+    // 3. Prepare Data
+    //no preparation needed
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     $authSql = AuthService::get('sql');
     $authRedis = AuthService::get('redis');
@@ -169,25 +183,21 @@ $cradle->on('auth-detail', function ($request, $response) {
  * @param Response $response
  */
 $cradle->on('auth-forgot', function ($request, $response) {
-    //get the auth detail
+    //----------------------------//
+    // 1. Get Data
     $this->trigger('auth-detail', $request, $response);
 
-    //if there's an error
     if ($response->isError()) {
         return;
     }
 
-    //get data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
     }
 
-    //this/these will be used a lot
-    $authSql = AuthService::get('sql');
-    $authRedis = AuthService::get('redis');
-    $authElastic = AuthService::get('elastic');
-
+    //----------------------------//
+    // 3. Validate Data
     //validate
     $errors = AuthValidator::getForgotErrors($data);
 
@@ -197,6 +207,13 @@ $cradle->on('auth-forgot', function ($request, $response) {
             ->setError(true, 'Invalid Parameters')
             ->set('json', 'validation', $errors);
     }
+
+    //----------------------------//
+    // 4. Process Data
+    //this/these will be used a lot
+    $authSql = AuthService::get('sql');
+    $authRedis = AuthService::get('redis');
+    $authElastic = AuthService::get('elastic');
 
     //send mail
     $request->setSoftStage($response->getResults());
@@ -289,7 +306,8 @@ $cradle->on('auth-forgot-mail', function ($request, $response) {
  * @param Response $response
  */
 $cradle->on('auth-login', function ($request, $response) {
-    //get data
+    //----------------------------//
+    // 1. Get Data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
@@ -300,7 +318,8 @@ $cradle->on('auth-login', function ($request, $response) {
     $authRedis = AuthService::get('redis');
     $authElastic = AuthService::get('elastic');
 
-    //validate
+    //----------------------------//
+    // 2. Validate Data
     $errors = AuthValidator::getLoginErrors($data);
 
     //if there are errors
@@ -310,7 +329,8 @@ $cradle->on('auth-login', function ($request, $response) {
             ->set('json', 'validation', $errors);
     }
 
-    //load up the detail
+    //----------------------------//
+    // 3. Process Data
     $this->trigger('auth-detail', $request, $response);
 });
 
@@ -321,18 +341,15 @@ $cradle->on('auth-login', function ($request, $response) {
  * @param Response $response
  */
 $cradle->on('auth-recover', function ($request, $response) {
-    //get data
+    //----------------------------//
+    // 1. Get Data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
     }
 
-    //this/these will be used a lot
-    $authSql = AuthService::get('sql');
-    $authRedis = AuthService::get('redis');
-    $authElastic = AuthService::get('elastic');
-
-    //validate
+    //----------------------------//
+    // 2. Validate Data
     $errors = AuthValidator::getRecoverErrors($data);
 
     //if there are errors
@@ -341,6 +358,13 @@ $cradle->on('auth-recover', function ($request, $response) {
             ->setError(true, 'Invalid Parameters')
             ->set('json', 'validation', $errors);
     }
+
+    //----------------------------//
+    // 3. Process Data
+    //this/these will be used a lot
+    $authSql = AuthService::get('sql');
+    $authRedis = AuthService::get('redis');
+    $authElastic = AuthService::get('elastic');
 
     //update
     $this->trigger('auth-update', $request, $response);
@@ -356,17 +380,22 @@ $cradle->on('auth-recover', function ($request, $response) {
  * @param Response $response
  */
 $cradle->on('auth-refresh', function ($request, $response) {
-    //get the auth detail
+    //----------------------------//
+    // 1. Get Data
     $this->trigger('auth-detail', $request, $response);
 
-    //if there's an error
+    //----------------------------//
+    // 2. Validate Data
     if ($response->isError()) {
         return;
     }
 
-    //get data
+    //----------------------------//
+    // 3. Prepare Data
     $data = $response->getResults();
 
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     $authSql = AuthService::get('sql');
     $authRedis = AuthService::get('redis');
@@ -398,17 +427,22 @@ $cradle->on('auth-refresh', function ($request, $response) {
  * @param Response $response
  */
 $cradle->on('auth-remove', function ($request, $response) {
-    //get the auth detail
+    //----------------------------//
+    // 1. Get Data
     $this->trigger('auth-detail', $request, $response);
 
-    //if there's an error
+    //----------------------------//
+    // 2. Validate Data
     if ($response->isError()) {
         return;
     }
 
-    //get data
+    //----------------------------//
+    // 3. Prepare Data
     $data = $response->getResults();
 
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     $authSql = AuthService::get('sql');
     $authRedis = AuthService::get('redis');
@@ -439,17 +473,22 @@ $cradle->on('auth-remove', function ($request, $response) {
  * @param Response $response
  */
 $cradle->on('auth-restore', function ($request, $response) {
-    //get the auth detail
+    //----------------------------//
+    // 1. Get Data
     $this->trigger('auth-detail', $request, $response);
 
-    //if there's an error
+    //----------------------------//
+    // 2. Validate Data
     if ($response->isError()) {
         return;
     }
 
-    //get data
+    //----------------------------//
+    // 3. Prepare Data
     $data = $response->getResults();
 
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     $authSql = AuthService::get('sql');
     $authRedis = AuthService::get('redis');
@@ -478,12 +517,21 @@ $cradle->on('auth-restore', function ($request, $response) {
  * @param Response $response
  */
 $cradle->on('auth-search', function ($request, $response) {
-    //get data
+    //----------------------------//
+    // 1. Get Data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
     }
 
+    //----------------------------//
+    // 2. Validate Data
+    //no validation needed
+    //----------------------------//
+    // 3. Prepare Data
+    //no preparation needed
+    //----------------------------//
+    // 4. Process Data
     //this/these will be used a lot
     $authSql = AuthService::get('sql');
     $authRedis = AuthService::get('redis');
@@ -528,7 +576,8 @@ $cradle->on('auth-search', function ($request, $response) {
  * @param Response $response
  */
 $cradle->on('auth-update', function ($request, $response) {
-    //get the auth detail
+    //----------------------------//
+    // 1. Get Data
     $this->trigger('auth-detail', $request, $response);
 
     //if there's an error
@@ -536,18 +585,13 @@ $cradle->on('auth-update', function ($request, $response) {
         return;
     }
 
-    //get data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
     }
 
-    //this/these will be used a lot
-    $authSql = AuthService::get('sql');
-    $authRedis = AuthService::get('redis');
-    $authElastic = AuthService::get('elastic');
-
-    //validate
+    //----------------------------//
+    // 2. Validate Data
     $errors = AuthValidator::getUpdateErrors($data);
 
     //check for profile errors if profile is being updated
@@ -562,6 +606,8 @@ $cradle->on('auth-update', function ($request, $response) {
             ->set('json', 'validation', $errors);
     }
 
+    //----------------------------//
+    // 3. Prepare Data
     if (isset($data['auth_password'])) {
         //salt on password
         $data['auth_password'] = md5($data['auth_password']);
@@ -571,6 +617,13 @@ $cradle->on('auth-update', function ($request, $response) {
     if (isset($data['auth_permissions'])) {
         $data['auth_permissions'] = json_encode($data['app_permissions']);
     }
+
+    //----------------------------//
+    // 4. Process Data
+    //this/these will be used a lot
+    $authSql = AuthService::get('sql');
+    $authRedis = AuthService::get('redis');
+    $authElastic = AuthService::get('elastic');
 
     //save item to database
     $results = $authSql->update($data);
@@ -601,18 +654,15 @@ $cradle->on('auth-update', function ($request, $response) {
  * @param Response $response
  */
 $cradle->on('auth-verify', function ($request, $response) {
-    //get data
+    //----------------------------//
+    // 1. Get Data
     $data = [];
     if ($request->hasStage()) {
         $data = $request->getStage();
     }
 
-    //this/these will be used a lot
-    $authSql = AuthService::get('sql');
-    $authRedis = AuthService::get('redis');
-    $authElastic = AuthService::get('elastic');
-
-    //validate
+    //----------------------------//
+    // 2. Validate Data
     $errors = AuthValidator::getVerifyErrors($data);
 
     //if there are errors
@@ -622,6 +672,8 @@ $cradle->on('auth-verify', function ($request, $response) {
             ->set('json', 'validation', $errors);
     }
 
+    //----------------------------//
+    // 3. Prepare Data
     //get the auth detail
     $this->trigger('auth-detail', $request, $response);
 
@@ -642,6 +694,8 @@ $cradle->on('auth-verify', function ($request, $response) {
     $request->setStage('host', $protocol . '://' . $request->getServer('HTTP_HOST'));
     $data = $request->getStage();
 
+    //----------------------------//
+    // 3. Process Data
     //try to queue, and if not
     if (!$this->package('global')->queue('auth-verify-mail', $data)) {
         //send mail manually

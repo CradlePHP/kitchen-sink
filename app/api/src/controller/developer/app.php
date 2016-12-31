@@ -14,10 +14,13 @@
  * @param Response $response
  */
 $cradle->get('/developer/app/search', function($request, $response) {
+    //----------------------------//
+    // 1. Route Permissions
     //for logged in
     cradle('global')->requireLogin();
 
-    //Prepare body
+    //----------------------------//
+    // 2. Prepare Data
     $profile = $request->getSession('me', 'profile_id');
     $request->setStage('filter', 'profile_id', $profile);
     cradle()->trigger('app-search', $request, $response);
@@ -27,7 +30,8 @@ $cradle->get('/developer/app/search', function($request, $response) {
     cradle()->trigger('csrf-load', $request, $response);
     $data['csrf'] = $response->getResults('csrf');
 
-    //Render body
+    //----------------------------//
+    // 3. Render Template
     $class = 'page-developer-app-search branding';
     $title = cradle('global')->translate('Apps');
     $body = cradle('/app/api')->template('developer/app/search', $data);
@@ -48,10 +52,13 @@ $cradle->get('/developer/app/search', function($request, $response) {
  * @param Response $response
  */
 $cradle->get('/developer/app/create', function($request, $response) {
+    //----------------------------//
+    // 1. Route Permissions
     //for logged in
     cradle('global')->requireLogin();
 
-    //Prepare body
+    //----------------------------//
+    // 2. Prepare Data
     $data = ['item' => $request->getPost()];
 
     //add CSRF
@@ -63,7 +70,8 @@ $cradle->get('/developer/app/create', function($request, $response) {
         $data['errors'] = $response->getValidation();
     }
 
-    //Render body
+    //----------------------------//
+    // 3. Render Template
     $class = 'page-developer-app-create branding';
     $data['title'] = cradle('global')->translate('Create an App');
     $body = cradle('/app/api')->template('developer/app/form', $data);
@@ -84,10 +92,13 @@ $cradle->get('/developer/app/create', function($request, $response) {
  * @param Response $response
  */
 $cradle->get('/developer/app/update/:app_id', function($request, $response) {
+    //----------------------------//
+    // 1. Route Permissions
     //for logged in
     cradle('global')->requireLogin();
 
-    //Prepare body
+    //----------------------------//
+    // 2. Prepare Data
     $data = ['item' => $request->getPost()];
 
     //add CSRF
@@ -116,18 +127,19 @@ $cradle->get('/developer/app/update/:app_id', function($request, $response) {
         $data['errors'] = $response->getValidation();
     }
 
-    //Render body
+    //----------------------------//
+    // 3. Render Template
     $class = 'page-developer-app-update branding';
     $data['title'] = cradle('global')->translate('Updating App');
     $body = cradle('/app/api')->template('developer/app/form', $data);
 
-    //Set Content
+    //set Content
     $response
         ->setPage('title', $data['title'])
         ->setPage('class', $class)
         ->setContent($body);
 
-    //Render page
+    //render page
 }, 'render-developer-page');
 
 /**
@@ -137,6 +149,8 @@ $cradle->get('/developer/app/update/:app_id', function($request, $response) {
  * @param Response $response
  */
 $cradle->post('/developer/app/create', function($request, $response) {
+    //----------------------------//
+    // 1. Route Permissions
     //for logged in
     cradle('global')->requireLogin();
 
@@ -147,6 +161,8 @@ $cradle->post('/developer/app/create', function($request, $response) {
         return cradle()->triggerRoute('get', '/developer/app/create', $request, $response);
     }
 
+    //----------------------------//
+    // 2. Prepare Data
     //add profile id
     $profile = $request->getSession('me', 'profile_id');
     $request->setStage('profile_id', $profile);
@@ -158,8 +174,12 @@ $cradle->post('/developer/app/create', function($request, $response) {
         $request->setStage('app_permissions', []);
     }
 
+    //----------------------------//
+    // 3. Process Request
     cradle()->trigger('app-create', $request, $response);
 
+    //----------------------------//
+    // 4. Interpret Results
     if($response->isError()) {
         return cradle()->triggerRoute('get', '/developer/app/create', $request, $response);
     }
@@ -179,6 +199,8 @@ $cradle->post('/developer/app/create', function($request, $response) {
  * @param Response $response
  */
 $cradle->post('/developer/app/update/:app_id', function($request, $response) {
+    //----------------------------//
+    // 1. Route Permissions
     //for logged in
     cradle('global')->requireLogin();
 
@@ -190,6 +212,8 @@ $cradle->post('/developer/app/update/:app_id', function($request, $response) {
         return cradle()->triggerRoute('get', $route, $request, $response);
     }
 
+    //----------------------------//
+    // 2. Prepare Data
     //set permission
     $permission = $request->getSession('me', 'profile_id');
     $request->setStage('permission', $permission);
@@ -201,8 +225,12 @@ $cradle->post('/developer/app/update/:app_id', function($request, $response) {
         $request->setStage('app_permissions', []);
     }
 
+    //----------------------------//
+    // 3. Process Request
     cradle()->trigger('app-update', $request, $response);
 
+    //----------------------------//
+    // 4. Interpret Results
     if($response->isError()) {
         $route = '/developer/app/update/' . $request->getStage('app_id');
         return cradle()->triggerRoute('get', $route, $request, $response);
@@ -223,6 +251,8 @@ $cradle->post('/developer/app/update/:app_id', function($request, $response) {
  * @param Response $response
  */
 $cradle->get('/developer/app/remove/:app_id', function($request, $response) {
+    //----------------------------//
+    // 1. Route Permissions
     //for logged in
     cradle('global')->requireLogin();
 
@@ -234,13 +264,18 @@ $cradle->get('/developer/app/remove/:app_id', function($request, $response) {
         return cradle('global')->redirect('/developer/app/search');
     }
 
+    //----------------------------//
+    // 2. Prepare Data
     //set permission
     $permission = $request->getSession('me', 'profile_id');
     $request->setStage('permission', $permission);
 
+    //----------------------------//
+    // 3. Process Request
     cradle()->trigger('app-remove', $request, $response);
 
-    //deal with results
+    //----------------------------//
+    // 4. Interpret Results
     if($response->isError()) {
         //add a flash
         cradle('global')->flash($response->getMessage(), 'danger');
@@ -260,6 +295,8 @@ $cradle->get('/developer/app/remove/:app_id', function($request, $response) {
  * @param Response $response
  */
 $cradle->get('/developer/app/refresh/:app_id', function($request, $response) {
+    //----------------------------//
+    // 1. Route Permissions
     //for logged in
     cradle('global')->requireLogin();
 
@@ -271,13 +308,18 @@ $cradle->get('/developer/app/refresh/:app_id', function($request, $response) {
         return cradle('global')->redirect('/developer/app/search');
     }
 
+    //----------------------------//
+    // 2. Prepare Data`
     //set permission
     $permission = $request->getSession('me', 'profile_id');
     $request->setStage('permission', $permission);
 
+    //----------------------------//
+    // 3. Process Request
     cradle()->trigger('app-refresh', $request, $response);
 
-    //deal with results
+    //----------------------------//
+    // 4. Interpret Results
     if($response->isError()) {
         //add a flash
         cradle('global')->flash($response->getMessage(), 'danger');
