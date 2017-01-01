@@ -20,6 +20,7 @@ return cradle()
     ->register('cblanquera/cradle-queue')
     ->register('cblanquera/cradle-csrf')
     ->register('cblanquera/cradle-captcha')
+    ->register('cradlephp/sink-faucet')
 
     ->register('/module/oauth')
     ->register('/module/profile')
