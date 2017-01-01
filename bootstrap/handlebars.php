@@ -6,6 +6,19 @@ return function($request, $response) {
     //add cache folder
     //$handlebars->setCache(__DIR__.'/../compiled');
 
+    $handlebars->registerHelper('sort', function($name, $options) {
+        $value = null;
+        if(isset($_GET['order'][$name])) {
+            $value = $_GET['order'][$name];
+        }
+
+        return $options['fn'](['value' => $value]);
+    });
+
+    $handlebars->registerHelper('inspect', function($mixed) {
+        return var_export($mixed, true);
+    });
+
     $handlebars->registerHelper('char_length', function($value, $length) {
         return strlen($value, $length);
     });

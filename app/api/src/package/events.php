@@ -7,6 +7,8 @@
  * distributed with this package.
  */
 
+use Cradle\Sql\SqlFactory;
+
 /**
  * OAuth Permission Check
  *
@@ -81,9 +83,9 @@ $cradle->on('rest-app-permitted', function($request, $response) {
         return $response->setError(true, 'Unauthorize Request');
     }
 
-    $search = $this
-        ->package('global')
-        ->database()
+    $database = SqlFactory::load(cradle('global')->service('sql-main'));
+
+    $search = $database
         ->search('app')
         ->setColumns('profile.*', 'app.*')
         ->innerJoinUsing('app_profile', 'app_id')
@@ -132,9 +134,9 @@ $cradle->on('rest-session-permitted', function($request, $response) {
         return $response->setError(true, 'Unauthorize Request');
     }
 
-    $search = $this
-        ->package('global')
-        ->database()
+    $database = SqlFactory::load(cradle('global')->service('sql-main'));
+
+    $search = $database
         ->search('session')
         ->setColumns('session.*', 'profile.*', 'app.*')
         ->innerJoinUsing('session_app', 'session_id')
