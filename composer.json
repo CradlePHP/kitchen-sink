@@ -17,6 +17,7 @@
     "require": {
         "cradlephp/packages": "dev-master",
         "cradlephp/command-line": "dev-master",
+        "cradlephp/sink-faucet": "dev-master",
         "cblanquera/cradle-captcha": "dev-master",
         "cblanquera/cradle-csrf": "dev-master",
         "cblanquera/cradle-handlebars": "dev-master",
