@@ -10,14 +10,6 @@ return [
         'profile' => [
             'primary' => 'profile_id',
             'many' => false
-        ],
-        'app' => [
-            'primary' => 'app_id',
-            'many' => false
-        ],
-        'comment' => [
-            'primary' => 'comment_id',
-            'many' => true
         ]
     ],
     'fields' => [
