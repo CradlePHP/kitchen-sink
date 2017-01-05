@@ -27,7 +27,8 @@ return [
                 [
                     'method' => 'regexp',
                     'message' => 'Should be a valid url',
-                    'parameters' => '/^(http|https|ftp):\/\/([A-Z0-9][A-Z0-9_-]*(?:.[A-Z0-9][A-Z0-9_-]*)+):?(d+)?\/?/i'
+                    'parameters' => '/(^(http|https|ftp):\/\/([A-Z0-9][A-Z0-9_-]'
+                    .'*(?:.[A-Z0-9][A-Z0-9_-]*)+):?(d+)?\/?)|(^data:image\/[a-z]+;base64,)/i'
                 ]
             ],
             'list' => [
