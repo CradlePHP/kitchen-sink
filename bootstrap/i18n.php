@@ -12,7 +12,11 @@ return function($request, $response) {
     //check if there is a translation file
     $config = $this->package('global')->path('config');
 
-    $i18n = $settings['i18n'];
+    $i18n = 'en_US';
+
+    if(isset($settings['i18n'])) {
+        $i18n = $settings['i18n'];
+    }
 
     //is there a session ?
     if($request->hasSession('i18n')) {
