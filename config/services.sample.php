@@ -3,8 +3,8 @@
 return array (
     'sql-build' => new PDO('mysql:host=<DATABASE HOST>', '<DATABASE USER>', '<DATABASE PASS>'),
     'sql-main' => new PDO('mysql:host=<DATABASE HOST>;dbname=<DATABASE NAME>', '<DATABASE USER>', '<DATABASE PASS>'),
-    'redis-main' => Elasticsearch\ClientBuilder::create()->build(),
-    'elastic-main' => new Predis\Client([
+    'elastic-main' => Elasticsearch\ClientBuilder::create()->build(),
+    'redis-main' => new Predis\Client([
         "scheme" => "tcp",
         "host" => "127.0.0.1",
         "port" => 6379
