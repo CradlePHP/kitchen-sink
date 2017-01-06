@@ -19,7 +19,8 @@ Then go `$ cd <project folder name>/public` and run the following.
 
 ```
 $ bower install
-$ php -S localhost:8000
+$ cd ..
+$ bin/cradle faucet server -h 127.0.0.1 -p 8888
 ```
 
 Open your browser to `http://localhost:8000`
