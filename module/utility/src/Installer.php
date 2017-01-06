@@ -1,22 +1,22 @@
 <?php //-->
 /**
- * This file is part of a Custom Project.
- * (c) 2017-2019 Acme Inc.
+ * This file is part of the Cradle PHP Kitchen Sink Faucet Project.
+ * (c) 2016-2018 Openovate Labs
  *
  * Copyright and license information can be found at LICENSE.txt
  * distributed with this package.
  */
 
-namespace Cradle\Module\Utility;
+namespace Cradle\Sink\Faucet;
 
 use Closure;
 
 /**
  * Installer
  *
- * @vendor   Acme
- * @package  Utility
- * @author   John Doe <john@acme.com>
+ * @vendor   Cradle
+ * @package  Faucet
+ * @author   Christian Blanquera <cblanquera@openovate.com>
  * @standard PSR-2
  */
 class Installer
@@ -171,7 +171,13 @@ class Installer
         uksort($versions, 'version_compare');
 
         //get the current version
-        $current = cradle('global')->config('version');
+        $versionFile = cradle('global')->path('config') . '/version.php';
+
+        $current = [];
+        if(file_exists($versionFile)) {
+            $current = include cradle('global')->path('config') . '/version.php';
+        }
+
         if(!isset($current[$module])) {
             $current[$module] = '0.0.0';
         }
@@ -207,10 +213,8 @@ class Installer
             $current[$module] = $version;
         }
 
-        $file = cradle('global')->path('config') . '/version.php';
-
         $contents = '<?php return ' . var_export($current, true) . ';';
-        file_put_contents($file, $contents);
+        file_put_contents($versionFile, $contents);
 
         return $current[$module];
     }
