@@ -57,6 +57,57 @@ $cradle->error(function($request, $response, $error) {
 
         $this->trigger('render-web-page', $request, $response);
 
+        if(!isset($config['error_email'])
+            || $config['error_email'] === '<EMAIL ADDRESS>'
+        )
+        {
+            return true;
+        }
+
+        $service = cradle('global')->service('mail-main');
+
+        if(!$service) {
+            return true;
+        }
+
+        //prepare data
+        $from = [];
+        $from[$service['user']] = $service['name'];
+
+        $to = [];
+        $to[$config['error_email']] = null;
+
+        $exception = get_class($error);
+        $message = $error->getMessage();
+        $line = $error->getLine();
+        $file = $error->getFile();
+        $trace = $error->getTraceAsString();
+
+        $body = sprintf(
+            "%s thrown: %s\n%s(%s)\n\n%s",
+            $exception,
+            $message,
+            $file,
+            $line,
+            $trace
+        );
+
+        //send mail
+        $message = new Swift_Message('Salaaap - Error');
+        $message->setFrom($from);
+        $message->setTo($to);
+        $message->addPart($body, 'text/plain');
+
+        $transport = Swift_SmtpTransport::newInstance();
+        $transport->setHost($service['host']);
+        $transport->setPort($service['port']);
+        $transport->setEncryption($service['type']);
+        $transport->setUsername($service['user']);
+        $transport->setPassword($service['pass']);
+
+        $swift = Swift_Mailer::newInstance($transport);
+        $swift->send($message, $failures);
+
         return true;
     }
 });

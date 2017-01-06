@@ -7,15 +7,15 @@ return [
         'app' => [
             'deploy' => false,
             'user' => 'root',
-            'host' =>  '[server IP]',
-            'repo' => 'git@github.com:[author]/vendor.git',
+            'host' =>  '<SERVER IP>',
+            'repo' => 'git@github.com:<AUTHOR>/vendor.git',
             'path' => '/path/to/public/on/live/server',
-            'ref' => 'origin/[branch]'
+            'ref' => 'origin/<BRANCH>'
         ],
         'mysql' => [
             'deploy' => false,
             'user' => 'root',
-            'host' =>  '[server IP]'
+            'host' =>  '<SERVER IP>'
         ],
     ]
 ];

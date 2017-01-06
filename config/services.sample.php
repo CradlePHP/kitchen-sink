@@ -1,8 +1,8 @@
 <?php //-->
 
 return array (
-    'sql-build' => new PDO('mysql:host=127.0.0.1', 'root', ''),
-    'sql-main' => new PDO('mysql:host=127.0.0.1;dbname=cradle_sink', 'root', ''),
+    'sql-build' => new PDO('mysql:host=<DATABASE HOST>', '<DATABASE USER>', '<DATABASE PASS>'),
+    'sql-main' => new PDO('mysql:host=<DATABASE HOST>;dbname=<DATABASE NAME>', '<DATABASE USER>', '<DATABASE PASS>'),
     'redis-main' => Elasticsearch\ClientBuilder::create()->build(),
     'elastic-main' => new Predis\Client([
         "scheme" => "tcp",
@@ -10,11 +10,11 @@ return array (
         "port" => 6379
     ]),
     's3-main' => array(
-        'region' => 'ap-southeast-1',
+        'region' => '<AWS REGION>',
         'token' => '<AWS TOKEN>',
         'secret' => '<AWS SECRET>',
         'bucket' => '<S3 BUCKET>',
-        'host' => 'https://s3-ap-southeast-1.amazonaws.com'
+        'host' => 'https://<<AWS REGION>.amazonaws.com'
     ),
     'mail-main' => array(
         'host' => 'smtp.gmail.com',

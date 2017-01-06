@@ -44,6 +44,7 @@ class File
         if($config['token'] === '<AWS TOKEN>'
             || $config['secret'] === '<AWS SECRET>'
             || $config['bucket'] === '<S3 BUCKET>'
+            || $config['region'] === '<AWS REGION>'
         )
         {
             return $data;
@@ -256,6 +257,7 @@ class File
         if($config['token'] === '<AWS TOKEN>'
             || $config['secret'] === '<AWS SECRET>'
             || $config['bucket'] === '<S3 BUCKET>'
+            || $config['region'] === '<AWS REGION>'
         )
         {
             return false;
