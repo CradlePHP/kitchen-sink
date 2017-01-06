@@ -323,12 +323,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/CradlePHP/framework.git",
-                "reference": "dafe1d1730bb83fd6c98051dcc8085ee6dc2070c"
+                "reference": "7cadade7ae9aada96a0402906a650fabf322c373"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CradlePHP/framework/zipball/dafe1d1730bb83fd6c98051dcc8085ee6dc2070c",
-                "reference": "dafe1d1730bb83fd6c98051dcc8085ee6dc2070c",
+                "url": "https://api.github.com/repos/CradlePHP/framework/zipball/7cadade7ae9aada96a0402906a650fabf322c373",
+                "reference": "7cadade7ae9aada96a0402906a650fabf322c373",
                 "shasum": ""
             },
             "require": {
@@ -362,7 +362,7 @@
                 "cradlephp",
                 "framework"
             ],
-            "time": "2016-11-27 06:27:23"
+            "time": "2017-01-06 10:03:46"
         },
         {
             "name": "cradlephp/packages",
@@ -418,12 +418,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/CradlePHP/sink-faucet.git",
-                "reference": "54b1d2b4cbe08255650ee1d7a35602c08b9dfdef"
+                "reference": "fef68293a1ae4d657adc04307748d9baa5bce384"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CradlePHP/sink-faucet/zipball/54b1d2b4cbe08255650ee1d7a35602c08b9dfdef",
-                "reference": "54b1d2b4cbe08255650ee1d7a35602c08b9dfdef",
+                "url": "https://api.github.com/repos/CradlePHP/sink-faucet/zipball/fef68293a1ae4d657adc04307748d9baa5bce384",
+                "reference": "fef68293a1ae4d657adc04307748d9baa5bce384",
                 "shasum": ""
             },
             "require": {
@@ -453,7 +453,7 @@
                 "cradlephp",
                 "generator"
             ],
-            "time": "2017-01-06 08:51:11"
+            "time": "2017-01-06 09:57:21"
         },
         {
             "name": "elasticsearch/elasticsearch",
