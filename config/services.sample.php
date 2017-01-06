@@ -31,8 +31,5 @@ return array (
         'guest',
         'guest'
     ),
-    'captcha-main' => array(
-        'token' => '<GOOGLE CAPTCHA TOKEN>',
-        'secret' => '<GOOGLE CAPTCHA SECRET>'
-    )*/
+    */
 );
