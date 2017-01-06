@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "710cbc088ed2b9f8e1ded99523dbd258",
-    "content-hash": "3fbe02b82e61606e5c5a294b5c6c4d33",
+    "hash": "38b6161f37a87b01a423b81689470f5e",
+    "content-hash": "f563f61446f06c8a332a75ca38bac6e5",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -413,6 +413,49 @@
             "time": "2016-11-17 15:27:33"
         },
         {
+            "name": "cradlephp/sink-faucet",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/CradlePHP/sink-faucet.git",
+                "reference": "54b1d2b4cbe08255650ee1d7a35602c08b9dfdef"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/CradlePHP/sink-faucet/zipball/54b1d2b4cbe08255650ee1d7a35602c08b9dfdef",
+                "reference": "54b1d2b4cbe08255650ee1d7a35602c08b9dfdef",
+                "shasum": ""
+            },
+            "require": {
+                "cradlephp/command-line": "dev-master",
+                "php": ">=5.6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Cradle\\Sink\\Faucet\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Blanquera",
+                    "email": "cblanquera@openovate.com"
+                }
+            ],
+            "description": "Command line tools for CradlePHP Kitchen Sink",
+            "homepage": "https://cradlephp.github.io/",
+            "keywords": [
+                "cradle",
+                "cradlephp",
+                "generator"
+            ],
+            "time": "2017-01-06 08:51:11"
+        },
+        {
             "name": "elasticsearch/elasticsearch",
             "version": "v2.2.2",
             "source": {
@@ -472,12 +515,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "8bc9d2de8834a9b74921807ba29d081703868078"
+                "reference": "14fa40e26857c8f406d7a0c7d577705085fb6950"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/8bc9d2de8834a9b74921807ba29d081703868078",
-                "reference": "8bc9d2de8834a9b74921807ba29d081703868078",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/14fa40e26857c8f406d7a0c7d577705085fb6950",
+                "reference": "14fa40e26857c8f406d7a0c7d577705085fb6950",
                 "shasum": ""
             },
             "require": {
@@ -526,7 +569,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2016-12-29 13:24:34"
+            "time": "2017-01-05 10:54:39"
         },
         {
             "name": "guzzlehttp/promises",
@@ -2622,12 +2665,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "91c733eb49475dd9c8e0bfb3c34d92c32e24e428"
+                "reference": "18dd041936548b966572b55758cdb3ab32642b43"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/91c733eb49475dd9c8e0bfb3c34d92c32e24e428",
-                "reference": "91c733eb49475dd9c8e0bfb3c34d92c32e24e428",
+                "url": "https://api.github.com/repos/symfony/console/zipball/18dd041936548b966572b55758cdb3ab32642b43",
+                "reference": "18dd041936548b966572b55758cdb3ab32642b43",
                 "shasum": ""
             },
             "require": {
@@ -2677,7 +2720,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2017-01-02 20:33:09"
+            "time": "2017-01-05 17:48:24"
         },
         {
             "name": "symfony/css-selector",
@@ -3019,12 +3062,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "8922f15458ed1c4923d297f5c826d0dac06af4a6"
+                "reference": "22c2fd4103c7271ddcce21cab30e1919275e239b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/8922f15458ed1c4923d297f5c826d0dac06af4a6",
-                "reference": "8922f15458ed1c4923d297f5c826d0dac06af4a6",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/22c2fd4103c7271ddcce21cab30e1919275e239b",
+                "reference": "22c2fd4103c7271ddcce21cab30e1919275e239b",
                 "shasum": ""
             },
             "require": {
@@ -3066,7 +3109,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2017-01-02 20:33:09"
+            "time": "2017-01-03 13:51:44"
         },
         {
             "name": "webmozart/assert",
@@ -3124,6 +3167,7 @@
     "stability-flags": {
         "cradlephp/packages": 20,
         "cradlephp/command-line": 20,
+        "cradlephp/sink-faucet": 20,
         "cblanquera/cradle-captcha": 20,
         "cblanquera/cradle-csrf": 20,
         "cblanquera/cradle-handlebars": 20,
