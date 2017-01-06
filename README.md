@@ -23,7 +23,7 @@ $ cd ..
 $ bin/cradle faucet server -h 127.0.0.1 -p 8888
 ```
 
-Open your browser to `http://localhost:8000`
+Open your browser to `http://127.0.0.1:8000`
 
 ## Documentation
 
