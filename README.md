@@ -13,17 +13,13 @@ Then go cd `<project folder name>` and run the following and and follow the wiza
 
 ```
 $ bin/cradle faucet install
+$ bower install
+$ bin/cradle faucet server -h 127.0.0.1 -p 8888
 ```
 
 Then go `$ cd <project folder name>/public` and run the following.
 
-```
-$ bower install
-$ cd ..
-$ bin/cradle faucet server -h 127.0.0.1 -p 8888
-```
-
-Open your browser to `http://127.0.0.1:8000`
+Open your browser to `http://127.0.0.1:8888`
 
 ## Documentation
 
