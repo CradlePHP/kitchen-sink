@@ -64,7 +64,8 @@ return [
                 'type' => 'varchar',
                 'length' => 254,
                 'required' => true,
-                'index' => true
+                'index' => true,
+                'searchable' => true
             ],
             'elastic' => [
                 'type' => 'string'
@@ -148,7 +149,8 @@ return [
         'post_detail' => [
             'sql' => [
                 'type' => 'text',
-                'required' => true
+                'required' => true,
+                'searchable' => true
             ],
             'elastic' => [
                 'type' => 'text',
@@ -208,7 +210,9 @@ return [
             'sql' => [
                 'type' => 'varchar',
                 'length' => 255,
-                'default' => 'PENDING'
+                'default' => 'PENDING',
+                'sortable' => true,
+                'filterable' => true
             ],
             'elastic' => [
                 'type' => 'string'
@@ -243,7 +247,8 @@ return [
         ],
         'post_published' => [
             'sql' => [
-                'type' => 'datetime'
+                'type' => 'datetime',
+                'sortable' => true
             ],
             'elastic' => [
                 'type' => 'date',

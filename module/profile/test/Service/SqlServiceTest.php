@@ -38,7 +38,7 @@ class Cradle_Module_Profile_Service_SqlServiceTest extends PHPUnit_Framework_Tes
     public function testCreate()
     {
         $actual = $this->object->create([
-            'profile_name' => John Doe,
+            'profile_name' => 'John Doe',
         ]);
 
         $this->assertEquals(2, $actual['profile_id']);
@@ -72,7 +72,8 @@ class Cradle_Module_Profile_Service_SqlServiceTest extends PHPUnit_Framework_Tes
     public function testUpdate()
     {
         $actual = $this->object->update([
-            'profile_name' => ,
+            'profile_id' => 2,
+            'profile_name' => 'John Doe',
         ]);
 
         $this->assertEquals(2, $actual['profile_id']);

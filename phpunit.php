@@ -32,22 +32,22 @@ cradle()
     ->preprocess(function($request, $response) {
         // we want to install the db
         $request->setStage('force', true);
-        $this->trigger('project-build-sql', $request, $response);
+        $this->trigger('faucet-build-sql', $request, $response);
 
-        $this->trigger('project-populate-sql', $request, $response);
+        $this->trigger('faucet-populate-sql', $request, $response);
 
         // we want to build the index
         if($this->package('global')->service('elastic-main')) {
-            $this->trigger('project-flush-elastic', $request, $response);
+            $this->trigger('faucet-flush-elastic', $request, $response);
 
-            $this->trigger('project-map-elastic', $request, $response);
+            $this->trigger('faucet-map-elastic', $request, $response);
 
-            $this->trigger('project-populate-elastic', $request, $response);
+            $this->trigger('faucet-populate-elastic', $request, $response);
         }
 
         // we want to clear the cache
         if($this->package('global')->service('redis-main')) {
-            $this->trigger('project-flush-redis', $request, $response);
+            $this->trigger('faucet-flush-redis', $request, $response);
         }
     })
     //prepare will call the preprocssors
