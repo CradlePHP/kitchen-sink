@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "38b6161f37a87b01a423b81689470f5e",
+    "hash": "cdbc566b794a39356e1ba1ba94b2234d",
     "content-hash": "f563f61446f06c8a332a75ca38bac6e5",
     "packages": [
         {
@@ -418,12 +418,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/CradlePHP/sink-faucet.git",
-                "reference": "fef68293a1ae4d657adc04307748d9baa5bce384"
+                "reference": "b75aec8a7cd6b4a0a7564a28ef710d33f42f3ad5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CradlePHP/sink-faucet/zipball/fef68293a1ae4d657adc04307748d9baa5bce384",
-                "reference": "fef68293a1ae4d657adc04307748d9baa5bce384",
+                "url": "https://api.github.com/repos/CradlePHP/sink-faucet/zipball/b75aec8a7cd6b4a0a7564a28ef710d33f42f3ad5",
+                "reference": "b75aec8a7cd6b4a0a7564a28ef710d33f42f3ad5",
                 "shasum": ""
             },
             "require": {
@@ -453,7 +453,7 @@
                 "cradlephp",
                 "generator"
             ],
-            "time": "2017-01-06 09:57:21"
+            "time": "2017-01-08 06:14:26"
         },
         {
             "name": "elasticsearch/elasticsearch",
@@ -2095,12 +2095,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/code-unit-reverse-lookup.git",
-                "reference": "99805768a703b1b8200354f6cfe4269f4c5372b8"
+                "reference": "11606652af09e847cdbbbc3ca17df26b1173a454"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/code-unit-reverse-lookup/zipball/99805768a703b1b8200354f6cfe4269f4c5372b8",
-                "reference": "99805768a703b1b8200354f6cfe4269f4c5372b8",
+                "url": "https://api.github.com/repos/sebastianbergmann/code-unit-reverse-lookup/zipball/11606652af09e847cdbbbc3ca17df26b1173a454",
+                "reference": "11606652af09e847cdbbbc3ca17df26b1173a454",
                 "shasum": ""
             },
             "require": {
@@ -2132,7 +2132,7 @@
             ],
             "description": "Looks up which function or method a line of code belongs to",
             "homepage": "https://github.com/sebastianbergmann/code-unit-reverse-lookup/",
-            "time": "2016-12-06 20:00:09"
+            "time": "2016-12-06 20:05:00"
         },
         {
             "name": "sebastian/comparator",
@@ -2665,12 +2665,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "18dd041936548b966572b55758cdb3ab32642b43"
+                "reference": "6531a815bf75c52001bf4c7fd28a83de475eabc8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/18dd041936548b966572b55758cdb3ab32642b43",
-                "reference": "18dd041936548b966572b55758cdb3ab32642b43",
+                "url": "https://api.github.com/repos/symfony/console/zipball/6531a815bf75c52001bf4c7fd28a83de475eabc8",
+                "reference": "6531a815bf75c52001bf4c7fd28a83de475eabc8",
                 "shasum": ""
             },
             "require": {
@@ -2720,7 +2720,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2017-01-05 17:48:24"
+            "time": "2017-01-06 18:34:44"
         },
         {
             "name": "symfony/css-selector",
@@ -2894,21 +2894,24 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "7c8c527ef815616bc48eaf3261c03606dc62aaab"
+                "reference": "26e38eefa5b9333fa94e845541f5f025a98fbe2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/7c8c527ef815616bc48eaf3261c03606dc62aaab",
-                "reference": "7c8c527ef815616bc48eaf3261c03606dc62aaab",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/26e38eefa5b9333fa94e845541f5f025a98fbe2d",
+                "reference": "26e38eefa5b9333fa94e845541f5f025a98fbe2d",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.5.9"
             },
+            "conflict": {
+                "symfony/dependency-injection": "<3.3"
+            },
             "require-dev": {
                 "psr/log": "~1.0",
                 "symfony/config": "~2.8|~3.0",
-                "symfony/dependency-injection": "~2.8|~3.0",
+                "symfony/dependency-injection": "~3.3",
                 "symfony/expression-language": "~2.8|~3.0",
                 "symfony/stopwatch": "~2.8|~3.0"
             },
@@ -2946,7 +2949,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2017-01-02 20:33:09"
+            "time": "2017-01-07 15:57:09"
         },
         {
             "name": "symfony/finder",
