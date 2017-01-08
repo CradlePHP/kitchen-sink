@@ -11,7 +11,7 @@ return [
             'primary' => 'profile_id',
             'many' => false
         ],
-        'app' => [
+        'oauth/app' => [
             'primary' => 'app_id',
             'many' => false
         ],
