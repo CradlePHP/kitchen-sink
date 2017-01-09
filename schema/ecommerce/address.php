@@ -471,7 +471,7 @@ return [
             ],
             'validation' => [
                 [
-                    'char_eq',
+                    'method' => 'char_eq',
                     'message' => 'Invalid Country Code',
                     'parameters' => 2
                 ]
