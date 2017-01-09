@@ -333,6 +333,8 @@ return [
             'product_title' => 'This is title one',
             'product_slug' => 'this-is-title-one',
             'product_price' => 123.45,
+            'product_original' => 100,
+            'product_brand' => 'Apple',
             'product_detail' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi mattis, lectus vitae faucibus elementum, erat lorem maximus nulla, at condimentum nulla nibh a magna. Donec rutrum magna non mauris sodales pharetra. Duis ullamcorper augue at dolor lacinia sodales. Quisque consectetur magna in justo pulvinar placerat. Etiam eget arcu ut eros auctor porta sed a est. Curabitur sed neque eu sapien interdum vehicula. Aliquam vel finibus eros. Praesent auctor neque luctus, ultricies risus ut, vulputate lacus. Donec commodo elit non mauris congue feugiat. Nam eu purus porta, pulvinar justo vel, tempus augue. Duis rutrum augue justo, at sodales magna euismod nec. Vestibulum vel pretium velit. Cras mollis ligula nec odio tincidunt auctor. Cras faucibus consectetur ullamcorper.',
             'product_images' => json_encode([
                 [
@@ -353,6 +355,8 @@ return [
             'product_title' => 'This is title two',
             'product_slug' => 'this-is-title-two',
             'product_price' => 123.45,
+            'product_original' => 100,
+            'product_brand' => 'Apple',
             'product_detail' => 'Nulla vitae urna leo. Vivamus nec ante quis purus bibendum posuere. Duis ullamcorper elementum erat quis aliquet. Morbi id euismod nunc, eget pharetra nibh. In semper malesuada mi, id tempus mi vulputate id. Fusce pharetra lacinia nibh eget vehicula. Donec sed felis vitae velit vulputate sollicitudin id eget leo. Fusce molestie, neque eget mollis auctor, tellus augue mollis eros, vitae eleifend leo dolor ut lectus.',
             'product_images' => json_encode([
                 [
@@ -373,6 +377,7 @@ return [
             'product_title' => 'This is title three',
             'product_slug' => 'this-is-title-three',
             'product_price' => 123.45,
+            'product_original' => 100,
             'product_brand' => 'Samsung',
             'product_detail' => 'Integer gravida venenatis lobortis. Vestibulum vulputate turpis id est tincidunt, ut interdum risus porttitor. Etiam aliquet at felis ac vehicula. Aenean in felis in eros convallis rhoncus id quis libero. Vivamus rhoncus hendrerit porta. Ut egestas fermentum urna, in imperdiet odio hendrerit vitae. In suscipit enim eget pellentesque imperdiet. Etiam facilisis tellus in mauris sagittis volutpat. Cras in orci maximus, ullamcorper mauris porta, mattis neque. Etiam ligula felis, mollis id magna ultricies, convallis gravida felis.',
             'product_images' => json_encode([

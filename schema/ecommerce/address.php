@@ -510,7 +510,7 @@ return [
         'address_latitude' => [
             'sql' => [
                 'type' => 'float',
-                'length' => '3,6',
+                'length' => '6,3',
                 'default' => 0
             ],
             'elastic' => [
@@ -527,7 +527,7 @@ return [
         'address_longitude' => [
             'sql' => [
                 'type' => 'float',
-                'length' => '3,6',
+                'length' => '6,3',
                 'default' => 0
             ],
             'elastic' => [

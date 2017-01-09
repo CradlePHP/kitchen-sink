@@ -137,6 +137,7 @@ return [
     'fixtures' => [
         [
             'transaction_id' => 1,
+            'profile_id' => 1,
             'transaction_products' => json_encode([
                 [
                     'product_id' => 4,
