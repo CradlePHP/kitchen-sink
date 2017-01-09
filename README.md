@@ -17,9 +17,18 @@ $ bower install
 $ bin/cradle faucet server -h 127.0.0.1 -p 8888
 ```
 
-Then go `$ cd <project folder name>/public` and run the following.
+<a name="load"></a>
+## Load the Page
 
-Open your browser to `http://127.0.0.1:8888`
+Open your browser to `http://127.0.0.1:8888` and you should see the application
+running.
+
+### Admin
+A default admin login is also generated with the following credentials.
+ - Email: `john@doe.com`
+ - Password: `123`
+
+The example admin section can be found at `http://127.0.0.1:8888/admin/profile/search`.
 
 ## Code Generators
 
@@ -54,7 +63,7 @@ then install to your database using the versioning updater built in.
 $ bin/cradle faucet generate-sql --schema post
 ```
 
-Optionally if we want to populate the SQL we can use the following command.
+Optionally if you want to populate the SQL we can use the following command.
 
 ```
 $ bin/cradle faucet populate-sql --module post
