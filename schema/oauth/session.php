@@ -7,8 +7,12 @@ return [
     'created' => 'session_created',
     'updated' => 'session_updated',
     'relations' => [
-        'profile' => [
-            'primary' => 'profile_id',
+        'app' => [
+            'primary' => 'app_id',
+            'many' => false
+        ],
+        'auth' => [
+            'primary' => 'auth_id',
             'many' => false
         ]
     ],
