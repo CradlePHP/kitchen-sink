@@ -422,8 +422,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CradlePHP/sink-faucet/zipball/b75aec8a7cd6b4a0a7564a28ef710d33f42f3ad5",
-                "reference": "b75aec8a7cd6b4a0a7564a28ef710d33f42f3ad5",
+                "url": "https://api.github.com/repos/CradlePHP/sink-faucet/zipball/5c8bb1f7aa40bd96c76d8078ec8d9a99ea049b01",
+                "reference": "5c8bb1f7aa40bd96c76d8078ec8d9a99ea049b01",
                 "shasum": ""
             },
             "require": {
