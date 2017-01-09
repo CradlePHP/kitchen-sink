@@ -97,6 +97,75 @@ jQuery(function($) {
         });
 
         /**
+         * Meta Field
+         */
+        $(window).on('meta-field-init', function(e, target) {
+            target = $(target);
+
+            //TEMPLATES
+            var metaTemplate ='<div class="meta">'
+                + '<input type="text" class="meta-input key" /> '
+                + '<input type="text" class="meta-input value" /> '
+                + '<input type="hidden" name="post_tags[{{@key}}]" value=""/> '
+                + '<a class="remove" href="javascript:void(0)"><i class="fa fa-times"></i></a>'
+                + '</div>';
+
+
+            var addRemove = function(filter) {
+                $('a.remove', filter).click(function() {
+                    var val = $('input', filter).val();
+
+                    $(this).parent().remove();
+                });
+            };
+
+            //INITITALIZERS
+            var initTag = function(filter) {
+                addRemove(filter);
+
+                $('.meta-input.key', filter).blur(function() {
+                    var hidden = $(this).parent().find('input[type="hidden"]');
+
+                    //if no value
+                    if(!$(this).val() || !$(this).val().length) {
+                        $(hidden).attr('name', '');
+                        return;
+                    }
+
+                    $(hidden).attr('name', $(target).data('name') + '[' + $(this).val() +']');
+                });
+
+                $('.meta-input.value', filter).blur(function() {
+                    var hidden = $(this).parent().find('input[type="hidden"]');
+
+                    //if no value
+                    if(!$(this).val() || !$(this).val().length) {
+                        $(hidden).attr('name', '');
+                        return;
+                    }
+
+                    $(hidden).attr('value', $(this).val());
+                });
+            };
+
+            //append meta template
+            $('.add-meta').click(function() {
+                var last = $('div.meta:last', target);
+                if(!last.length || $('input', last).val()) {
+                    target.append(metaTemplate);
+                    initTag(target);
+                }
+
+                return false;
+            });
+
+            //INITIALIZE
+            $('div.meta', target).each(function() {
+                initTag($(this));
+            });
+        });
+
+        /**
          * Image Field
          * HTML config for single images
          * data-do="image-field"
