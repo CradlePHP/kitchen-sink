@@ -418,12 +418,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/CradlePHP/sink-faucet.git",
-                "reference": "6581ab492582756ea6040d442fbbc846de32bc48"
+                "reference": "11d19bedecdd8551b583c4c9eaef75045ea53eb1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CradlePHP/sink-faucet/zipball/6581ab492582756ea6040d442fbbc846de32bc48",
-                "reference": "6581ab492582756ea6040d442fbbc846de32bc48",
+                "url": "https://api.github.com/repos/CradlePHP/sink-faucet/zipball/11d19bedecdd8551b583c4c9eaef75045ea53eb1",
+                "reference": "11d19bedecdd8551b583c4c9eaef75045ea53eb1",
                 "shasum": ""
             },
             "require": {
