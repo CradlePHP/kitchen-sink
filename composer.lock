@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "cdbc566b794a39356e1ba1ba94b2234d",
+    "hash": "38b6161f37a87b01a423b81689470f5e",
     "content-hash": "f563f61446f06c8a332a75ca38bac6e5",
     "packages": [
         {
@@ -418,12 +418,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/CradlePHP/sink-faucet.git",
-                "reference": "2dad79d17c9e733547dffbb0eb19ee07879d59ae"
+                "reference": "6581ab492582756ea6040d442fbbc846de32bc48"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CradlePHP/sink-faucet/zipball/2dad79d17c9e733547dffbb0eb19ee07879d59ae",
-                "reference": "2dad79d17c9e733547dffbb0eb19ee07879d59ae",
+                "url": "https://api.github.com/repos/CradlePHP/sink-faucet/zipball/6581ab492582756ea6040d442fbbc846de32bc48",
+                "reference": "6581ab492582756ea6040d442fbbc846de32bc48",
                 "shasum": ""
             },
             "require": {
@@ -453,7 +453,7 @@
                 "cradlephp",
                 "generator"
             ],
-            "time": "2017-01-08 06:14:26"
+            "time": "2017-01-09 09:47:28"
         },
         {
             "name": "elasticsearch/elasticsearch",
@@ -2665,12 +2665,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "6531a815bf75c52001bf4c7fd28a83de475eabc8"
+                "reference": "fddd0c5c7c9c3126c7e1f7ce7c851439a7e586b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/6531a815bf75c52001bf4c7fd28a83de475eabc8",
-                "reference": "6531a815bf75c52001bf4c7fd28a83de475eabc8",
+                "url": "https://api.github.com/repos/symfony/console/zipball/fddd0c5c7c9c3126c7e1f7ce7c851439a7e586b1",
+                "reference": "fddd0c5c7c9c3126c7e1f7ce7c851439a7e586b1",
                 "shasum": ""
             },
             "require": {
@@ -2720,7 +2720,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2017-01-06 18:34:44"
+            "time": "2017-01-08 21:15:04"
         },
         {
             "name": "symfony/css-selector",
@@ -3065,12 +3065,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "22c2fd4103c7271ddcce21cab30e1919275e239b"
+                "reference": "a5c421b398331d5eba62c86af49d6fea63f2bef2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/22c2fd4103c7271ddcce21cab30e1919275e239b",
-                "reference": "22c2fd4103c7271ddcce21cab30e1919275e239b",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/a5c421b398331d5eba62c86af49d6fea63f2bef2",
+                "reference": "a5c421b398331d5eba62c86af49d6fea63f2bef2",
                 "shasum": ""
             },
             "require": {
@@ -3112,7 +3112,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2017-01-03 13:51:44"
+            "time": "2017-01-08 16:01:14"
         },
         {
             "name": "webmozart/assert",
