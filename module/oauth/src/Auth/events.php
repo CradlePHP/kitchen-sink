@@ -275,8 +275,15 @@ $cradle->on('auth-forgot-mail', function ($request, $response) {
     $to[$request->getStage('auth_slug')] = null;
 
     $subject = $this->package('global')->translate('Password Recovery from Cradle!');
-    $text = $this->package('/app/core')->template('email/recover.txt', ['link' => $link]);
-    $html = $this->package('/app/core')->template('email/recover.html', [
+    $handlebars = $this->package('global')->handlebars();
+
+    $contents = file_get_contents(__DIR__ . '/template/email/recover.txt');
+    $template = $handlebars->compile($contents);
+    $text = $template(['link' => $link]);
+
+    $contents = file_get_contents(__DIR__ . '/template/email/recover.html');
+    $template = $handlebars->compile($contents);
+    $html = $template([
         'host' => $host,
         'link' => $link
     ]);
@@ -744,8 +751,15 @@ $cradle->on('auth-verify-mail', function ($request, $response) {
     $to[$request->getStage('auth_slug')] = null;
 
     $subject = $this->package('global')->translate('Account Verification from Cradle!');
-    $text = $this->package('/app/core')->template('email/verify.txt', ['link' => $link]);
-    $html = $this->package('/app/core')->template('email/verify.html', [
+    $handlebars = $this->package('global')->handlebars();
+
+    $contents = file_get_contents(__DIR__ . '/template/email/verify.txt');
+    $template = $handlebars->compile($contents);
+    $text = $template(['link' => $link]);
+
+    $contents = file_get_contents(__DIR__ . '/template/email/verify.html');
+    $template = $handlebars->compile($contents);
+    $html = $template([
         'host' => $host,
         'link' => $link
     ]);
