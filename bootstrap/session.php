@@ -13,8 +13,11 @@ return function($request, $response) {
 
     //set the language
     if(!$request->hasSession('i18n')) {
+        $request->setSession('i18n', 'en_US');
         $settings = $this->package('global')->config('settings');
-        $request->setSession('i18n', $settings['i18n']);
+        if(isset($settings['i18n'])) {
+            $request->setSession('i18n', $settings['i18n']);
+        }
     }
 
     //deal with flash messages
