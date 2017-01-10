@@ -24,7 +24,7 @@ class Cradle_Module_Profile_ValidatorTest extends PHPUnit_Framework_TestCase
     public function testGetCreateErrors()
     {
         $actual = Validator::getCreateErrors([]);
-        $this->assertEquals('Required', $actual['profile_name']);
+        $this->assertEquals('Name is required', $actual['profile_name']);
     }
 
     /**
@@ -34,6 +34,6 @@ class Cradle_Module_Profile_ValidatorTest extends PHPUnit_Framework_TestCase
     {
         $actual = Validator::getUpdateErrors([]);
 
-        $this->assertEquals('Required', $actual['profile_id']);
+        $this->assertEquals('Invalid ID', $actual['profile_id']);
     }
 }

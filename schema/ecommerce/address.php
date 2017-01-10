@@ -105,8 +105,18 @@ return [
                     'placeholder' => '123 Sesame Street',
                 ]
             ],
+            'validation' => [
+                [
+                    'method' => 'required',
+                    'message' => 'Address Street is required'
+                ],
+            ],
             'detail' => [
                 'label' => 'Street'
+            ],
+            'test' => [
+                'pass' => '123 Sesame Street',
+                'fail' => 333
             ]
         ],
         'address_neighborhood' => [
@@ -150,11 +160,21 @@ return [
                     'placeholder' => 'New York City',
                 ]
             ],
+            'validation' => [
+                [
+                    'method' => 'required',
+                    'message' => 'Address City is required'
+                ],
+            ],
             'list' => [
                 'label' => 'City'
             ],
             'detail' => [
                 'label' => 'City'
+            ],
+            'test' => [
+                'pass' => 'New Year City',
+                'fail' => ''
             ]
         ],
         'address_state' => [
@@ -481,6 +501,10 @@ return [
             ],
             'detail' => [
                 'label' => 'Country'
+            ],
+            'test' => [
+                'pass' => 'US',
+                'fail' => 'not valid country'
             ]
         ],
         'address_postal' => [
@@ -503,8 +527,18 @@ return [
                     'placeholder' => '12345',
                 ]
             ],
+            'validation' => [
+                [
+                    'method' => 'required',
+                    'message' => 'Address Postal is required'
+                ],
+            ],
             'detail' => [
                 'label' => 'Postal'
+            ],
+            'test' => [
+                'pass' => '12345',
+                'fail' => ''
             ]
         ],
         'address_latitude' => [

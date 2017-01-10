@@ -51,7 +51,12 @@ return [
                 'label' => 'Image',
                 'format' => 'images',
                 'parameters' => [100]
+            ],
+            'test' => [
+                'pass' => "[]",
+                'fail' => 'not valid images'
             ]
+
         ],
         'product_title' => [
             'sql' => [
@@ -220,6 +225,10 @@ return [
             'detail' => [
                 'label' => 'Price',
                 'format' => 'price'
+            ],
+            'test' => [
+                'pass' => 100.00,
+                'fail' => 'not valid price'
             ]
         ],
         'product_original' => [

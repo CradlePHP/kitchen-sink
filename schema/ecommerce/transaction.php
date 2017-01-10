@@ -20,6 +20,16 @@ return [
             ],
             'elastic' => [
                 'type' => 'nested'
+            ],
+            'validation' => [
+                [
+                    'method' => 'required',
+                    'message' => 'Transaction Products is required'
+                ]
+            ],
+            'test' => [
+                'pass' => '[]',
+                'fail' => ''
             ]
         ],
         'transaction_profile' => [
@@ -29,6 +39,16 @@ return [
             ],
             'elastic' => [
                 'type' => 'object'
+            ],
+            'validation' => [
+                [
+                    'method' => 'required',
+                    'message' => 'Transaction Profile is required'
+                ]
+            ],
+            'test' => [
+                'pass' => '[]',
+                'fail' => ''
             ]
         ],
         'transaction_address' => [
@@ -38,6 +58,16 @@ return [
             ],
             'elastic' => [
                 'type' => 'object'
+            ],
+            'validation' => [
+                [
+                    'method' => 'required',
+                    'message' => 'Transaction Address is required'
+                ]
+            ],
+            'test' => [
+                'pass' => '[]',
+                'fail' => ''
             ]
         ],
         'transaction_total' => [
@@ -81,6 +111,10 @@ return [
             'detail' => [
                 'label' => 'Price',
                 'format' => 'price'
+            ],
+            'test' => [
+                'pass' => 200.55,
+                'fail' => 'not valid total'
             ]
         ],
         'transaction_method' => [
@@ -91,6 +125,16 @@ return [
             ],
             'elastic' => [
                 'type' => 'string'
+            ],
+            'validation' => [
+                [
+                    'method' => 'required',
+                    'message' => 'Transaction Method is required'
+                ]
+            ],
+            'test' => [
+                'pass' => 'paypal',
+                'fail' => ''
             ]
         ],
         'transaction_reference' => [

@@ -41,7 +41,9 @@ class Cradle_Module_Profile_Service_SqlServiceTest extends PHPUnit_Framework_Tes
             'profile_name' => 'John Doe',
         ]);
 
-        $this->assertEquals(2, $actual['profile_id']);
+        $id = $this->object->getResource()->getLastInsertedId();
+
+        $this->assertEquals($id, $actual['profile_id']);
     }
 
     /**
@@ -71,12 +73,13 @@ class Cradle_Module_Profile_Service_SqlServiceTest extends PHPUnit_Framework_Tes
      */
     public function testUpdate()
     {
+        $id = $this->object->getResource()->getLastInsertedId();
         $actual = $this->object->update([
-            'profile_id' => 2,
+            'profile_id' => $id,
             'profile_name' => 'John Doe',
         ]);
 
-        $this->assertEquals(2, $actual['profile_id']);
+        $this->assertEquals($id, $actual['profile_id']);
     }
 
     /**
@@ -84,9 +87,10 @@ class Cradle_Module_Profile_Service_SqlServiceTest extends PHPUnit_Framework_Tes
      */
     public function testRemove()
     {
-        $actual = $this->object->remove(2);
+        $id = $this->object->getResource()->getLastInsertedId();
+        $actual = $this->object->remove($id);
 
         $this->assertTrue(!empty($actual));
-        $this->assertEquals(2, $actual['profile_id']);
+        $this->assertEquals($id, $actual['profile_id']);
     }
 }
