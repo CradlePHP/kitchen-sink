@@ -1,351 +1,379 @@
 <?php return array (
-  'app' => 
+  'app' =>
   array (
-    'app_name' => 
-    array (
-      'type' => 'string',
-    ),
-    'app_domain' => 
-    array (
-      'type' => 'string',
-    ),
-    'app_website' => 
-    array (
-      'type' => 'string',
-    ),
-    'app_token' => 
-    array (
-      'type' => 'string',
-    ),
-    'app_secret' => 
-    array (
-      'type' => 'string',
-    ),
-    'app_permissions' => 
-    array (
-      'type' => 'string',
-    ),
-    'app_type' => 
-    array (
-      'type' => 'string',
-    ),
-    'app_flag' => 
+    'app_id' =>
     array (
       'type' => 'integer',
     ),
-    'profile_image' => 
+    'app_active' =>
+    array (
+      'type' => 'short',
+    ),
+    'app_created' =>
+    array (
+      'type' => 'date',
+      'format' => 'yyyy-MM-dd HH:mm:ss',
+    ),
+    'app_updated' =>
+    array (
+      'type' => 'date',
+      'format' => 'yyyy-MM-dd HH:mm:ss',
+    ),
+    'app_name' =>
     array (
       'type' => 'string',
     ),
-    'profile_name' => 
+    'app_domain' =>
     array (
       'type' => 'string',
-      'fields' => 
+    ),
+    'app_website' =>
+    array (
+      'type' => 'string',
+    ),
+    'app_token' =>
+    array (
+      'type' => 'string',
+    ),
+    'app_secret' =>
+    array (
+      'type' => 'string',
+    ),
+    'app_permissions' =>
+    array (
+      'type' => 'string',
+    ),
+    'app_type' =>
+    array (
+      'type' => 'string',
+    ),
+    'app_flag' =>
+    array (
+      'type' => 'integer',
+    ),
+    'profile_image' =>
+    array (
+      'type' => 'string',
+    ),
+    'profile_name' =>
+    array (
+      'type' => 'string',
+      'fields' =>
       array (
-        'keyword' => 
+        'keyword' =>
         array (
           'type' => 'keyword',
         ),
       ),
     ),
-    'profile_email' => 
+    'profile_email' =>
     array (
       'type' => 'string',
     ),
-    'profile_phone' => 
+    'profile_phone' =>
     array (
       'type' => 'string',
     ),
-    'profile_slug' => 
+    'profile_slug' =>
     array (
       'type' => 'string',
-      'fields' => 
+      'fields' =>
       array (
-        'keyword' => 
+        'keyword' =>
         array (
           'type' => 'keyword',
         ),
       ),
     ),
-    'profile_detail' => 
+    'profile_detail' =>
     array (
       'type' => 'text',
-      'fields' => 
+      'fields' =>
       array (
-        'keyword' => 
+        'keyword' =>
         array (
           'type' => 'keyword',
         ),
       ),
     ),
-    'profile_job' => 
+    'profile_job' =>
     array (
       'type' => 'string',
     ),
-    'profile_gender' => 
+    'profile_gender' =>
     array (
       'type' => 'string',
     ),
-    'profile_birth' => 
+    'profile_birth' =>
     array (
       'type' => 'date',
       'format' => 'yyyy-MM-dd',
     ),
-    'profile_website' => 
+    'profile_website' =>
     array (
       'type' => 'string',
     ),
-    'profile_facebook' => 
+    'profile_facebook' =>
     array (
       'type' => 'string',
     ),
-    'profile_linkedin' => 
+    'profile_linkedin' =>
     array (
       'type' => 'string',
     ),
-    'profile_twitter' => 
+    'profile_twitter' =>
     array (
       'type' => 'string',
     ),
-    'profile_google' => 
+    'profile_google' =>
     array (
       'type' => 'string',
     ),
-    'profile_type' => 
+    'profile_type' =>
     array (
       'type' => 'string',
     ),
-    'profile_flag' => 
+    'profile_flag' =>
     array (
       'type' => 'integer',
     ),
   ),
-  'auth' => 
+  'auth' =>
   array (
-    'auth_slug' => 
-    array (
-      'type' => 'string',
-    ),
-    'auth_password' => 
-    array (
-      'type' => 'string',
-    ),
-    'auth_token' => 
-    array (
-      'type' => 'string',
-    ),
-    'auth_secret' => 
-    array (
-      'type' => 'string',
-    ),
-    'auth_permissions' => 
-    array (
-      'type' => 'string',
-    ),
-    'auth_type' => 
-    array (
-      'type' => 'string',
-    ),
-    'auth_flag' => 
+    'auth_id' =>
     array (
       'type' => 'integer',
     ),
-    'profile_image' => 
+    'auth_active' =>
+    array (
+      'type' => 'short',
+    ),
+    'auth_created' =>
+    array (
+      'type' => 'date',
+      'format' => 'yyyy-MM-dd HH:mm:ss',
+    ),
+    'auth_updated' =>
+    array (
+      'type' => 'date',
+      'format' => 'yyyy-MM-dd HH:mm:ss',
+    ),
+    'auth_slug' =>
     array (
       'type' => 'string',
     ),
-    'profile_name' => 
+    'auth_password' =>
     array (
       'type' => 'string',
-      'fields' => 
+    ),
+    'auth_token' =>
+    array (
+      'type' => 'string',
+    ),
+    'auth_secret' =>
+    array (
+      'type' => 'string',
+    ),
+    'auth_permissions' =>
+    array (
+      'type' => 'string',
+    ),
+    'auth_type' =>
+    array (
+      'type' => 'string',
+    ),
+    'auth_flag' =>
+    array (
+      'type' => 'integer',
+    ),
+    'profile_image' =>
+    array (
+      'type' => 'string',
+    ),
+    'profile_name' =>
+    array (
+      'type' => 'string',
+      'fields' =>
       array (
-        'keyword' => 
+        'keyword' =>
         array (
           'type' => 'keyword',
         ),
       ),
     ),
-    'profile_email' => 
+    'profile_email' =>
     array (
       'type' => 'string',
     ),
-    'profile_phone' => 
+    'profile_phone' =>
     array (
       'type' => 'string',
     ),
-    'profile_slug' => 
+    'profile_slug' =>
     array (
       'type' => 'string',
-      'fields' => 
+      'fields' =>
       array (
-        'keyword' => 
+        'keyword' =>
         array (
           'type' => 'keyword',
         ),
       ),
     ),
-    'profile_detail' => 
+    'profile_detail' =>
     array (
       'type' => 'text',
-      'fields' => 
+      'fields' =>
       array (
-        'keyword' => 
+        'keyword' =>
         array (
           'type' => 'keyword',
         ),
       ),
     ),
-    'profile_job' => 
+    'profile_job' =>
     array (
       'type' => 'string',
     ),
-    'profile_gender' => 
+    'profile_gender' =>
     array (
       'type' => 'string',
     ),
-    'profile_birth' => 
+    'profile_birth' =>
     array (
       'type' => 'date',
       'format' => 'yyyy-MM-dd',
     ),
-    'profile_website' => 
+    'profile_website' =>
     array (
       'type' => 'string',
     ),
-    'profile_facebook' => 
+    'profile_facebook' =>
     array (
       'type' => 'string',
     ),
-    'profile_linkedin' => 
+    'profile_linkedin' =>
     array (
       'type' => 'string',
     ),
-    'profile_twitter' => 
+    'profile_twitter' =>
     array (
       'type' => 'string',
     ),
-    'profile_google' => 
+    'profile_google' =>
     array (
       'type' => 'string',
     ),
-    'profile_type' => 
+    'profile_type' =>
     array (
       'type' => 'string',
     ),
-    'profile_flag' => 
+    'profile_flag' =>
     array (
       'type' => 'integer',
     ),
   ),
-  'session' => 
+  'session' =>
   array (
-    'session_token' => 
-    array (
-      'type' => 'string',
-    ),
-    'session_secret' => 
-    array (
-      'type' => 'string',
-    ),
-    'session_permissions' => 
-    array (
-      'type' => 'string',
-    ),
-    'session_status' => 
-    array (
-      'type' => 'string',
-    ),
-    'session_type' => 
-    array (
-      'type' => 'string',
-    ),
-    'session_flag' => 
+    'session_id' =>
     array (
       'type' => 'integer',
     ),
-    'profile_image' => 
+    'session_active' =>
     array (
-      'type' => 'string',
+      'type' => 'short',
     ),
-    'profile_name' => 
-    array (
-      'type' => 'string',
-      'fields' => 
-      array (
-        'keyword' => 
-        array (
-          'type' => 'keyword',
-        ),
-      ),
-    ),
-    'profile_email' => 
-    array (
-      'type' => 'string',
-    ),
-    'profile_phone' => 
-    array (
-      'type' => 'string',
-    ),
-    'profile_slug' => 
-    array (
-      'type' => 'string',
-      'fields' => 
-      array (
-        'keyword' => 
-        array (
-          'type' => 'keyword',
-        ),
-      ),
-    ),
-    'profile_detail' => 
-    array (
-      'type' => 'text',
-      'fields' => 
-      array (
-        'keyword' => 
-        array (
-          'type' => 'keyword',
-        ),
-      ),
-    ),
-    'profile_job' => 
-    array (
-      'type' => 'string',
-    ),
-    'profile_gender' => 
-    array (
-      'type' => 'string',
-    ),
-    'profile_birth' => 
+    'session_created' =>
     array (
       'type' => 'date',
-      'format' => 'yyyy-MM-dd',
+      'format' => 'yyyy-MM-dd HH:mm:ss',
     ),
-    'profile_website' => 
+    'session_updated' =>
+    array (
+      'type' => 'date',
+      'format' => 'yyyy-MM-dd HH:mm:ss',
+    ),
+    'session_token' =>
     array (
       'type' => 'string',
     ),
-    'profile_facebook' => 
+    'session_secret' =>
     array (
       'type' => 'string',
     ),
-    'profile_linkedin' => 
+    'session_permissions' =>
     array (
       'type' => 'string',
     ),
-    'profile_twitter' => 
+    'session_status' =>
     array (
       'type' => 'string',
     ),
-    'profile_google' => 
+    'session_type' =>
     array (
       'type' => 'string',
     ),
-    'profile_type' => 
+    'session_flag' =>
+    array (
+      'type' => 'integer',
+    ),
+    'app_name' =>
     array (
       'type' => 'string',
     ),
-    'profile_flag' => 
+    'app_domain' =>
+    array (
+      'type' => 'string',
+    ),
+    'app_website' =>
+    array (
+      'type' => 'string',
+    ),
+    'app_token' =>
+    array (
+      'type' => 'string',
+    ),
+    'app_secret' =>
+    array (
+      'type' => 'string',
+    ),
+    'app_permissions' =>
+    array (
+      'type' => 'string',
+    ),
+    'app_type' =>
+    array (
+      'type' => 'string',
+    ),
+    'app_flag' =>
+    array (
+      'type' => 'integer',
+    ),
+    'auth_slug' =>
+    array (
+      'type' => 'string',
+    ),
+    'auth_password' =>
+    array (
+      'type' => 'string',
+    ),
+    'auth_token' =>
+    array (
+      'type' => 'string',
+    ),
+    'auth_secret' =>
+    array (
+      'type' => 'string',
+    ),
+    'auth_permissions' =>
+    array (
+      'type' => 'string',
+    ),
+    'auth_type' =>
+    array (
+      'type' => 'string',
+    ),
+    'auth_flag' =>
     array (
       'type' => 'integer',
     ),

@@ -1,89 +1,107 @@
 <?php return array (
-  'profile' => 
+  'profile' =>
   array (
-    'profile_image' => 
+    'profile_id' =>
+    array (
+      'type' => 'integer',
+    ),
+    'profile_active' =>
+    array (
+      'type' => 'short',
+    ),
+    'profile_created' =>
+    array (
+      'type' => 'date',
+      'format' => 'yyyy-MM-dd HH:mm:ss',
+    ),
+    'profile_updated' =>
+    array (
+      'type' => 'date',
+      'format' => 'yyyy-MM-dd HH:mm:ss',
+    ),
+    'profile_image' =>
     array (
       'type' => 'string',
     ),
-    'profile_name' => 
+    'profile_name' =>
     array (
       'type' => 'string',
-      'fields' => 
+      'fields' =>
       array (
-        'keyword' => 
+        'keyword' =>
         array (
           'type' => 'keyword',
         ),
       ),
     ),
-    'profile_email' => 
+    'profile_email' =>
     array (
       'type' => 'string',
     ),
-    'profile_phone' => 
+    'profile_phone' =>
     array (
       'type' => 'string',
     ),
-    'profile_slug' => 
+    'profile_slug' =>
     array (
       'type' => 'string',
-      'fields' => 
+      'fields' =>
       array (
-        'keyword' => 
+        'keyword' =>
         array (
           'type' => 'keyword',
         ),
       ),
     ),
-    'profile_detail' => 
+    'profile_detail' =>
     array (
       'type' => 'text',
-      'fields' => 
+      'fields' =>
       array (
-        'keyword' => 
+        'keyword' =>
         array (
           'type' => 'keyword',
         ),
       ),
     ),
-    'profile_job' => 
+    'profile_job' =>
     array (
       'type' => 'string',
     ),
-    'profile_gender' => 
+    'profile_gender' =>
     array (
       'type' => 'string',
     ),
-    'profile_birth' => 
+    'profile_birth' =>
     array (
       'type' => 'date',
       'format' => 'yyyy-MM-dd',
     ),
-    'profile_website' => 
+    'profile_website' =>
     array (
       'type' => 'string',
     ),
-    'profile_facebook' => 
+    'profile_facebook' =>
     array (
       'type' => 'string',
     ),
-    'profile_linkedin' => 
+    'profile_linkedin' =>
     array (
       'type' => 'string',
     ),
-    'profile_twitter' => 
+    'profile_twitter' =>
     array (
       'type' => 'string',
     ),
-    'profile_google' => 
+    'profile_google' =>
     array (
       'type' => 'string',
     ),
-    'profile_type' => 
+    'profile_type' =>
     array (
       'type' => 'string',
     ),
-    'profile_flag' => 
+    'profile_flag' =>
     array (
       'type' => 'integer',
     ),
