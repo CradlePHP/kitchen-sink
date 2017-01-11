@@ -7,11 +7,11 @@ return [
     'created' => 'session_created',
     'updated' => 'session_updated',
     'relations' => [
-        'app' => [
+        'oauth/app' => [
             'primary' => 'app_id',
             'many' => false
         ],
-        'auth' => [
+        'oauth/auth' => [
             'primary' => 'auth_id',
             'many' => false
         ]
