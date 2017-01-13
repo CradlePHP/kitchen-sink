@@ -24,7 +24,7 @@ $I->see('Profiles');
 
 
 $I->amGoingTo('search profile');
-$I->fillField('q[keyword]', 'john@doe.com');
+$I->fillField('q[]', 'john@doe.com');
 $I->click('form button');
 
 $I->expectTo('see the name');

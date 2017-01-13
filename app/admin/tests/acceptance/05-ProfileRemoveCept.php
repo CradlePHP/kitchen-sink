@@ -23,9 +23,8 @@ $I->expectTo('see profile list');
 $I->see('Profiles');
 
 $I->amGoingTo('search profile');
-$I->fillField('q[keyword]', 'newprofile@gmail.com');
+$I->fillField('q[]', 'newprofile@gmail.com');
 $I->click('form button');
 
 //remove profile
 $I->click('.text-danger.remove');
-

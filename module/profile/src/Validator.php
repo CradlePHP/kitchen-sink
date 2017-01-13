@@ -74,7 +74,8 @@ class Validator
         //validations
         if (isset($data['profile_image']) && !preg_match(
             '/(^(http|https|ftp):\/\/([A-Z0-9][A-Z0-9_-]'.
-            '*(?:.[A-Z0-9][A-Z0-9_-]*)+):?(d+)?\/?)|(^data:image\/[a-z]+;base64,)/i',
+            '*(?:.[A-Z0-9][A-Z0-9_-]*)+):?(d+)?\/?)|(^data:image\/[a-z]+;base64,)'.
+            '|(^\/)/i',
             $data['profile_image']
         )
         ) {
