@@ -74,7 +74,8 @@ class SqlService extends AbstractSqlService implements SqlServiceInterface
                 'session.*',
                 'app.*',
                 'profile.*',
-                'auth_id'
+                'auth_id',
+                'auth_slug'
             )
             ->innerJoinUsing('session_auth', 'session_id')
             ->innerJoinUsing('session_app', 'session_id')
@@ -195,6 +196,13 @@ class SqlService extends AbstractSqlService implements SqlServiceInterface
 
         $search = $this->resource
             ->search('session')
+            ->setColumns(
+                'session.*',
+                'app.*',
+                'profile.*',
+                'auth_id',
+                'auth_slug'
+            )
             ->innerJoinUsing('session_auth', 'session_id')
             ->innerJoinUsing('auth_profile', 'auth_id')
             ->innerJoinUsing('session_app', 'session_id')
