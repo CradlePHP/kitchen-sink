@@ -1,0 +1,17 @@
+I WANT TO SEE WHAT THIS SITE IS ABOUT
+
+I am on page '/' 
+I expect 'that I am logged out' 
+I see 'Login' 
+I expect to 'see a bullet list of reasons of why I should use this site' 
+I see 'Find Products and Compare Prices!' 
+I am going to 'search for a phone to buy' 
+I fill field 'q[]'," 'phone' 
+I click 'form button' 
+I expect 'A Search Page Results' 
+I see in current url '/product/search' 
+I see 'Apple - iPhone 6S - 16GB by One Stop' 
+I click 'Apple - iPhone 6S - 16GB by One Stop' 
+I wait for element visible 'p.product-detail'," 30" 
+I see 'Product Specifications:- Runs on iOS 9; interface is user-friendly and with refined at every level'
+
