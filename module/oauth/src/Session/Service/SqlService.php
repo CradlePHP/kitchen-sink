@@ -74,8 +74,7 @@ class SqlService extends AbstractSqlService implements SqlServiceInterface
                 'session.*',
                 'app.*',
                 'profile.*',
-                'auth_id',
-                'auth_slug'
+                'auth_id'
             )
             ->innerJoinUsing('session_auth', 'session_id')
             ->innerJoinUsing('session_app', 'session_id')
@@ -200,8 +199,7 @@ class SqlService extends AbstractSqlService implements SqlServiceInterface
                 'session.*',
                 'app.*',
                 'profile.*',
-                'auth_id',
-                'auth_slug'
+                'auth_id'
             )
             ->innerJoinUsing('session_auth', 'session_id')
             ->innerJoinUsing('auth_profile', 'auth_id')
