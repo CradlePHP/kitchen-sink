@@ -29,6 +29,15 @@ class Cradle_Module_Utility_Service_AbstractRedisServiceTest extends PHPUnit_Fra
     protected function setUp()
     {
         $service = cradle()->package('global')->service('redis-main');
+
+        if(!$service) {
+            $service = new Predis\Client([
+                "scheme" => "tcp",
+                "host" => "127.0.0.1",
+                "port" => 6379
+            ]);
+        }
+
         $this->object = new Cradle_Module_Utility_Service_RedisServiceStub($service);
     }
 

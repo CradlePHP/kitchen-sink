@@ -7,6 +7,8 @@
  * distributed with this package.
  */
 
+use Cradle\Module\Utility\File;
+
 /**
  * Process the Verification Page
  *
@@ -180,9 +182,9 @@ $cradle->get('/account', function($request, $response) {
     //Prepare body
     $data = ['item' => $request->getPost()];
 
-    //add cdn
-    $this->trigger('profile-image-client-cdn', $request, $response);
-    $data['cdn'] = $response->getResults('cdn');
+    //add CDN
+    $config = $this->package('global')->service('s3-main');
+    $data['cdn_config'] = File::getS3Client($config);
 
     //add CSRF
     cradle()->trigger('csrf-load', $request, $response);

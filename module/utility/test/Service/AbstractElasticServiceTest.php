@@ -33,6 +33,11 @@ class Cradle_Module_Utility_Service_AbstractElasticServiceTest extends PHPUnit_F
     protected function setUp()
     {
         $service = cradle()->package('global')->service('elastic-main');
+
+        if(!$service) {
+            $service = Elasticsearch\ClientBuilder::create()->build();
+        }
+
         $this->object = new Cradle_Module_Utility_Service_ElasticServiceStub($service);
     }
 

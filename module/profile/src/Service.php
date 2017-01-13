@@ -30,24 +30,28 @@ class Service implements ServiceInterface
      * service, instead we roll everything into one function
      *
      * @param *string $name
+     * @param string  $key
      *
      * @return object
      */
-    public static function get($name)
+    public static function get($name, $key = 'main')
     {
-        if ($name === 'sql') {
-            $resource = cradle()->package('global')->service('sql-main');
-            return new SqlService($resource);
-        }
+        if(in_array($name, ['sql', 'redis', 'elastic'])) {
+            $resource = cradle()->package('global')->service($name . '-' . $key);
 
-        if ($name === 'redis') {
-            $resource = cradle()->package('global')->service('redis-main');
-            return new RedisService($resource);
-        }
+            if($resource) {
+                if ($name === 'sql') {
+                    return new SqlService($resource);
+                }
 
-        if ($name === 'elastic') {
-            $resource = cradle()->package('global')->service('elastic-main');
-            return new ElasticService($resource);
+                if ($name === 'redis') {
+                    return new RedisService($resource);
+                }
+
+                if ($name === 'elastic') {
+                    return new ElasticService($resource);
+                }
+            }
         }
 
         return new NoopService();

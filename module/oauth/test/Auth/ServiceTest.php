@@ -12,6 +12,7 @@ use Cradle\Module\Oauth\Auth\Service;
 use Cradle\Module\Oauth\Auth\Service\SqlService;
 use Cradle\Module\Oauth\Auth\Service\RedisService;
 use Cradle\Module\Oauth\Auth\Service\ElasticService;
+use Cradle\Module\Utility\Service\NoopService;
 
 /**
  * Service layer test
@@ -27,8 +28,13 @@ class Cradle_Module_Oauth_Auth_ServiceTest extends PHPUnit_Framework_TestCase
      */
     public function testGet()
     {
-        $this->assertInstanceOf(SqlService::class, Service::get('sql'));
-        $this->assertInstanceOf(RedisService::class, Service::get('redis'));
-        $this->assertInstanceOf(ElasticService::class, Service::get('elastic'));
+        $actual = Service::get('sql');
+        $this->assertTrue($actual instanceof SqlService || $actual instanceof NoopService);
+
+        $actual = Service::get('redis');
+        $this->assertTrue($actual instanceof RedisService || $actual instanceof NoopService);
+
+        $actual = Service::get('elastic');
+        $this->assertTrue($actual instanceof ElasticService || $actual instanceof NoopService);
     }
 }

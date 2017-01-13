@@ -14,20 +14,7 @@ cradle()
     ->preprocess(function($request, $response) {
         echo 'Overide global->service with test configs...' . PHP_EOL;
 
-        //create a sudo method
-        $this->package('global')->addMethod('service', function($name) {
-            static $services = null;
-
-            if(is_null($services)) {
-                $services = cradle()->package('global')->config('test');
-            }
-
-            if(!isset($services[$name])) {
-                return null;
-            }
-
-            return $services[$name];
-        });
+        $this->package('global')->service(cradle()->package('global')->config('test'));
     })
     ->preprocess(function($request, $response) {
         // we want to install the db

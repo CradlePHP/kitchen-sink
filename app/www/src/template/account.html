@@ -14,22 +14,22 @@
             <!-- START: Auth Account Form -->
             <form
                 method="post"
-                {{#if cdn}}
+                {{#if cdn_config}}
                     data-do="cdn-upload"
                     data-on="submit"
                     data-progress="{{_ 'We are uploading your files. Please do not refresh page.'}}"
                     data-complete="{{_ 'Upload Complete'}}"
-                    data-enctype="{{cdn.form.enctype}}"
-                    data-method="{{cdn.form.method}}"
-                    data-action="{{cdn.form.action}}"
-                    data-cdn="{{cdn.form.action}}"
-                    data-acl="{{cdn.inputs.acl}}"
-                    data-key="{{cdn.inputs.key}}"
-                    data-credential="{{cdn.inputs.X-Amz-Credential}}"
-                    data-algorythm="{{cdn.inputs.X-Amz-Algorithm}}"
-                    data-date="{{cdn.inputs.X-Amz-Date}}"
-                    data-policy="{{cdn.inputs.Policy}}"
-                    data-signature="{{cdn.inputs.X-Amz-Signature}}"
+                    data-enctype="{{cdn_config.form.enctype}}"
+                    data-method="{{cdn_config.form.method}}"
+                    data-action="{{cdn_config.form.action}}"
+                    data-cdn="{{cdn_config.form.action}}"
+                    data-acl="{{cdn_config.inputs.acl}}"
+                    data-key="{{cdn_config.inputs.key}}"
+                    data-credential="{{cdn_config.inputs.X-Amz-Credential}}"
+                    data-algorythm="{{cdn_config.inputs.X-Amz-Algorithm}}"
+                    data-date="{{cdn_config.inputs.X-Amz-Date}}"
+                    data-policy="{{cdn_config.inputs.Policy}}"
+                    data-signature="{{cdn_config.inputs.X-Amz-Signature}}"
                 {{/if}}
                 >
                 <!-- START: Profile Image -->

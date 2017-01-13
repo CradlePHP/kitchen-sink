@@ -23,8 +23,9 @@ interface ServiceInterface
      * Returns a service
      *
      * @param *string $name
+     * @param string  $key
      *
      * @return SqlService|RedisService|ElasticService|NoopService
      */
-    public static function get($name);
+    public static function get($name, $key = 'main');
 }

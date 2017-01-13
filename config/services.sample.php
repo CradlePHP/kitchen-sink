@@ -1,35 +1,48 @@
 <?php //-->
 
-return array (
-    'sql-build' => new PDO('mysql:host=<DATABASE HOST>', '<DATABASE USER>', '<DATABASE PASS>'),
-    'sql-main' => new PDO('mysql:host=<DATABASE HOST>;dbname=<DATABASE NAME>', '<DATABASE USER>', '<DATABASE PASS>'),
-    'elastic-main' => Elasticsearch\ClientBuilder::create()->build(),
-    'redis-main' => new Predis\Client([
-        "scheme" => "tcp",
-        "host" => "127.0.0.1",
-        "port" => 6379
-    ]),
-    's3-main' => array(
+return [
+    'sql-build' => [
+        'host' => '127.0.0.1',
+        'user' => '<DATABASE USER>',
+        'pass' => '<DATABASE PASS>'
+    ],
+    'sql-main' => [
+        'host' => '127.0.0.1',
+        'name' => '<DATABASE NAME>',
+        'user' => '<DATABASE USER>',
+        'pass' => '<DATABASE PASS>'
+    ],
+    'elastic-main' => [
+        '<ELASTIC HOST:PORT>'
+    ],
+    'redis-main' => [
+        'scheme' => 'tcp',
+        'host' => '127.0.0.1',
+        'port' => 6379
+    ],
+    'rabbitmq-main' => [
+        'host' => '127.0.0.1',
+        'port' => 5672,
+        'user' => '<RABBIT USER>',
+        'pass' => '<RABBIT PASS>'
+    ],
+    's3-main' => [
         'region' => '<AWS REGION>',
         'token' => '<AWS TOKEN>',
         'secret' => '<AWS SECRET>',
         'bucket' => '<S3 BUCKET>',
-        'host' => 'https://<<AWS REGION>.amazonaws.com'
-    ),
-    'mail-main' => array(
+        'host' => 'https://<AWS REGION>.amazonaws.com'
+    ],
+    'mail-main' => [
         'host' => 'smtp.gmail.com',
         'port' => '587',
         'type' => 'tls',
         'name' => 'Project Name',
         'user' => '<EMAIL ADDRESS>',
         'pass' => '<EMAIL PASSWORD>'
-    ),
-    /*
-    'rabbitmq-main' => new PhpAmqpLib\Connection\AMQPLazyConnection(
-        '127.0.0.1',
-        5672,
-        'guest',
-        'guest'
-    ),
-    */
-);
+    ],
+    'captcha-main' => [
+        'token' => '<GOOGLE CAPTCHA TOKEN>',
+        'secret' => '<GOOGLE CAPTCHA SECRET>'
+    ]
+];
