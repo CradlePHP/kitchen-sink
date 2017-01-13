@@ -8,6 +8,9 @@ config/settings.php
 config/test.php
 config/deploy.php
 config/version.php
+app/admin/tests/_output/*
+app/admin/tests/_data/*
+app/admin/tests/_envs/*
 app/api/tests/_output/*
 app/api/tests/_data/*
 app/api/tests/_envs/*

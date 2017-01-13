@@ -1,9 +1,0 @@
-I WANT TO PERFORM ACTIONS AND SEE RESULT
-
-I am on page '/' 
-I see 'Find Products and Compare Prices!' 
-I fill field 'q[]'," 'phone' 
-I click 'Search' 
-I expect 'A Search Page' 
-I see 'Apple - iPhone 6S - 16GB by One Stop'
-
