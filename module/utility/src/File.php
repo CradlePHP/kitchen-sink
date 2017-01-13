@@ -41,17 +41,16 @@ class File
         }
 
         //if it's not configured
-        if($config['token'] === '<AWS TOKEN>'
+        if ($config['token'] === '<AWS TOKEN>'
             || $config['secret'] === '<AWS SECRET>'
             || $config['bucket'] === '<S3 BUCKET>'
             || $config['region'] === '<AWS REGION>'
-        )
-        {
+        ) {
             return $data;
         }
 
-        if(is_array($data)) {
-            foreach($data as $key => $value) {
+        if (is_array($data)) {
+            foreach ($data as $key => $value) {
                 $data[$key] = self::base64ToS3($data, $config, $destination);
             }
 
@@ -65,11 +64,11 @@ class File
         }
 
         //fix destination
-        if(strpos($destination, '/') === 0) {
+        if (strpos($destination, '/') === 0) {
             $destination = substr($destination, 1);
         }
 
-        if(substr($destination, -1) !== '/') {
+        if (substr($destination, -1) !== '/') {
             $destination .= '/';
         }
 
@@ -115,8 +114,8 @@ class File
      */
     public static function base64ToUpload($data, $destination, $host = null)
     {
-        if(is_array($data)) {
-            foreach($data as $key => $value) {
+        if (is_array($data)) {
+            foreach ($data as $key => $value) {
                 $data[$key] = self::base64ToUpload($value, $destination, $host);
             }
 
@@ -135,7 +134,7 @@ class File
             mkdir($destination);
         }
 
-        if(!$host) {
+        if (!$host) {
             $protocol = 'http';
             if ($_SERVER['SERVER_PORT'] === 443) {
                 $protocol = 'https';
@@ -254,21 +253,20 @@ class File
         }
 
         //if it's not configured
-        if($config['token'] === '<AWS TOKEN>'
+        if ($config['token'] === '<AWS TOKEN>'
             || $config['secret'] === '<AWS SECRET>'
             || $config['bucket'] === '<S3 BUCKET>'
             || $config['region'] === '<AWS REGION>'
-        )
-        {
+        ) {
             return false;
         }
 
         //fix destination
-        if(strpos($destination, '/') === 0) {
+        if (strpos($destination, '/') === 0) {
             $destination = substr($destination, 1);
         }
 
-        if(substr($destination, -1) !== '/') {
+        if (substr($destination, -1) !== '/') {
             $destination .= '/';
         }
 

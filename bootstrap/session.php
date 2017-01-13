@@ -1,7 +1,7 @@
 <?php //-->
-return function($request, $response) {
+return function ($request, $response) {
     //prevent starting session in cli mode
-    if(php_sapi_name() === 'cli') {
+    if (php_sapi_name() === 'cli') {
         return;
     }
 
@@ -12,16 +12,16 @@ return function($request, $response) {
     $request->setSession($_SESSION);
 
     //set the language
-    if(!$request->hasSession('i18n')) {
+    if (!$request->hasSession('i18n')) {
         $request->setSession('i18n', 'en_US');
         $settings = $this->package('global')->config('settings');
-        if(isset($settings['i18n'])) {
+        if (isset($settings['i18n'])) {
             $request->setSession('i18n', $settings['i18n']);
         }
     }
 
     //deal with flash messages
-    if($request->hasSession('flash')) {
+    if ($request->hasSession('flash')) {
         $flash = $request->getSession('flash');
         $response->setPage('flash', $flash);
         $request->removeSession('flash');
@@ -35,7 +35,7 @@ return function($request, $response) {
      *
      * @param *string $path
      */
-    ->addMethod('redirect', function($path) {
+    ->addMethod('redirect', function ($path) {
         cradle()->getDispatcher()->redirect($path);
     })
 
@@ -44,13 +44,13 @@ return function($request, $response) {
      *
      * @param *string $path
      */
-    ->addMethod('requireLogin', function($type = null) {
-        if(!isset($_SESSION['me']['auth_id'])) {
+    ->addMethod('requireLogin', function ($type = null) {
+        if (!isset($_SESSION['me']['auth_id'])) {
             $redirect = urlencode($_SERVER['REQUEST_URI']);
             return cradle()->getDispatcher()->redirect('/login?redirect_uri=' . $redirect);
         }
 
-        if($type && $_SESSION['me']['auth_type'] !== $type) {
+        if ($type && $_SESSION['me']['auth_type'] !== $type) {
             cradle('global')->flash('Unauthorized', 'danger');
             return cradle()->getDispatcher()->redirect('/');
         }
@@ -61,7 +61,7 @@ return function($request, $response) {
      *
      * @param *string $path
      */
-    ->addMethod('flash', function($message, $type = 'info') {
+    ->addMethod('flash', function ($message, $type = 'info') {
         $_SESSION['flash'] = [
             'message' => cradle()->package('global')->translate($message),
             'type' => $type

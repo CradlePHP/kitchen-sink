@@ -251,10 +251,9 @@ $cradle->on('auth-forgot-mail', function ($request, $response) {
     }
 
     //if it's not configured
-    if($config['user'] === '<EMAIL ADDRESS>'
+    if ($config['user'] === '<EMAIL ADDRESS>'
         || $config['pass'] === '<EMAIL PASSWORD>'
-    )
-    {
+    ) {
         return;
     }
 
@@ -727,10 +726,9 @@ $cradle->on('auth-verify-mail', function ($request, $response) {
     }
 
     //if it's not configured
-    if($config['user'] === '<EMAIL ADDRESS>'
+    if ($config['user'] === '<EMAIL ADDRESS>'
         || $config['pass'] === '<EMAIL PASSWORD>'
-    )
-    {
+    ) {
         return;
     }
 

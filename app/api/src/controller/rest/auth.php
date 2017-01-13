@@ -10,7 +10,7 @@
 /**
  * Routes
  */
-$cradle->post('/rest/access', function($request, $response) {
+$cradle->post('/rest/access', function ($request, $response) {
     //set the profile id
     $profile = $request->get('source', 'profile_id');
     $request->setStage('permission', $profile);

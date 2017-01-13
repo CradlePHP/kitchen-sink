@@ -15,14 +15,14 @@ use Cradle\Sql\SqlFactory;
  * @param Request $request
  * @param Request $response
  */
-$cradle->on('rest-permitted', function($request, $response) {
-    if($request->hasStage('client_id')) {
+$cradle->on('rest-permitted', function ($request, $response) {
+    if ($request->hasStage('client_id')) {
         $this->trigger('rest-app-permitted', $request, $response);
     } else {
         $this->trigger('rest-session-permitted', $request, $response);
     }
 
-    if($response->isError() || !$request->hasStage('role')) {
+    if ($response->isError() || !$request->hasStage('role')) {
         return;
     }
 
@@ -30,26 +30,26 @@ $cradle->on('rest-permitted', function($request, $response) {
     $profile = $request->getStage('profile_id');
 
     //if there's a profile_id
-    if($profile) {
+    if ($profile) {
         //it should be an app
-        if($request->get('source', 'type') !== 'app') {
+        if ($request->get('source', 'type') !== 'app') {
             return $response->setError(true, 'Unauthorize Request');
         }
 
         //I should have an admin role
-        if(!in_array('admin_' . $role, $request->get('source', 'app_permissions'))) {
+        if (!in_array('admin_' . $role, $request->get('source', 'app_permissions'))) {
             return $response->setError(true, 'Unauthorize Request');
         }
-    } else if($request->get('source', 'type') === 'app') {
+    } else if ($request->get('source', 'type') === 'app') {
         //I should have a personal role
-        if(!in_array('personal_' . $role, $request->get('source', 'app_permissions'))) {
+        if (!in_array('personal_' . $role, $request->get('source', 'app_permissions'))) {
             return $response->setError(true, 'Unauthorize Request');
         }
 
         $profile = $request->get('source', 'profile_id');
     } else {
         //I should have a user role
-        if(!in_array('user_' . $role, $request->get('source', 'app_permissions'))) {
+        if (!in_array('user_' . $role, $request->get('source', 'app_permissions'))) {
             return $response->setError(true, 'Unauthorize Request');
         }
 
@@ -71,8 +71,8 @@ $cradle->on('rest-permitted', function($request, $response) {
  * @param Request $request
  * @param Request $response
  */
-$cradle->on('rest-app-permitted', function($request, $response) {
-    if(!$request->hasStage('client_id')) {
+$cradle->on('rest-app-permitted', function ($request, $response) {
+    if (!$request->hasStage('client_id')) {
         return $response->setError(true, 'Unauthorize Request');
     }
 
@@ -102,7 +102,7 @@ $cradle->on('rest-app-permitted', function($request, $response) {
         return $response->setError(true, 'Unauthorize Request');
     }
 
-    if($row['app_permissions']) {
+    if ($row['app_permissions']) {
         $row['app_permissions'] = json_decode($row['app_permissions'], true);
     } else {
         $row['app_permissions'] = [];
@@ -122,8 +122,8 @@ $cradle->on('rest-app-permitted', function($request, $response) {
  * @param Request $request
  * @param Request $response
  */
-$cradle->on('rest-session-permitted', function($request, $response) {
-    if(!$request->hasStage('access_token')) {
+$cradle->on('rest-session-permitted', function ($request, $response) {
+    if (!$request->hasStage('access_token')) {
         return $response->setError(true, 'Unauthorize Request');
     }
 
@@ -157,7 +157,7 @@ $cradle->on('rest-session-permitted', function($request, $response) {
         return $response->setError(true, 'Unauthorize Request');
     }
 
-    if($row['session_permissions']) {
+    if ($row['session_permissions']) {
         $row['session_permissions'] = json_decode($row['session_permissions'], true);
     } else {
         $row['session_permissions'] = [];
@@ -177,7 +177,7 @@ $cradle->on('rest-session-permitted', function($request, $response) {
  * @param Request $request
  * @param Request $response
  */
-$cradle->on('render-dialog-page', function($request, $response) {
+$cradle->on('render-dialog-page', function ($request, $response) {
     $content = cradle('/app/api')->template('dialog/_page', [
         'page' => $response->getPage(),
         'results' => $response->getResults(),
@@ -193,7 +193,7 @@ $cradle->on('render-dialog-page', function($request, $response) {
  * @param Request $request
  * @param Request $response
  */
-$cradle->on('render-developer-page', function($request, $response) {
+$cradle->on('render-developer-page', function ($request, $response) {
     $content = cradle('/app/api')->template(
         'developer/_page',
         [

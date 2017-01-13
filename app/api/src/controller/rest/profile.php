@@ -29,13 +29,13 @@ $cradle->get('/rest/profile/search', 'profile-search');
  * @param Request $request
  * @param Response $response
  */
-$cradle->post('/rest/profile/update', function($request, $response) {
+$cradle->post('/rest/profile/update', function ($request, $response) {
     //----------------------------//
     // 1. Route Permissions
     $request->setStage('role', 'profile');
     cradle()->trigger('rest-permitted', $request, $response);
 
-    if($response->isError()) {
+    if ($response->isError()) {
         return;
     }
 

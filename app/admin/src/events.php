@@ -13,7 +13,7 @@
  * @param Request $request
  * @param Response $response
  */
-$cradle->on('render-admin-page', function($request, $response) {
+$cradle->on('render-admin-page', function ($request, $response) {
     $content = cradle('/app/admin')->template(
         '_page',
         array(

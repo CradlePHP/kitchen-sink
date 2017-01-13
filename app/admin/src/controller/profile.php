@@ -15,7 +15,7 @@ use Cradle\Module\Utility\File;
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/admin/profile/search', function($request, $response) {
+$cradle->get('/admin/profile/search', function ($request, $response) {
     //----------------------------//
     // 1. Route Permissions
     //only for admin
@@ -23,19 +23,19 @@ $cradle->get('/admin/profile/search', function($request, $response) {
 
     //----------------------------//
     // 2. Prepare Data
-    if(!$request->hasStage('range')) {
+    if (!$request->hasStage('range')) {
         $request->setStage('range', 50);
     }
 
     //filter possible sorting options
     //we do this to prevent SQL injections
-    if(is_array($request->getStage('order'))) {
+    if (is_array($request->getStage('order'))) {
         $sortable = [
             'profile_name'
         ];
 
-        foreach($request->getStage('order') as $key => $direction) {
-            if(!in_array($key, $sortable)) {
+        foreach ($request->getStage('order') as $key => $direction) {
+            if (!in_array($key, $sortable)) {
                 $request->removeStage('order', $key);
             } else if ($direction !== 'ASC' && $direction !== 'DESC') {
                 $request->removeStage('order', $key);
@@ -68,7 +68,7 @@ $cradle->get('/admin/profile/search', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/admin/profile/create', function($request, $response) {
+$cradle->get('/admin/profile/create', function ($request, $response) {
     //----------------------------//
     // 1. Route Permissions
     //only for admin
@@ -82,7 +82,7 @@ $cradle->get('/admin/profile/create', function($request, $response) {
     $config = $this->package('global')->service('s3-main');
     $data['cdn_config'] = File::getS3Client($config);
 
-    if($response->isError()) {
+    if ($response->isError()) {
         $response->setFlash($response->getMessage(), 'danger');
         $data['errors'] = $response->getValidation();
     }
@@ -108,7 +108,7 @@ $cradle->get('/admin/profile/create', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/admin/profile/update/:profile_id', function($request, $response) {
+$cradle->get('/admin/profile/update/:profile_id', function ($request, $response) {
     //----------------------------//
     // 1. Route Permissions
     //only for admin
@@ -119,11 +119,11 @@ $cradle->get('/admin/profile/update/:profile_id', function($request, $response) 
     $data = ['item' => $request->getPost()];
 
     //if no item
-    if(empty($data['item'])) {
+    if (empty($data['item'])) {
         cradle()->trigger('profile-detail', $request, $response);
 
         //can we update ?
-        if($response->isError()) {
+        if ($response->isError()) {
             //add a flash
             cradle('global')->flash($response->getMessage(), 'danger');
             return cradle('global')->redirect('/admin/profile/search');
@@ -132,7 +132,7 @@ $cradle->get('/admin/profile/update/:profile_id', function($request, $response) 
         $data['item'] = $response->getResults();
     }
 
-    if($response->isError()) {
+    if ($response->isError()) {
         $response->setFlash($response->getMessage(), 'danger');
         $data['errors'] = $response->getValidation();
     }
@@ -158,7 +158,7 @@ $cradle->get('/admin/profile/update/:profile_id', function($request, $response) 
  * @param Request $request
  * @param Response $response
  */
-$cradle->post('/admin/profile/create', function($request, $response) {
+$cradle->post('/admin/profile/create', function ($request, $response) {
     //----------------------------//
     // 1. Route Permissions
     //only for admin
@@ -241,7 +241,7 @@ $cradle->post('/admin/profile/create', function($request, $response) {
 
     //----------------------------//
     // 4. Interpret Results
-    if($response->isError()) {
+    if ($response->isError()) {
         return cradle()->triggerRoute('get', '/admin/profile/create', $request, $response);
     }
 
@@ -259,7 +259,7 @@ $cradle->post('/admin/profile/create', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->post('/admin/profile/update/:profile_id', function($request, $response) {
+$cradle->post('/admin/profile/update/:profile_id', function ($request, $response) {
     //----------------------------//
     // 1. Route Permissions
     //only for admin
@@ -343,7 +343,7 @@ $cradle->post('/admin/profile/update/:profile_id', function($request, $response)
 
     //----------------------------//
     // 4. Interpret Results
-    if($response->isError()) {
+    if ($response->isError()) {
         $route = '/admin/profile/update/' . $request->getStage('profile_id');
         return cradle()->triggerRoute('get', $route, $request, $response);
     }
@@ -362,7 +362,7 @@ $cradle->post('/admin/profile/update/:profile_id', function($request, $response)
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/admin/profile/remove/:profile_id', function($request, $response) {
+$cradle->get('/admin/profile/remove/:profile_id', function ($request, $response) {
     //----------------------------//
     // 1. Route Permissions
     //only for admin
@@ -377,7 +377,7 @@ $cradle->get('/admin/profile/remove/:profile_id', function($request, $response) 
 
     //----------------------------//
     // 4. Interpret Results
-    if($response->isError()) {
+    if ($response->isError()) {
         //add a flash
         cradle('global')->flash($response->getMessage(), 'danger');
     } else {
@@ -395,7 +395,7 @@ $cradle->get('/admin/profile/remove/:profile_id', function($request, $response) 
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/admin/profile/restore/:profile_id', function($request, $response) {
+$cradle->get('/admin/profile/restore/:profile_id', function ($request, $response) {
     //----------------------------//
     // 1. Route Permissions
     //only for admin
@@ -410,7 +410,7 @@ $cradle->get('/admin/profile/restore/:profile_id', function($request, $response)
 
     //----------------------------//
     // 4. Interpret Results
-    if($response->isError()) {
+    if ($response->isError()) {
         //add a flash
         cradle('global')->flash($response->getMessage(), 'danger');
     } else {

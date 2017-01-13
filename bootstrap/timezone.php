@@ -1,8 +1,8 @@
 <?php //-->
-return function($request, $response) {
+return function ($request, $response) {
     $settings = $this->package('global')->config('settings');
 
-    if(!isset($settings['server_timezone'])) {
+    if (!isset($settings['server_timezone'])) {
         $settings['server_timezone'] = 'GMT';
     }
 

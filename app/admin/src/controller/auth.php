@@ -13,7 +13,7 @@
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/admin/signup', function($request, $response) {
+$cradle->get('/admin/signup', function ($request, $response) {
     //redirect
     $redirect = urlencode('/admin');
     cradle('global')->redirect('/signup?redirect_uri='.$redirect);
@@ -25,7 +25,7 @@ $cradle->get('/admin/signup', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/admin/login', function($request, $response) {
+$cradle->get('/admin/login', function ($request, $response) {
     //redirect
     $redirect = urlencode('/admin');
     cradle('global')->redirect('/login?redirect_uri='.$redirect);
@@ -37,7 +37,7 @@ $cradle->get('/admin/login', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/admin/account', function($request, $response) {
+$cradle->get('/admin/account', function ($request, $response) {
     //redirect
     $redirect = urlencode('/admin');
     cradle('global')->redirect('/account?redirect_uri='.$redirect);

@@ -32,7 +32,7 @@ class Validator
      */
     public static function getCreateErrors(array $data, array $errors = [])
     {
-        if(!isset($data['profile_name']) || empty($data['profile_name'])) {
+        if (!isset($data['profile_name']) || empty($data['profile_name'])) {
             $errors['profile_name'] = 'Name is required';
         }
 
@@ -49,12 +49,12 @@ class Validator
      */
     public static function getUpdateErrors(array $data, array $errors = [])
     {
-        if(!isset($data['profile_id']) || !is_numeric($data['profile_id'])) {
+        if (!isset($data['profile_id']) || !is_numeric($data['profile_id'])) {
             $errors['profile_id'] = 'Invalid ID';
         }
 
 
-        if(isset($data['profile_name']) && empty($data['profile_name'])) {
+        if (isset($data['profile_name']) && empty($data['profile_name'])) {
             $errors['profile_name'] = 'Name is required';
         }
 
@@ -75,9 +75,9 @@ class Validator
         if (isset($data['profile_image']) && !preg_match(
             '/(^(http|https|ftp):\/\/([A-Z0-9][A-Z0-9_-]'.
             '*(?:.[A-Z0-9][A-Z0-9_-]*)+):?(d+)?\/?)|(^data:image\/[a-z]+;base64,)/i',
-            $data['profile_image'])
+            $data['profile_image']
         )
-        {
+        ) {
             $errors['profile_image'] = 'Should be a valid url';
         }
 
@@ -89,9 +89,10 @@ class Validator
             '[^@,"\[\]\x5c\x00-\x20\x7f-\xff\.]{1,2})|"(?:[^"]|(?<=\x5c)"){1,62}")@(?:(?!.{64})'.
             '(?:[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.?|[a-zA-Z0-9]\.?)+\.(?:xn--[a-zA-Z0-9]'.
             '+|[a-zA-Z]{2,6})|\[(?:[0-1]?\d?\d|2[0-4]\d|25[0-5])(?:\.(?:[0-1]?\d?\d|2[0-4]\d|25'.
-            '[0-5])){3}\])$/', $data['profile_email'])
+            '[0-5])){3}\])$/',
+            $data['profile_email']
         )
-        {
+        ) {
             $errors['profile_email'] = 'Must be a valid email';
         }
 
@@ -99,7 +100,7 @@ class Validator
             $errors['profile_slug'] = 'Slug must only have letters, numbers, dashes';
         }
 
-        if(isset($data['profile_detail']) && str_word_count($data['profile_detail']) <= 10) {
+        if (isset($data['profile_detail']) && str_word_count($data['profile_detail']) <= 10) {
             $errors['profile_detail'] = 'Detail should have more than 10 words';
         }
 

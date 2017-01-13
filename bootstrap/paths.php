@@ -1,5 +1,5 @@
 <?php //-->
-return function($request, $response) {
+return function ($request, $response) {
     $root = dirname(__DIR__);
 
     $paths = [
@@ -28,13 +28,13 @@ return function($request, $response) {
      *
      * @return Package|string|null
      */
-    ->addMethod('path', function($key, $destination = null) use (&$paths) {
-        if(is_string($destination)) {
+    ->addMethod('path', function ($key, $destination = null) use (&$paths) {
+        if (is_string($destination)) {
             $paths[$key] = $destination;
             return $this;
         }
 
-        if(isset($paths[$key])) {
+        if (isset($paths[$key])) {
             return $paths[$key];
         }
 
@@ -48,13 +48,13 @@ return function($request, $response) {
      *
      * @return mixed
      */
-    ->addMethod('config', function($path, $key = null) use (&$cache) {
+    ->addMethod('config', function ($path, $key = null) use (&$cache) {
         //is it already in memory?
-        if(!isset($cache[$path])) {
+        if (!isset($cache[$path])) {
             $config = $this->path('config');
             $file = $config.'/' . $path . '.php';
 
-            if(!file_exists($file)) {
+            if (!file_exists($file)) {
                 $cache[$path] = [];
             } else {
                 //get the data and cache
@@ -62,12 +62,12 @@ return function($request, $response) {
             }
         }
 
-        if(is_null($key)) {
+        if (is_null($key)) {
             //return the data
             return $cache[$path];
         }
 
-        if(!isset($cache[$path][$key])) {
+        if (!isset($cache[$path][$key])) {
             return null;
         }
 

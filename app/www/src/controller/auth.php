@@ -29,7 +29,7 @@ use Cradle\Module\Utility\File;
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/activate/:auth_id/:hash', function($request, $response) {
+$cradle->get('/activate/:auth_id/:hash', function ($request, $response) {
     //get the detail
     cradle()->trigger('auth-detail', $request, $response);
 
@@ -39,7 +39,7 @@ $cradle->get('/activate/:auth_id/:hash', function($request, $response) {
     $hash = md5($authId.$authUpdated);
 
     //check the verification hash
-    if($hash !== $request->getStage('hash')) {
+    if ($hash !== $request->getStage('hash')) {
         cradle('global')->flash('Invalid verification. Try again.', 'danger');
         return cradle('global')->redirect('/verify');
     }
@@ -50,7 +50,7 @@ $cradle->get('/activate/:auth_id/:hash', function($request, $response) {
     //trigger the job
     cradle()->trigger('auth-update', $request, $response);
 
-    if($response->isError()) {
+    if ($response->isError()) {
         cradle('global')->flash('Invalid verification. Try again.', 'danger');
         return cradle('global')->redirect('/verify');
     }
@@ -76,7 +76,7 @@ $cradle->get('/activate/:auth_id/:hash', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/signup', function($request, $response) {
+$cradle->get('/signup', function ($request, $response) {
     //Prepare body
     $data = ['item' => $request->getPost()];
 
@@ -88,8 +88,8 @@ $cradle->get('/signup', function($request, $response) {
     cradle()->trigger('captcha-load', $request, $response);
     $data['captcha'] = $response->getResults('captcha');
 
-    if($response->isError()) {
-        if($response->getValidation('auth_slug')) {
+    if ($response->isError()) {
+        if ($response->getValidation('auth_slug')) {
             $message = $response->getValidation('auth_slug');
             $response->addValidation('profile_email', $message);
         }
@@ -118,7 +118,7 @@ $cradle->get('/signup', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/login', function($request, $response) {
+$cradle->get('/login', function ($request, $response) {
     //Prepare body
     $data = ['item' => $request->getPost()];
 
@@ -127,7 +127,7 @@ $cradle->get('/login', function($request, $response) {
     $data['csrf'] = $response->getResults('csrf');
 
 
-    if($response->isError()) {
+    if ($response->isError()) {
         $response->setFlash($response->getMessage(), 'danger');
 
         $data['errors'] = $response->getValidation();
@@ -153,7 +153,7 @@ $cradle->get('/login', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/logout', function($request, $response) {
+$cradle->get('/logout', function ($request, $response) {
     //TODO: Sessions for clusters
     unset($_SESSION['me']);
 
@@ -162,7 +162,7 @@ $cradle->get('/logout', function($request, $response) {
 
     //redirect
     $redirect = '/';
-    if($request->hasGet('redirect_uri')) {
+    if ($request->hasGet('redirect_uri')) {
         $redirect = $request->getGet('redirect_uri');
     }
 
@@ -175,7 +175,7 @@ $cradle->get('/logout', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/account', function($request, $response) {
+$cradle->get('/account', function ($request, $response) {
     //Need to be logged in
     cradle('global')->requireLogin();
 
@@ -191,12 +191,12 @@ $cradle->get('/account', function($request, $response) {
     $data['csrf'] = $response->getResults('csrf');
 
     //If no post
-    if(!$request->hasPost('profile_name')) {
+    if (!$request->hasPost('profile_name')) {
         //set default data
         $data['item'] = $request->getSession('me');
     }
 
-    if($response->isError()) {
+    if ($response->isError()) {
         $response->setFlash($response->getMessage(), 'danger');
         $data['errors'] = $response->getValidation();
     }
@@ -229,7 +229,7 @@ $cradle->get('/account', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/forgot', function($request, $response) {
+$cradle->get('/forgot', function ($request, $response) {
     //Prepare body
     $data = ['item' => $request->getPost()];
 
@@ -237,7 +237,7 @@ $cradle->get('/forgot', function($request, $response) {
     cradle()->trigger('csrf-load', $request, $response);
     $data['csrf'] = $response->getResults('csrf');
 
-    if($response->isError()) {
+    if ($response->isError()) {
         $response->setFlash($response->getMessage(), 'danger');
         $data['errors'] = $response->getValidation();
     }
@@ -270,7 +270,7 @@ $cradle->get('/forgot', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/recover/:auth_id/:hash', function($request, $response) {
+$cradle->get('/recover/:auth_id/:hash', function ($request, $response) {
     //get the detail
     cradle()->trigger('auth-detail', $request, $response);
 
@@ -280,7 +280,7 @@ $cradle->get('/recover/:auth_id/:hash', function($request, $response) {
     $hash = md5($authId.$authUpdated);
 
     //check the verification hash
-    if($hash !== $request->getStage('hash')) {
+    if ($hash !== $request->getStage('hash')) {
         cradle('global')->flash('Invalid verification. Try again.', 'danger');
         return cradle('global')->redirect('/verify');
     }
@@ -292,7 +292,7 @@ $cradle->get('/recover/:auth_id/:hash', function($request, $response) {
     cradle()->trigger('csrf-load', $request, $response);
     $data['csrf'] = $response->getResults('csrf');
 
-    if($response->isError()) {
+    if ($response->isError()) {
         $response->setFlash($response->getMessage(), 'danger');
         $data['errors'] = $response->getValidation();
     }
@@ -324,7 +324,7 @@ $cradle->get('/recover/:auth_id/:hash', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/verify', function($request, $response) {
+$cradle->get('/verify', function ($request, $response) {
     //Prepare body
     $data = ['item' => $request->getPost()];
 
@@ -332,7 +332,7 @@ $cradle->get('/verify', function($request, $response) {
     cradle()->trigger('csrf-load', $request, $response);
     $data['csrf'] = $response->getResults('csrf');
 
-    if($response->isError()) {
+    if ($response->isError()) {
         $response->setFlash($response->getMessage(), 'danger');
         $data['errors'] = $response->getValidation();
     }
@@ -357,14 +357,14 @@ $cradle->get('/verify', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->post('/account', function($request, $response) {
+$cradle->post('/account', function ($request, $response) {
     //need to be online
     cradle('global')->requireLogin();
 
     //csrf check
     cradle()->trigger('csrf-validate', $request, $response);
 
-    if($response->isError()) {
+    if ($response->isError()) {
         return cradle()->triggerRoute('get', '/account', $request, $response);
     }
 
@@ -374,18 +374,18 @@ $cradle->post('/account', function($request, $response) {
     $request->setStage('permission', $request->getSession('me', 'profile_id'));
 
     //remove password if empty
-    if(!$request->getStage('auth_password')) {
+    if (!$request->getStage('auth_password')) {
         $request->removeStage('auth_password');
     }
 
-    if(!$request->getStage('confirm')) {
+    if (!$request->getStage('confirm')) {
         $request->removeStage('confirm');
     }
 
     //trigger the job
     cradle()->trigger('auth-update', $request, $response);
 
-    if($response->isError()) {
+    if ($response->isError()) {
         return cradle()->triggerRoute('get', '/account', $request, $response);
     }
 
@@ -399,7 +399,7 @@ $cradle->post('/account', function($request, $response) {
 
     //redirect
     $redirect = '/';
-    if($request->hasGet('redirect_uri')) {
+    if ($request->hasGet('redirect_uri')) {
         $redirect = $request->getGet('redirect_uri');
     }
 
@@ -412,19 +412,20 @@ $cradle->post('/account', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->post('/login', function($request, $response) {
+$cradle->post('/login', function ($request, $response) {
     //csrf check
     cradle()->trigger('csrf-validate', $request, $response);
 
-    if($response->isError()) {
+    if ($response->isError()) {
         return cradle()->triggerRoute('get', '/login', $request, $response);
     }
 
     //call the job
     cradle()->trigger('auth-login', $request, $response);
 
-    if($response->isError()) {
-        return cradle()->triggerRoute('get', '/login', $request, $response);;
+    if ($response->isError()) {
+        return cradle()->triggerRoute('get', '/login', $request, $response);
+        ;
     }
 
     //it was good
@@ -434,12 +435,12 @@ $cradle->post('/login', function($request, $response) {
     $_SESSION['me'] = $response->getResults();
 
     //redirect
-    if($request->hasGet('redirect')) {
+    if ($request->hasGet('redirect')) {
         return cradle('global')->redirect($request->getGet('redirect'));
     }
 
     $redirect = '/';
-    if($request->hasGet('redirect_uri')) {
+    if ($request->hasGet('redirect_uri')) {
         $redirect = $request->getGet('redirect_uri');
     }
 
@@ -460,18 +461,18 @@ $cradle->post('/login', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->post('/forgot', function($request, $response) {
+$cradle->post('/forgot', function ($request, $response) {
     //csrf check
     cradle()->trigger('csrf-validate', $request, $response);
 
-    if($response->isError()) {
+    if ($response->isError()) {
         return cradle()->triggerRoute('get', '/forgot', $request, $response);
     }
 
     //trigger the job
     cradle()->trigger('auth-forgot', $request, $response);
 
-    if($response->isError()) {
+    if ($response->isError()) {
         return cradle()->triggerRoute('get', '/forgot', $request, $response);
     }
 
@@ -494,7 +495,7 @@ $cradle->post('/forgot', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->post('/recover/:auth_id/:hash', function($request, $response) {
+$cradle->post('/recover/:auth_id/:hash', function ($request, $response) {
     //get the detail
     cradle()->trigger('auth-detail', $request, $response);
 
@@ -504,7 +505,7 @@ $cradle->post('/recover/:auth_id/:hash', function($request, $response) {
     $hash = md5($authId.$authUpdated);
 
     //check the recovery hash
-    if($hash !== $request->getStage('hash')) {
+    if ($hash !== $request->getStage('hash')) {
         cradle('global')->flash('This recovery page is expired. Please try again.', 'danger');
         return cradle('global')->redirect('/forgot');
     }
@@ -512,7 +513,7 @@ $cradle->post('/recover/:auth_id/:hash', function($request, $response) {
     //csrf check
     cradle()->trigger('csrf-validate', $request, $response);
 
-    if($response->isError()) {
+    if ($response->isError()) {
         $redirect = '/recover/' . $authId . '/' . $hash;
         return cradle()->triggerRoute('get', $redirect, $request, $response);
     }
@@ -520,7 +521,7 @@ $cradle->post('/recover/:auth_id/:hash', function($request, $response) {
     //trigger the job
     cradle()->trigger('auth-recover', $request, $response);
 
-    if($response->isError()) {
+    if ($response->isError()) {
         $redirect = '/recover/' . $authId . '/' . $hash;
         return cradle()->triggerRoute('get', $redirect, $request, $response);
     }
@@ -546,23 +547,23 @@ $cradle->post('/recover/:auth_id/:hash', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->post('/signup', function($request, $response) {
+$cradle->post('/signup', function ($request, $response) {
     //csrf check
     cradle()->trigger('csrf-validate', $request, $response);
 
-    if($response->isError()) {
+    if ($response->isError()) {
         return cradle()->triggerRoute('get', '/signup', $request, $response);
     }
 
     //captcha check
     cradle()->trigger('captcha-validate', $request, $response);
 
-    if($response->isError()) {
+    if ($response->isError()) {
         return cradle()->triggerRoute('get', '/signup', $request, $response);
     }
 
     //set defaults
-    if(!$request->hasStage('auth_permissions')) {
+    if (!$request->hasStage('auth_permissions')) {
         $request->setStage('auth_permissions', [
             'public_profile',
             'personal_profile'
@@ -572,7 +573,7 @@ $cradle->post('/signup', function($request, $response) {
     //trigger the job
     cradle()->trigger('auth-create', $request, $response);
 
-    if($response->isError()) {
+    if ($response->isError()) {
         return cradle()->triggerRoute('get', '/signup', $request, $response);
     }
 
@@ -598,18 +599,18 @@ $cradle->post('/signup', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->post('/verify', function($request, $response) {
+$cradle->post('/verify', function ($request, $response) {
     //csrf check
     cradle()->trigger('csrf-validate', $request, $response);
 
-    if($response->isError()) {
+    if ($response->isError()) {
         return cradle()->triggerRoute('get', '/verify', $request, $response);
     }
 
     //trigger the job
     cradle()->trigger('auth-verify', $request, $response);
 
-    if($response->isError()) {
+    if ($response->isError()) {
         return cradle()->triggerRoute('get', '/verify', $request, $response);
     }
 

@@ -20,8 +20,8 @@ $cradle->package('/app/api')->addMethod('template', function (
     $path,
     array $data = [],
     $partials = []
-)
-{
+) {
+
     // get the root directory
     $root = __DIR__ . '/../template/';
 
@@ -29,7 +29,7 @@ $cradle->package('/app/api')->addMethod('template', function (
     $handlebars = cradle('global')->handlebars();
 
     // check for partials
-    if(!is_array($partials)) {
+    if (!is_array($partials)) {
         $partials = [$partials];
     }
 
@@ -38,7 +38,7 @@ $cradle->package('/app/api')->addMethod('template', function (
         //Sample: flash => _flash
         $file = str_replace('_', '/_', $partial) . '.html';
 
-        if(strpos($file, '_') === false) {
+        if (strpos($file, '_') === false) {
             $file = '_' . $file;
         }
 

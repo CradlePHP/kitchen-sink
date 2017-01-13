@@ -36,10 +36,10 @@ class Service implements ServiceInterface
      */
     public static function get($name, $key = 'main')
     {
-        if(in_array($name, ['sql', 'redis', 'elastic'])) {
+        if (in_array($name, ['sql', 'redis', 'elastic'])) {
             $resource = cradle()->package('global')->service($name . '-' . $key);
 
-            if($resource) {
+            if ($resource) {
                 if ($name === 'sql') {
                     return new SqlService($resource);
                 }

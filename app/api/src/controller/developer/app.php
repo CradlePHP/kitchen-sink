@@ -13,7 +13,7 @@
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/developer/app/search', function($request, $response) {
+$cradle->get('/developer/app/search', function ($request, $response) {
     //----------------------------//
     // 1. Route Permissions
     //for logged in
@@ -51,7 +51,7 @@ $cradle->get('/developer/app/search', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/developer/app/create', function($request, $response) {
+$cradle->get('/developer/app/create', function ($request, $response) {
     //----------------------------//
     // 1. Route Permissions
     //for logged in
@@ -65,7 +65,7 @@ $cradle->get('/developer/app/create', function($request, $response) {
     cradle()->trigger('csrf-load', $request, $response);
     $data['csrf'] = $response->getResults('csrf');
 
-    if($response->isError()) {
+    if ($response->isError()) {
         $response->setFlash($response->getMessage(), 'danger');
         $data['errors'] = $response->getValidation();
     }
@@ -91,7 +91,7 @@ $cradle->get('/developer/app/create', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/developer/app/update/:app_id', function($request, $response) {
+$cradle->get('/developer/app/update/:app_id', function ($request, $response) {
     //----------------------------//
     // 1. Route Permissions
     //for logged in
@@ -106,14 +106,14 @@ $cradle->get('/developer/app/update/:app_id', function($request, $response) {
     $data['csrf'] = $response->getResults('csrf');
 
     //if no item
-    if(empty($data['item'])) {
+    if (empty($data['item'])) {
         //get the detail with permission
         $permission = $request->getSession('me', 'profile_id');
         $request->setStage('permission', $permission);
         cradle()->trigger('app-detail', $request, $response);
 
         //can we update ?
-        if($response->isError()) {
+        if ($response->isError()) {
             //add a flash
             cradle('global')->flash($response->getMessage(), 'danger');
             return cradle('global')->redirect('/developer/app/search');
@@ -122,7 +122,7 @@ $cradle->get('/developer/app/update/:app_id', function($request, $response) {
         $data['item'] = $response->getResults();
     }
 
-    if($response->isError()) {
+    if ($response->isError()) {
         $response->setFlash($response->getMessage(), 'danger');
         $data['errors'] = $response->getValidation();
     }
@@ -148,7 +148,7 @@ $cradle->get('/developer/app/update/:app_id', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->post('/developer/app/create', function($request, $response) {
+$cradle->post('/developer/app/create', function ($request, $response) {
     //----------------------------//
     // 1. Route Permissions
     //for logged in
@@ -157,7 +157,7 @@ $cradle->post('/developer/app/create', function($request, $response) {
     //csrf check
     cradle()->trigger('csrf-validate', $request, $response);
 
-    if($response->isError()) {
+    if ($response->isError()) {
         return cradle()->triggerRoute('get', '/developer/app/create', $request, $response);
     }
 
@@ -170,7 +170,7 @@ $cradle->post('/developer/app/create', function($request, $response) {
     //flatten permissions
     $permissions = $request->getStage('app_permissions');
 
-    if(!$permissions) {
+    if (!$permissions) {
         $request->setStage('app_permissions', []);
     }
 
@@ -180,7 +180,7 @@ $cradle->post('/developer/app/create', function($request, $response) {
 
     //----------------------------//
     // 4. Interpret Results
-    if($response->isError()) {
+    if ($response->isError()) {
         return cradle()->triggerRoute('get', '/developer/app/create', $request, $response);
     }
 
@@ -198,7 +198,7 @@ $cradle->post('/developer/app/create', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->post('/developer/app/update/:app_id', function($request, $response) {
+$cradle->post('/developer/app/update/:app_id', function ($request, $response) {
     //----------------------------//
     // 1. Route Permissions
     //for logged in
@@ -207,7 +207,7 @@ $cradle->post('/developer/app/update/:app_id', function($request, $response) {
     //csrf check
     cradle()->trigger('csrf-validate', $request, $response);
 
-    if($response->isError()) {
+    if ($response->isError()) {
         $route = '/developer/app/update/' . $request->getStage('app_id');
         return cradle()->triggerRoute('get', $route, $request, $response);
     }
@@ -221,7 +221,7 @@ $cradle->post('/developer/app/update/:app_id', function($request, $response) {
     //flatten permissions
     $permissions = $request->getStage('app_permissions');
 
-    if(!$permissions) {
+    if (!$permissions) {
         $request->setStage('app_permissions', []);
     }
 
@@ -231,7 +231,7 @@ $cradle->post('/developer/app/update/:app_id', function($request, $response) {
 
     //----------------------------//
     // 4. Interpret Results
-    if($response->isError()) {
+    if ($response->isError()) {
         $route = '/developer/app/update/' . $request->getStage('app_id');
         return cradle()->triggerRoute('get', $route, $request, $response);
     }
@@ -250,7 +250,7 @@ $cradle->post('/developer/app/update/:app_id', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/developer/app/remove/:app_id', function($request, $response) {
+$cradle->get('/developer/app/remove/:app_id', function ($request, $response) {
     //----------------------------//
     // 1. Route Permissions
     //for logged in
@@ -259,7 +259,7 @@ $cradle->get('/developer/app/remove/:app_id', function($request, $response) {
     //csrf check
     cradle()->trigger('csrf-validate', $request, $response);
 
-    if($response->isError()) {
+    if ($response->isError()) {
         cradle('global')->flash($response->getMessage(), 'danger');
         return cradle('global')->redirect('/developer/app/search');
     }
@@ -276,7 +276,7 @@ $cradle->get('/developer/app/remove/:app_id', function($request, $response) {
 
     //----------------------------//
     // 4. Interpret Results
-    if($response->isError()) {
+    if ($response->isError()) {
         //add a flash
         cradle('global')->flash($response->getMessage(), 'danger');
     } else {
@@ -294,7 +294,7 @@ $cradle->get('/developer/app/remove/:app_id', function($request, $response) {
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/developer/app/refresh/:app_id', function($request, $response) {
+$cradle->get('/developer/app/refresh/:app_id', function ($request, $response) {
     //----------------------------//
     // 1. Route Permissions
     //for logged in
@@ -303,7 +303,7 @@ $cradle->get('/developer/app/refresh/:app_id', function($request, $response) {
     //csrf check
     cradle()->trigger('csrf-validate', $request, $response);
 
-    if($response->isError()) {
+    if ($response->isError()) {
         cradle('global')->flash($response->getMessage(), 'danger');
         return cradle('global')->redirect('/developer/app/search');
     }
@@ -320,7 +320,7 @@ $cradle->get('/developer/app/refresh/:app_id', function($request, $response) {
 
     //----------------------------//
     // 4. Interpret Results
-    if($response->isError()) {
+    if ($response->isError()) {
         //add a flash
         cradle('global')->flash($response->getMessage(), 'danger');
     } else {

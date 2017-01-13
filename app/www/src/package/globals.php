@@ -14,20 +14,20 @@
  * @param Response $response
  * @param Throwable $error
  */
-$cradle->error(function($request, $response, $error) {
+$cradle->error(function ($request, $response, $error) {
     return;
     //if this error has already been handled
-    if($response->hasContent()) {
+    if ($response->hasContent()) {
         return;
     }
 
     //if it was a call for an actual file
     $path = $request->getPath('string');
-    if(preg_match('/\.[a-zA-Z0-9]{1,4}$/', $path)) {
+    if (preg_match('/\.[a-zA-Z0-9]{1,4}$/', $path)) {
         return;
     }
 
-    if($response->getCode() === 404) {
+    if ($response->getCode() === 404) {
         $body = cradle()->package('/app/www')->template('404');
         $class = 'page-404 page-error';
         $title = cradle('global')->translate('Oops...');
@@ -44,7 +44,7 @@ $cradle->error(function($request, $response, $error) {
     }
 
     $config = cradle('global')->config('settings');
-    if($config['environment'] === 'production' && $response->getCode() === 500) {
+    if ($config['environment'] === 'production' && $response->getCode() === 500) {
         $body = cradle()->package('/app/www')->template('500');
         $class = 'page-500 page-error';
         $title = cradle('global')->translate('Error');
@@ -57,16 +57,15 @@ $cradle->error(function($request, $response, $error) {
 
         $this->trigger('render-web-page', $request, $response);
 
-        if(!isset($config['error_email'])
+        if (!isset($config['error_email'])
             || $config['error_email'] === '<EMAIL ADDRESS>'
-        )
-        {
+        ) {
             return true;
         }
 
         $service = cradle('global')->service('mail-main');
 
-        if(!$service) {
+        if (!$service) {
             return true;
         }
 

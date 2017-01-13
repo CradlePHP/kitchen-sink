@@ -1,22 +1,22 @@
 <?php //-->
-return function($request, $response) {
+return function ($request, $response) {
     $config = $this->package('global')->config('settings');
 
-    if(!isset($config['debug_mode'])) {
+    if (!isset($config['debug_mode'])) {
         $config['debug_mode'] = 0;
     }
 
     $mode = $config['debug_mode'];
 
     //this happens on an error
-    $this->error(function($request, $response, $error) use ($mode) {
+    $this->error(function ($request, $response, $error) use ($mode) {
         //if this error has already been handled
-        if($response->hasContent()) {
+        if ($response->hasContent()) {
             return;
         }
 
         //prevent nice errors in cli mode
-        if(php_sapi_name() === 'cli') {
+        if (php_sapi_name() === 'cli') {
             throw $error;
             return false;
         }
@@ -24,16 +24,16 @@ return function($request, $response) {
         $detail = !!$mode;
         $type = $response->getHeaders('Content-Type');
 
-        if(!$type) {
+        if (!$type) {
             $type = 'text/plain';
             $response->setHeaders('Content-Type', $type);
         }
 
-        switch(true) {
+        switch (true) {
             case strpos($type, 'html') !== false:
                 $message = 'A Server Error occurred';
 
-                if(!$detail) {
+                if (!$detail) {
                     $body = '<h1>' . $message . '</h1>';
                     break;
                 }
@@ -57,7 +57,7 @@ return function($request, $response) {
             case strpos($type, 'json') !== false:
                 $message = 'A Server Error occurred';
 
-                if(!$detail) {
+                if (!$detail) {
                     $body = json_encode(
                         [
                             'error' => true,
@@ -89,7 +89,7 @@ return function($request, $response) {
             default:
                 $message = 'A Server Error occurred';
 
-                if(!$detail) {
+                if (!$detail) {
                     $body = $message;
                     break;
                 }

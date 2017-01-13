@@ -54,7 +54,7 @@ $cradle->on('profile-create', function ($request, $response) {
         $data['profile_image'] = File::base64ToUpload($data['profile_image'], $upload);
     }
 
-    if(isset($data['profile_birth'])) {
+    if (isset($data['profile_birth'])) {
         $data['profile_birth'] = date('Y-m-d', strtotime($data['profile_birth']));
     }
 
@@ -351,7 +351,7 @@ $cradle->on('profile-update', function ($request, $response) {
         $data['profile_image'] = File::base64ToUpload($data['profile_image'], $upload);
     }
 
-    if(isset($data['profile_birth'])) {
+    if (isset($data['profile_birth'])) {
         $data['profile_birth'] = date('Y-m-d', strtotime($data['profile_birth']));
     }
 

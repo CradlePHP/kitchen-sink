@@ -6,7 +6,7 @@
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/', function($request, $response) {
+$cradle->get('/', function ($request, $response) {
     //Prepare body
     $data = [];
 

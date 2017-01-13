@@ -72,7 +72,7 @@ class SqlService extends AbstractSqlService implements SqlServiceInterface
 
         $results = $search->getRow();
 
-        if(!$results) {
+        if (!$results) {
             return $results;
         }
 
@@ -161,9 +161,12 @@ class SqlService extends AbstractSqlService implements SqlServiceInterface
                 $or = [];
                 $where = [];
                 $where[] = 'LOWER(profile_name) LIKE %s';
-                $or[] = '%' . strtolower($keyword) . '%';$where[] = 'LOWER(profile_email) LIKE %s';
-                $or[] = '%' . strtolower($keyword) . '%';$where[] = 'LOWER(profile_phone) LIKE %s';
-                $or[] = '%' . strtolower($keyword) . '%';$where[] = 'LOWER(profile_detail) LIKE %s';
+                $or[] = '%' . strtolower($keyword) . '%';
+                $where[] = 'LOWER(profile_email) LIKE %s';
+                $or[] = '%' . strtolower($keyword) . '%';
+                $where[] = 'LOWER(profile_phone) LIKE %s';
+                $or[] = '%' . strtolower($keyword) . '%';
+                $where[] = 'LOWER(profile_detail) LIKE %s';
                 $or[] = '%' . strtolower($keyword) . '%';
                 array_unshift($or, '(' . implode(' OR ', $where) . ')');
 
@@ -179,8 +182,7 @@ class SqlService extends AbstractSqlService implements SqlServiceInterface
 
         $rows = $search->getRows();
 
-        foreach($rows as $i => $results) {
-            
+        foreach ($rows as $i => $results) {
             $rows[$i] = $results;
         }
 
