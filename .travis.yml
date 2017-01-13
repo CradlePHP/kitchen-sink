@@ -1,24 +1,24 @@
 language: php
 branches:
   only:
-    - v6
+    - master
 php:
-  - 5.6
   - 7.0
   - 7.1
 services:
   - mysql
   - redis-server
-  - elasticsearch
+  #- elasticsearch
 before_install:
   - sudo apt-get update
   #DEPLOY KEY
   #SEE: https://gist.github.com/cblanquera/3ff60b4c9afc92be1ac0a9d57afceb17#file-instructions-md
-  - openssl aes-256-cbc -K $encrypted_7cad948dbd62_key -iv $encrypted_7cad948dbd62_iv
-    -in travis_rsa.enc -out /tmp/travis_rsa -d
-  - chmod 600 /tmp/travis_rsa
+  #- openssl aes-256-cbc -K $encrypted_7cad948dbd62_key -iv $encrypted_7cad948dbd62_iv
+    #-in travis_rsa.enc -out /tmp/travis_rsa -d
+  #- chmod 600 /tmp/travis_rsa
+  #ELASTIC
+  #- curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.1.1.deb && sudo dpkg -i --force-confnew elasticsearch-5.1.1.deb && sudo service elasticsearch restart
 install:
-  - pear install pear/PHP_CodeSniffer
   - phpenv rehash
 sudo: required
 before_script:
@@ -44,12 +44,12 @@ before_script:
   #PHANTOM
   - bin/phantomjs --webdriver=4444 >/dev/null 2>&1 &
 script:
-  - bin/codecept run unit -c ./app/core
+  - bin/phpunit
+  - bin/phpcs
   - bin/codecept run -c ./app/www
+  - bin/codecept run -c ./app/admin
 #deploy:
 #  provider: script
-#  script: "./bin/cradle app/core deploy-production;./bin/cradle app/core deploy-cdn"
+#  script: "./bin/cradle faucet deploy-production;./bin/cradle faucet deploy-cdn"
 #  on:
-#    branch: v6
-notifications:
-  slack: openovate:Kz0BdrOZJmiy6BAoGKsNmcnv
+#    branch: master
