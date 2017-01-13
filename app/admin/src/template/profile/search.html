@@ -4,8 +4,8 @@
     <!-- START: SEARCH FORM -->
     <form class="pull-right search form-inline" method="get">
         <div class="form-group">
-            <input name="q" placeholder="Search" type="text"
-            value="{{q}}" class="form-control" />
+            <input name="q[]" placeholder="Search" type="text"
+            value="{{q.0}}" class="form-control" />
         </div>
         <button class="btn"><i class="fa fa-search"></i></button>
     </form>
@@ -66,7 +66,7 @@
                                     {{profile_phone}}
                                 </td>
                                 <td>
-                                    
+
                                 </td>
                             </tr>
                             {{/each}}
