@@ -58,7 +58,7 @@ abstract class AbstractElasticService
     {
         $body = $this->sql->get($id);
 
-        if ($body === false) {
+        if (!is_array($body) || empty($body)) {
             return false;
         }
 
@@ -148,7 +148,7 @@ abstract class AbstractElasticService
     {
         $body = $this->sql->get($id);
 
-        if ($body === false) {
+        if (!is_array($body) || empty($body)) {
             return false;
         }
 
