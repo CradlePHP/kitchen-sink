@@ -22,7 +22,7 @@ return function ($request, $response) {
     ->addMethod('service', function ($name) {
         static $services = null;
 
-        if (is_array($name)) {
+        if (is_array($name) || is_null($name)) {
             $services = $name;
             return $this;
         }
