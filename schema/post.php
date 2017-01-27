@@ -272,6 +272,17 @@ return [
                 'parameters' => 'F d, y g:iA'
             ]
         ],
+        'post_flag' => [
+            'sql' => [
+                'type' => 'int',
+                'length' => 1,
+                'default' => 0,
+                'attribute' => 'unsigned'
+            ],
+            'elastic' => [
+                'type' => 'integer'
+            ]
+        ]
     ],
     'fixtures' => [
         [

@@ -26,8 +26,8 @@ return function ($request, $response) {
     $handlebars->registerHelper('word_length', function ($value, $length) {
         if (str_word_count($value, 0) > $length) {
             $words = str_word_count($value, 2);
-            $position = array_keys($value);
-            $value = substr($text, 0, $position[$length]);
+            $position = array_keys($words);
+            $value = substr($value, 0, $position[$length]);
         }
 
         return $value;
