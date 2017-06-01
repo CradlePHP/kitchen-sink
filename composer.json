@@ -16,8 +16,7 @@
         "squizlabs/php_codesniffer": "~2.6"
     },
     "require": {
-        "cradlephp/packages": "dev-master",
-        "cradlephp/command-line": "dev-master",
+        "cradlephp/packages": "1.1.2",
         "cradlephp/sink-faucet": "dev-master",
         "cblanquera/cradle-captcha": "dev-master",
         "cblanquera/cradle-csrf": "dev-master",
