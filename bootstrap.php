@@ -15,6 +15,11 @@ return cradle()
     ->preprocess(include('bootstrap/i18n.php'))
     ->preprocess(include('bootstrap/handlebars.php'))
 
+    ->on('foobar', function($req, $res) {
+        echo 'in';
+        print_r($req->getStage());
+    })
+
     //add packages here
     ->register('cblanquera/cradle-handlebars')
     ->register('cblanquera/cradle-queue')

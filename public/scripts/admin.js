@@ -350,6 +350,70 @@ jQuery(function($) {
         });
 
         /**
+         * File Field
+         * HTML config for single files
+         * data-do="file-field"
+         * data-name="post_files"
+         *
+         * HTML config for multiple files
+         * data-do="file-field"
+         * data-name="post_files"
+         * data-multiple="1"
+         */
+        $(window).on('file-field-init', function(e, target) {
+            //current
+            var container = $(target);
+
+            //get meta data
+
+            //for hidden fields
+            var name = container.attr('data-name');
+
+            //for file field
+            var multiple = container.attr('data-multiple');
+            var classes = container.attr('data-class');
+
+            //make a file
+            var file = $('<input type="file" />').prependTo(target);
+
+            if(multiple) {
+                file.attr('multiple', 'multiple');
+            }
+
+            var generate = function(file, name) {
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function () {
+                    //create input tags
+                    $('<input type="hidden" />')
+                        .attr('name', name)
+                        .val(reader.result)
+                        .appendTo(target);
+                };
+
+            };
+
+            file.change(function() {
+                if(!this.files || !this.files[0]) {
+                    return;
+                }
+
+                //remove all
+                $('input[type="hidden"]', target).remove();
+
+                for(var path = '', i = 0; i < this.files.length; i++, path = '') {
+                    if(multiple) {
+                        path = '[' + i + ']' + path;
+                    }
+
+                    path = name + path;
+
+                    generate(this.files[i], path);
+                }
+            });
+        });
+
+        /**
          * Direct CDN Upload
          */
         $(window).on('cdn-upload-submit', function(e, target) {
