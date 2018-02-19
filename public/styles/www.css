@@ -238,23 +238,23 @@ input, select, button, a.btn {
     width: 145px;
 }
 
-.auth-form .panel {
+.auth-form .card {
     border: 0;
     border-radius: 0;
     margin: auto;
     width: 350px;
 }
 
-.auth-form .panel-heading {
+.auth-form .card-header {
     background: none;
     border: none;
 }
 
-.auth-form .panel-body {
+.auth-form .card-block {
     font-size: 12px;
 }
 
-.auth-form .panel-title {
+.auth-form .card-title {
     color: #45A9D9;
     font-size: 18px;
     font-weight: 100;
@@ -344,4 +344,30 @@ input, select, button, a.btn {
     margin-top: 40px;
     max-width: 680px;
     padding: 20px;
+}
+
+/* Custom 
+----------------------- */
+.navbar.navbar-light {
+    border: 1px solid #e7e7e7;
+}
+
+.hide {
+    display: none;
+}
+
+.wrapper {
+    background: #fff;
+}
+
+.clearfix {
+  &::after {
+    display: block;
+    content: "";
+    clear: both;
+  }
+}
+
+.full-width {
+    width: 100%;
 }

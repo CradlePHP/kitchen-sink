@@ -331,3 +331,33 @@ body > .wrapper { background-color: #FFFFFF; }
     color: #006699;
     cursor: pointer;
 }
+
+/* custom
+----------------------------*/
+.navbar.navbar-light {
+    border: 1px solid #e7e7e7;
+}
+
+.hide {
+    display: none;
+}
+
+.wrapper {
+    background: #fff;
+}
+
+.clearfix {
+  &::after {
+    display: block;
+    content: "";
+    clear: both;
+  }
+}
+
+.full-width {
+    width: 100%;
+}
+
+.navbar-nav a {
+    color: #777 !important;
+}
