@@ -1,0 +1,19 @@
+{
+  "name": "cradle",
+  "version": "1.0.0",
+  "main": "public/index.php",
+  "repository": "https://github.com/cradlephp/kitchen-sink",
+  "author": "<clark@dev-engine.net>",
+  "license": "MIT",
+  "dependencies": {
+    "fontawesome5-webfont": "^5.0.4",
+    "jquery": "3.1.0",
+    "opensans-npm-webfont": "^1.0.0"
+  },
+  "devDependencies": {
+    "bootstrap": "4.0.0-alpha.6"
+  },
+  "scripts": {
+    "build": "yarn install --modules-folder ./public/components"
+  }
+}
