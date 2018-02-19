@@ -2,7 +2,6 @@ composer.phar
 /vendor/
 /bin/
 public/upload
-public/bower_components
 public/components
 config/services.php
 config/settings.php
