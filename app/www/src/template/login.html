@@ -10,21 +10,21 @@
     </div>
     <!-- END: Website Logo -->
     <!-- START: Auth Login Panel -->
-    <div class="panel panel-default" >
+    <div class="card card-default" >
         <!-- START: Panel Head -->
-        <div class="panel-heading">
-            <div class="panel-title">{{_ 'Login'}}</div>
+        <div class="card-header">
+            <div class="card-title">{{_ 'Login'}}</div>
         </div>
         <!-- END: Panel Head -->
         <!-- START: Panel Body -->
-        <div class="panel-body" >
+        <div class="card-block" >
             <div class="panel-section">
                 <!-- START: Auth Login Form -->
                 <form method="post">
                     <!-- START: Auth Slug -->
                     <div class="form-group{{#if errors.auth_slug}} has-error{{/if}}">
                         <div class="input-group">
-                            <span class="input-group-addon"><i class = "fa fa-envelope"></i></span>
+                            <span class="input-group-addon"><i class = "fas fa-envelope"></i></span>
                             <input type="email" name="auth_slug" placeholder="{{_ 'Email'}}" class="form-control" value="{{item.auth_slug}}" />
                         </div>
                         {{#if errors.auth_slug}}
@@ -35,7 +35,7 @@
                     <!-- START: Auth Password -->
                     <div class="form-group{{#if errors.auth_password}} has-error{{/if}}">
                         <div class="input-group">
-                            <span class="input-group-addon"><i class = "fa fa-lock"></i></span>
+                            <span class="input-group-addon"><i class="fas fa-lock"></i></span>
                             <input type="password" name="auth_password" placeholder ="{{_ 'Password'}}" class="form-control" value="{{item.auth_password}}" />
                         </div>
                         {{#if errors.auth_password}}
@@ -44,7 +44,7 @@
                     </div>
                     <!-- END: Auth Password -->
                     <!-- START: Forgot Password -->
-                    <div class="form-group pull-right">
+                    <div class="form-group float-right">
                         <a title="Forgot Password" href="/forgot?{{toquery}}">{{_ 'Forgot password'}}</a>
                     </div>
                     <!-- END: Forgot Password -->

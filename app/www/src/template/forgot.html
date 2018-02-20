@@ -10,14 +10,14 @@
     </div>
     <!-- END: Website Logo -->
     <!-- START: Auth Forgot Panel -->
-    <div class="panel panel-default">
+    <div class="card card-default">
         <!-- START: Panel Head -->
-        <div class="panel-heading">
-            <div class="panel-title">{{_ 'Forgot Password'}} </div>
+        <div class="card-header">
+            <div class="card-title">{{_ 'Forgot Password'}} </div>
         </div>
         <!-- END: Panel Head -->
         <!-- START: Panel Body -->
-        <div class="panel-body">
+        <div class="card-block">
             <p>{{_ "We'll email you with a link to reset your password. Please enter the e-mail address used to register with this site and we'll contact you shortly."}}</p>
             <!-- START: Auth Forgot Form -->
             <form method="post">
@@ -33,7 +33,7 @@
                 </div>
                 <!-- END: Auth Slug -->
                 <!-- START: Login -->
-                <div class="form-group pull-right">
+                <div class="form-group float-right">
                     <a title="Login" href="/login?{{toquery}}">{{_ 'Wait, I Remember It Now.'}}</a>
                 </div>
                 <!-- END: Login -->
