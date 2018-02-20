@@ -18,7 +18,7 @@
     "require": {
         "cradlephp/packages": "~1.1.1",
         "cradlephp/framework": "~1.1.1",
-        "cradlephp/sink-faucet": "1.0",
+        "cradlephp/sink-faucet": "1.0", 
         "cblanquera/cradle-captcha": "dev-master",
         "cblanquera/cradle-csrf": "dev-master",
         "cblanquera/cradle-handlebars": "dev-master",
