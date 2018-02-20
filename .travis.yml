@@ -36,8 +36,8 @@ before_script:
   - cp config/deploy.sample.php config/deploy.php
   - composer self-update
   - composer install
-  - npm install -g bower
-  - bower install
+  - npm install -g yarn
+  - yarn build
   - bin/cradle faucet install -f --skip-configs
   #PHP SERVER
   - php -S 127.0.0.1:8888 -t ./public >/dev/null 2>&1 &
